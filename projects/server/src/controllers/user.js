@@ -11,22 +11,27 @@ module.exports = {
     if (checkEmail.length) {
       return res.status(409).send({
         success: false,
-        message:
-          "Username or Email already exist, please use another Username or Email",
+        message: "Email already exist, please use another Email",
       });
     } else {
-      const result = await dbQuery(
-        // "INSERT INTO user (name,email,phone,password) VALUES (?,?,?,?)"
-        `INSERT INTO user (name,email,phone,password) VALUES (${db.escape(
-          name
-        )},${db.escape(email)},${db.escape(phone)},${db.escape(newPass)})`
+      db.query(
+        "INSERT INTO user SET ?",
+        { name, email, phone, password: newPass },
+        (error, results, fields) => {
+          if (error) throw error;
+          return res.status(201).send({
+            data: results,
+            success: true,
+            message:
+              "Sign up success ✅, please check your email for account verification",
+          });
+        }
       );
-      return res.status(201).send({
-        ...result,
-        success: true,
-        message:
-          "Sign up success ✅, please check your email for account verification",
-      });
+      //   const result = await dbQuery(
+      //     `INSERT INTO user (name,email,phone,password) VALUES (${db.escape(
+      //       name
+      //     )},${db.escape(email)},${db.escape(phone)},${db.escape(newPass)})`
+      //   );
     }
   },
 };
