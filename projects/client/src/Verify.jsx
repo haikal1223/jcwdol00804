@@ -9,8 +9,9 @@ function Verify () {
     const email = urlSearchParams.get('email');
 
     function verifyEmail () {
-        axios.post('http://localhost:3001/api/verify-email', {
-            email
+      axios.patch('http://localhost:3001/api/users/verify', {
+        email
+      })
           })
           .then(function (response) {
             console.log(response);
