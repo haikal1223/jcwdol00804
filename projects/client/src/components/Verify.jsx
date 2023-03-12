@@ -9,15 +9,16 @@ function Verify () {
     const email = urlSearchParams.get('email');
 
     function verifyEmail () {
-      axios.patch('http://localhost:3001/api/users/verify', {
+      axios.patch('http://localhost:8000/api/users/verify', {
         email
       })
-          })
           .then(function (response) {
             console.log(response);
+            //TODO: redirect to landing page
           })
           .catch(function (error) {
-            console.log(error);
+            console.log(error.response.data.message);
+            //TODO: show error to frontend
           });
     }
     return (
