@@ -2,14 +2,23 @@ require("dotenv/config");
 const express = require("express");
 const cors = require("cors");
 const { join } = require("path");
+const { db } = require("./config/db");
+const { userRoute } = require("./routers");
 
 const emailSender = require("../emailSender");
 const db = require("../database");
 
 const PORT = process.env.PORT || 8000;
 const app = express();
-
 app.use(cors());
+// app.use(
+//   cors({
+//     origin: [
+//       process.env.WHITELISTED_DOMAIN &&
+//         process.env.WHITELISTED_DOMAIN.split(","),
+//     ],
+//   })
+// );
 
 app.use(express.json());
 
@@ -100,6 +109,9 @@ app.use((err, req, res, next) => {
   }
 });
 
+// sign-up
+app.use("/user", userRoute);
+
 //#endregion
 
 //#region CLIENT
@@ -111,8 +123,15 @@ app.get("*", (req, res) => {
   res.sendFile(join(__dirname, clientPath, "index.html"));
 });
 
-//#endregion
+// Db connection
+db.getConnection((err, connection) => {
+  if (err) {
+    console.log("MySQL Connection Error", err.sqlMessage);
+  }
+  console.log("MySQL Connection Success ✅", connection.threadId);
+});
 
+//#endregion
 app.listen(PORT, (err) => {
   if (err) {
     console.log(`ERROR: ${err}`);
