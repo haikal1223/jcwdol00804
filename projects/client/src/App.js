@@ -1,20 +1,27 @@
+import React from "react";
 import "./App.css";
+// import Login from "./components/Login";
 import Home from './Pages/Home';
 import Footer from "./Components/Footer";
-import Page from "./Components/Page";
+import Verify from "./components/Verify";
 import SignUp from "./Pages/SignUp";
 import { Routes, Route } from "react-router-dom";
+import Page from "./components/Page";
 
 function App() {
   return (
-    <Page>
-      <Routes>
-        <Route path="/sign-up" element={<SignUp />} />
+    <div>
+      <Page>
+        <Routes>
+          {/* <Route path="/" element={<Login />} /> */}
+          <Route path="/verify-email" element={<Verify />} />
+          <Route path="/sign-up" element={<SignUp />} />
         <Route path="/" element={<Home />} />
-      </Routes>
-      <Footer />
-    </Page>
-  );
+        </Routes>
+      </Page>
+    </div>
+  )
+
 }
 
 export default App;
