@@ -5,9 +5,6 @@ const { join } = require("path");
 const { db } = require("./config/db");
 const { userRoute } = require("./routers");
 
-const emailSender = require("../emailSender");
-const db = require("../database");
-
 const PORT = process.env.PORT || 8000;
 const app = express();
 app.use(cors());
@@ -74,18 +71,6 @@ app.patch("/api/users/verify", async (req, res) => {
       .status(400)
       .send({ message: "Bad Request: Please provide valid email" });
   }
-});
-
-app.post("/api/users", (req, res) => {
-  const email = req.body.email;
-  const password = req.body.password;
-
-  emailSender.sendEmail(email);
-
-  res.send({
-    email,
-    password,
-  });
 });
 
 // ===========================

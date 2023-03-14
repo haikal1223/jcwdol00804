@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-// import Login from "./components/Login";
+import Login from "./Pages/Login";
 import Home from "./Pages/Home";
 import Footer from "./Components/Footer";
 import Verify from "./Components/Verify";
@@ -13,7 +13,7 @@ function App() {
     <div>
       <Page>
         <Routes>
-          {/* <Route path="/" element={<Login />} /> */}
+          <Route path="/login" element={<Login />} />
           <Route path="/verify-email" element={<Verify />} />
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/" element={<Home />} />
