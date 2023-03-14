@@ -3,33 +3,33 @@ import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../helper";
 import verify from "../Assets/Verify.png";
+import { useNavigate } from "react-router-dom";
 
 function Verify() {
   const { search } = useLocation();
   const urlSearchParams = new URLSearchParams(search);
+  const navigate = useNavigate();
+
   const email = urlSearchParams.get("email");
 
   function verifyEmail() {
     axios
-      .patch(`${API_URL}/user/verify`, {
+      .patch("http://localhost:8000/api/users/verify", {
         email,
       })
-      .then(function (response) {
-        console.log(response);
-        alert(response.data.message);
-        //TODO: redirect to landing page
+      .then(function (_) {
+        navigate("/login");
       })
       .catch(function (error) {
         console.log(error.response.data.message);
-        alert(error.response.data.message);
         //TODO: show error to frontend
       });
   }
   return (
-    <div className="font-sans grid justify-items-center items-center container mx-auto text-center p-10 min-h-screen">
+    <div className="font-sans text-center p-10">
       <div>
         <div className="object-fit-contain h-1/2 w-1/2 mx-auto">
-          <img src={verify} alt="verify-symbol" />
+          <img src="/Verify.png" alt="verify-symbol" />
         </div>
         <p className="text-2xl font-bold my-5">
           Please click button below to verify your email
