@@ -2,6 +2,7 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../helper";
+import verify from "../Assets/Verify.png";
 
 function Verify() {
   const { search } = useLocation();
@@ -28,7 +29,7 @@ function Verify() {
     <div className="font-sans grid justify-items-center items-center container mx-auto text-center p-10 h-full">
       <div>
         <div className="object-fit-contain h-1/2 w-1/2 mx-auto">
-          <img src="/Verify.png" alt="verify-symbol" />
+          <img src={verify} alt="verify-symbol" />
         </div>
         <p className="text-2xl font-bold my-5">
           Please click button below to verify your email
