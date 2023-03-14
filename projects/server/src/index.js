@@ -4,10 +4,7 @@ const cors = require("cors");
 const { join } = require("path");
 const { db } = require("./config/db");
 const { userRoute } = require("./routers");
-
-const emailSender = require("../emailSender");
-const db = require("../database");
-
+const emailSender = require("./config/emailSender");
 const PORT = process.env.PORT || 8000;
 const app = express();
 app.use(cors());
