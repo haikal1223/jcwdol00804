@@ -1,5 +1,6 @@
 const { db, dbQuery } = require("../config/db");
 const { hashPass } = require("../config/encrypt");
+const emailSender = require("../config/emailSender");
 
 module.exports = {
   signUp: async (req, res) => {
@@ -19,6 +20,7 @@ module.exports = {
         { name, email, phone, password: newPass },
         (error, results, fields) => {
           if (error) throw error;
+          emailSender.sendEmail(email);
           return res.status(201).send({
             data: results,
             success: true,
@@ -32,6 +34,39 @@ module.exports = {
       //       name
       //     )},${db.escape(email)},${db.escape(phone)},${db.escape(newPass)})`
       //   );
+    }
+  },
+  verifyEmail: async (req, res) => {
+    const { email } = req.body;
+    if (email) {
+      try {
+        const row = await dbQuery(
+          `SELECT u.is_verified FROM user as u WHERE u.email = '${email}'`
+        );
+        if (!row.length) {
+          return res
+            .status(400)
+            .send({ message: `User with email ${email} is not registered` });
+        }
+        const isVerified = row[0].is_verified === 1;
+        if (isVerified) {
+          return res.status(402).send({
+            message: `User with email ${email} is already verified. Please login`,
+          });
+        }
+        await dbQuery(
+          `UPDATE user set is_verified = 1 WHERE email = '${email}';`
+        );
+        return res.status(201).send({
+          message: `User with email ${email} has been successfully verified!`,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      return res
+        .status(400)
+        .send({ message: "Bad Request: Please provide valid email" });
     }
   },
 };
