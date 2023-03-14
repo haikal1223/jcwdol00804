@@ -12,3 +12,5 @@ const db = mysql.createPool({
 const dbQuery = util.promisify(db.query).bind(db);
 
 module.exports = { db, dbQuery };
+// db adalah metode untuk db query dengan callback function
+// dbQuery adalah metode untuk db query dengan async await
