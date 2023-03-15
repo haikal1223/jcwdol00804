@@ -61,3 +61,30 @@ const Footer = () => {
 };
 
 export default Footer;
+<<<<<<< HEAD
+=======
+
+// <div className="flex flex-row justify-between px-5 py-2">
+//     <div class="container mx-auto px-4">
+//         <div class="flex flex-wrap justify-between items-center">
+//             <div class="text-gray-500 text-sm">
+//                 &copy; 2023 Xmart. All rights reserved.
+//             </div>
+//             <div class="text-gray-500 text-sm">
+//                 <a href="https://www.purwadhika.com/"
+//                     target="_blank"
+//                     rel="noreferrer"
+//                     class="hover:text-gray-300 mr-4">
+//                     Purwadhika
+//                 </a>
+//                 <a href="https://linktr.ee/group4_"
+//                     target="_blank"
+//                     rel="noreferrer"
+//                     class="hover:text-gray-300">
+//                     Contact Us
+//                 </a>
+//             </div>
+//         </div>
+//     </div>
+// </div>
+>>>>>>> c3d96ff5460d3a1e6a79a9e2c87bdd2bfb832801
