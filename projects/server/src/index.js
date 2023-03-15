@@ -6,7 +6,10 @@ const { db } = require("./config/db");
 const { userRoute } = require("./routers");
 const PORT = process.env.PORT || 8000;
 const app = express();
+const bearerToken = require("express-bearer-token");
+
 app.use(cors());
+app.use(bearerToken());
 // app.use(
 //   cors({
 //     origin: [
