@@ -1,27 +1,16 @@
 import React from "react";
-import { BiUserCircle } from "react-icons/bi";
-import Navbar from "../../Components/Navbar";
+import Page from "../../Components/Page";
 import BannerSection from "./Sections/BannerSection";
 import CategorySection from "./Sections/CategorySection";
 import FeaturedSection from "./Sections/FeaturedSection";
 
 const Home = () => {
-    return <div className="container">
-        {/* Navbar */}
-        <div className="flex flex-row justify-between px-5 py-5">
-            <Navbar />
-            <div className="text-xl font-bold">
-                Menu
-            </div>
-            <div className="cursor-pointer">
-                <BiUserCircle size={30} />
-            </div>
-        </div>
+  return (
+    <Page navTitle="Home">
+      <div className="container">
         {/* Greeting */}
         <div className="flex flex-col text-normal text-center font-normal px-5 py-3">
-            <div>
-                Welcome to our page !
-            </div>
+          <div>Welcome to our page !</div>
         </div>
         {/* Searchbox */}
         {/* Fitur ini akan dipakai kalau ada waktu */}
@@ -44,7 +33,9 @@ const Home = () => {
         <CategorySection />
         {/* Featured */}
         <FeaturedSection />
-    </div>
-}
+      </div>
+    </Page>
+  );
+};
 
 export default Home;
