@@ -6,7 +6,7 @@ import {
 } from "react-icons/ai";
 const Footer = () => {
   return (
-    <div className="bg-[#839e6a] py-5">
+    <div className="bg-[#839e6a] py-5 mt-10">
       <div className="mx-auto text-center">
         <div className="flex justify-evenly">
           <div className="text-white">
