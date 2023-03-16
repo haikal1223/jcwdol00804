@@ -62,7 +62,7 @@ const Navbar = ({ navTitle, isLogged }) => {
       </div>
       <div className="text-xl font-bold">{navTitle}</div>
       <div className="cursor-pointer">
-        {isLogged ? (
+        {!isLogged ? (
           <BiUserCircle size={30} />
         ) : (
           <button className="rounded-full bg-[#82CD47] w-14 text-white text-sm font-[600] py-1">
