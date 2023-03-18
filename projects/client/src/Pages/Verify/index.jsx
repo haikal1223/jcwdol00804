@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../../helper";
 import verify from "../../Assets/Verify.png";
+import Page from "../../Components/Page";
 
 function Verify() {
   const { search } = useLocation();
@@ -26,7 +27,8 @@ function Verify() {
       });
   }
   return (
-    <div className="font-sans grid justify-items-center items-center container mx-auto text-center p-10 min-h-screen">
+    <Page isNavbar={false} isFooter={false}>
+    <div className="font-sans grid justify-items-center items-center container mx-auto text-center p-10">
       <div>
         <div className="object-fit-contain h-1/2 w-1/2 mx-auto">
           <img src={verify} alt="verify-symbol" />
@@ -43,6 +45,7 @@ function Verify() {
         Verify
       </button>
     </div>
+    </Page>
   );
 }
 
