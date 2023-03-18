@@ -1,9 +1,18 @@
 import React from "react";
+import Footer from "./Footer";
+import Navbar from "./Navbar";
 
-const Page = (props) => {
+const Page = ({ navTitle, isNavbar = true, isFooter = true, children }) => {
   return (
-    <div className="flex justify-center" style={{ backgroundColor: "#86C649" }}>
-      <div className="w-[480px] bg-white min-h-screen">{props.children}</div>
+    <div
+      className="flex flex-col items-center"
+      style={{ backgroundColor: "#aad27d" }}
+    >
+      <div className="w-[480px] bg-white min-h-screen">
+        {isNavbar && <Navbar navTitle={navTitle} />}
+        {children}
+        {isFooter && <Footer />}
+      </div>
     </div>
   );
 };
