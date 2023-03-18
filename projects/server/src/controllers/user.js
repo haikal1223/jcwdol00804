@@ -3,6 +3,7 @@ const { hashPass } = require("../config/encrypt");
 const emailSender = require("../config/emailSender");
 const { transporter } = require("../config/emailSender/transporter");
 const { createToken } = require("../config/token");
+const bcrypt = require("bcrypt");
 
 module.exports = {
   signUp: async (req, res) => {
@@ -130,6 +131,76 @@ module.exports = {
         return res.status(200).send({
           success: true,
           message: 'Reset Password success'
+        });
+      });
+    } catch (error) {
+      return res.status(500).send(error);
+    };
+  },
+  // =======
+  // Sign in
+  signIn: async (req, res) => {
+    try {
+      db.query(`SELECT * from user 
+      WHERE email=${db.escape(req.body.email)};`, (error, results) => {
+        if (error) {
+          return res.status(500).send({
+            success: false,
+            message: error
+          });
+        };
+        const passCheck = bcrypt.compareSync(req.body.password, results[0].password);
+        // delete results[0].password;
+        if (passCheck) {
+          const token = createToken({ ...results[0] });
+          return res.status(200).send({ ...results[0], token });
+        } else {
+          return res.status(401).send({
+            success: false,
+            message: 'Your password is wrong'
+          });
+        };
+      });
+    } catch (error) {
+      return res.status(500).send(error);
+    }
+  },
+  // ==========
+  // Keep login
+  keepLogin: async (req, res) => {
+    try {
+      db.query(`SELECT * from user
+      WHERE id=${db.escape(req.decript.id)};`, (error, results) => {
+        if (error) {
+          return res.status(500).send({
+            success: false,
+            message: error
+          });
+        }
+        const token = createToken({ ...results[0] });
+        return res.status(200).send({ ...results[0], token });
+      })
+    } catch (error) {
+
+    }
+  },
+  // ===============
+  // Change password
+  changePass: async (req, res) => {
+    try {
+      const { password } = req.body;
+      const newPass = await hashPass(password);
+      db.query(`UPDATE user set password=${db.escape(newPass)} 
+      WHERE id=${db.escape(req.decript.id)};`, (error, results) => {
+        if (error) {
+          return res.status(500).send({
+            success: false,
+            message: error
+          });
+        }
+        return res.status(200).send({
+          success: true,
+          message: 'Change Password success'
         });
       });
     } catch (error) {
