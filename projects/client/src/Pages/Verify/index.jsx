@@ -1,8 +1,8 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-import { API_URL } from "../helper";
-import verify from "../Assets/Verify.png";
+import { API_URL } from "../../helper";
+import verify from "../../Assets/Verify.png";
 
 function Verify() {
   const { search } = useLocation();
