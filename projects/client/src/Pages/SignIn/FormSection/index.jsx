@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
+import jwtDecode from "jwt-decode";
 
 const FormSection = () => {
   const [eyeOpen, setEyeOpen] = useState(false);
@@ -11,19 +12,38 @@ const FormSection = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  const validateToken = useCallback(() => {
+    const token = localStorage.getItem("accessToken");
+
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      const tokenExpiration = new Date(decodedToken.exp * 1000);
+      const dateNow = new Date();
+      if (tokenExpiration >= dateNow.getTime()) {
+        navigate("/");
+      }
+    }
+  }, [navigate]);
+
   const login = () => {
     axios
-      .post("http://localhost:8000/user/login", {
+      .post("http://localhost:8000/api/user/login", {
         email,
         password,
       })
-      .then(function (_) {
+      .then(function (res) {
+        localStorage.setItem("accessToken", res.data.accessToken);
         navigate("/");
       })
       .catch(function (error) {
         toast.error(error.response.data.message);
       });
   };
+
+  useEffect(() => {
+    validateToken();
+  }, [validateToken]);
+
   return (
     <div className="flex flex-col items-center">
       <div className="text-[#82CD47] font-[600] text-2xl">Sign In</div>

@@ -2,7 +2,8 @@ const { db, dbQuery } = require("../config/db");
 const { hashPass } = require("../config/encrypt");
 const emailSender = require("../config/emailSender");
 const bcrypt = require("bcrypt");
-
+const auth = require("../config/auth");
+const jwt = require("jsonwebtoken");
 module.exports = {
   signUp: async (req, res) => {
     const { name, email, phone, password } = req.body;
@@ -85,13 +86,17 @@ module.exports = {
             message: `Internal Server Error: ${err}`,
           });
         } else {
-          const { password: storedPassword, is_verified } = results[0];
+          const { password: storedPassword, is_verified, id } = results[0];
           const validPassword = await bcrypt.compare(password, storedPassword);
 
+          const accessToken = jwt.sign({ id }, auth.secret, {
+            expiresIn: "1d",
+          });
           if (validPassword && is_verified) {
             return res.status(200).send({
               success: true,
               message: "Login success",
+              accessToken,
             });
           }
 
@@ -99,12 +104,14 @@ module.exports = {
             return res.status(401).send({
               success: false,
               message: `Your email has not been verified. Please verify your email`,
+              accessToken: null,
             });
           }
 
           return res.status(401).send({
             success: false,
             message: `Invalid password or email`,
+            accessToken: null,
           });
         }
       }
