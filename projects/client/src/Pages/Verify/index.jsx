@@ -16,12 +16,10 @@ function Verify() {
         email,
       })
       .then(function (response) {
-        console.log(response);
         alert(response.data.message);
         //TODO: redirect to landing page
       })
       .catch(function (error) {
-        console.log(error.response.data.message);
         alert(error.response.data.message);
         //TODO: show error to frontend
       });

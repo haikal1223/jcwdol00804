@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 
 module.exports = {
     createToken: (payload, expired = '24h') => {
-        console.log(payload);
         let token = jwt.sign(payload, 'xmart!', {
             expiresIn: expired
         });
@@ -16,7 +15,6 @@ module.exports = {
                     message: 'Authenticate token failed'
                 });
             };
-            console.log(decript);
             req.decript = decript;
             next();
         });

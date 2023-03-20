@@ -64,7 +64,7 @@ module.exports = {
           message: `User with email ${email} has been successfully verified!`,
         });
       } catch (error) {
-        console.log(error);
+        return res.status(500).send(error);
       }
     } else {
       return res

@@ -34,7 +34,6 @@ module.exports = {
         .withMessage("Password doesn't match")
         .run(req);
       const validation = validationResult(req);
-      console.log(validation);
       if (validation.isEmpty()) {
         next();
       } else {
@@ -45,7 +44,6 @@ module.exports = {
         });
       }
     } catch (error) {
-      console.log(error);
       return res.status(500).send(error);
     }
   },
@@ -58,7 +56,6 @@ module.exports = {
         .withMessage("Invalid email format")
         .run(req)
       const validation = validationResult(req);
-      console.log(validation);
       if (validation.isEmpty()) {
         next();
       } else {
@@ -69,7 +66,6 @@ module.exports = {
         });
       }
     } catch (error) {
-      console.log(error);
       return res.status(500).send(error);
     }
   },
@@ -93,12 +89,10 @@ module.exports = {
         .withMessage("Password doesn't match")
         .run(req);
       const validation = validationResult(req);
-      console.log(validation);
       if (validation.isEmpty()) {
         next();
       }
     } catch (error) {
-      console.log(error);
       return res.status(500).send(error);
     }
   },
@@ -122,12 +116,10 @@ module.exports = {
         .withMessage("Should contain at least 1 number")
         .run(req);
       const validation = validationResult(req);
-      console.log(validation);
       if (validation.isEmpty()) {
         next();
       }
     } catch (error) {
-      console.log(error);
       return res.status(500).send(error);
     }
   },
