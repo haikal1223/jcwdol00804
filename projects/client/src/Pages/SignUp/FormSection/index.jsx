@@ -32,7 +32,26 @@ const FormSection = () => {
     },
     validationSchema: Yup.object({
       name: Yup.string().required(),
-      email: Yup.string().required().email("Invalid email format"),
+      email: Yup.string()
+        .required()
+        .test("Unique Email", "Email already in use", (value) => {
+          return new Promise((resolve, reject) => {
+            axios
+              .get(`${API_URL}/user/unique-email/${value}`)
+              .then((res) => {
+                resolve(true);
+              })
+              .catch((error) => {
+                if (
+                  error.response.data.message ===
+                  "Email already in use. please use another email"
+                ) {
+                  resolve(false);
+                }
+              });
+          });
+        })
+        .email("Invalid email format"),
       phone: Yup.string()
         .required("phone number is a required field")
         .matches(
