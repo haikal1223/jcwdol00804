@@ -4,6 +4,7 @@ const cors = require("cors");
 const { join } = require("path");
 const { db } = require("./config/db");
 const { userRoute } = require("./routers");
+const bearerToken = require("express-bearer-token");
 const PORT = process.env.PORT || 8000;
 const app = express();
 app.use(cors());
@@ -15,7 +16,8 @@ app.use(cors());
 //     ],
 //   })
 // );
-
+app.use(bearerToken());
+app.use(express.static("public"));
 app.use(express.json());
 
 //#region API ROUTES
