@@ -9,7 +9,7 @@ const BackButton = () => {
       <BiChevronLeft
         size={30}
         onClick={() => navigate(-1)}
-        className="absolute top-5 left-5 cursor-pointer"
+        className="absolute top-5 left-5 cursor-pointer z-20"
       />
     </div>
   );
