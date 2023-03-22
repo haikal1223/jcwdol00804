@@ -1,6 +1,8 @@
 const { db, dbQuery } = require("../config/db");
 const { hashPass } = require("../config/encrypt");
 const emailSender = require("../config/emailSender");
+const { createToken } = require("../config/token");
+const bcrypt = require("bcrypt");
 
 module.exports = {
   signUp: async (req, res) => {
@@ -68,5 +70,166 @@ module.exports = {
         .status(400)
         .send({ message: "Bad Request: Please provide valid email" });
     }
+  },
+  // Sign in
+  signIn: async (req, res) => {
+    try {
+      db.query(
+        `SELECT * from user 
+      WHERE email=${db.escape(req.body.email)};`,
+        (error, results) => {
+          if (error) {
+            return res.status(500).send({
+              success: false,
+              message: error,
+            });
+          }
+          const passCheck = bcrypt.compareSync(
+            req.body.password,
+            results[0].password
+          );
+          delete results[0].password;
+          if (passCheck) {
+            const token = createToken({ ...results[0] });
+            return res.status(200).send({ ...results[0], token });
+          } else {
+            return res.status(401).send({
+              success: false,
+              message: "Your password is wrong",
+            });
+          }
+        }
+      );
+    } catch (error) {
+      return res.status(500).send(error);
+    }
+  },
+  // ==========
+  // Keep login
+  keepLogin: async (req, res) => {
+    try {
+      db.query(
+        `SELECT * from user
+      WHERE id=${db.escape(req.decript.id)};`,
+        (error, results) => {
+          if (error) {
+            return res.status(500).send({
+              success: false,
+              message: error,
+            });
+          }
+          delete results[0].password;
+          const token = createToken({ ...results[0] });
+          return res.status(200).send({ ...results[0], token });
+        }
+      );
+    } catch (error) {
+      return res.status(500).send(error);
+    }
+  },
+  editProfile: (req, res) => {
+    const { name, email, birthdate, gender } = req.body;
+    if (email === req.decript.email) {
+      db.query(
+        `UPDATE user SET ? WHERE id=${req.decript.id}`,
+        { name, birthdate, gender },
+        (error, results) => {
+          if (error) {
+            return res.status(500).send({
+              success: false,
+              message: error,
+            });
+          }
+          return res.status(200).send({
+            success: true,
+            message: "Successfully updated personal data",
+          });
+        }
+      );
+    } else {
+      db.query(
+        `SELECT email from user WHERE email=${db.escape(email)}`,
+        (error, checkEmail) => {
+          if (error) throw error;
+          if (checkEmail.length) {
+            return res.status(409).send({
+              success: false,
+              message: "Email already exist, please use another Email",
+            });
+          }
+          db.query(
+            `UPDATE user SET ? WHERE id=${req.decript.id}`,
+            { name, birthdate, gender },
+            (error, results) => {
+              if (error) {
+                return res.status(500).send({
+                  success: false,
+                  message: error,
+                });
+              }
+              return res.status(200).send({
+                success: true,
+                message: "Successfully updated personal data",
+              });
+            }
+          );
+        }
+      );
+    }
+  },
+  // Untuk validasi front end cek email sudah pernah dipakai
+  uniqueEmail: (req, res) => {
+    db.query(
+      `SELECT email from user WHERE email=${db.escape(req.params.email)}`,
+      (error, results) => {
+        if (error) {
+          return res.status(500).send({
+            success: false,
+            message: error,
+          });
+        }
+        if (results.length) {
+          return res.status(409).send({
+            success: false,
+            message: "Email already in use. please use another email",
+          });
+        }
+        return res.status(200).send({
+          success: true,
+        });
+      }
+    );
+  },
+  uploadProfileImg: (req, res) => {
+    db.query(
+      `UPDATE user SET ? WHERE id=${req.decript.id}`,
+      { profile_img: `/imgProfile/${req.files[0].filename}` },
+      (error, results) => {
+        if (error) {
+          return res.status(500).send({
+            success: false,
+            message: error,
+          });
+        }
+        return res.status(200).send({
+          success: true,
+          message: "Profile image uploaded",
+        });
+      }
+    );
+  },
+  getUserInfo: (req, res) => {
+    db.query(
+      `SELECT * from user WHERE id=${req.decript.id}`,
+      (error, results) => {
+        if (error) {
+          return res.status(500).send({
+            success: false,
+            message: error,
+          });
+        }
+        return res.status(200).send({ ...results[0], success: true });
+      }
+    );
   },
 };
