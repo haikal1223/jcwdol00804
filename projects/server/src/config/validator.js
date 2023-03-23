@@ -35,7 +35,6 @@ module.exports = {
         .withMessage("Password doesn't match")
         .run(req);
       const validation = validationResult(req);
-      console.log(validation);
       if (validation.isEmpty()) {
         next();
       } else {
@@ -70,7 +69,6 @@ module.exports = {
         .withMessage("Should contain at least 1 number")
         .run(req);
       const validation = validationResult(req);
-      console.log(validation);
       if (validation.isEmpty()) {
         next();
       }
@@ -105,7 +103,6 @@ module.exports = {
         .optional({ nullable: true })
         .run(req);
       const validation = validationResult(req);
-      console.log(validation);
       if (validation.isEmpty()) {
         next();
       }

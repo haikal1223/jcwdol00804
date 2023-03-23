@@ -42,19 +42,6 @@ const FormSection = () => {
     },
   });
 
-  //   const login = () => {
-  //     axios
-  //       .post(`${API_URL}/user/sign-in`, {
-  //         email,
-  //         password,
-  //       })
-  //       .then((response) => {
-
-  //       })
-  //       .catch((error) => {
-
-  //       });
-  //   };
   return (
     <div className="flex flex-col items-center">
       <div className="text-[#82CD47] font-[600] text-2xl">Sign In</div>
