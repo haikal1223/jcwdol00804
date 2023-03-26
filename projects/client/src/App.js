@@ -9,6 +9,8 @@ import ForgotPassword from "./Pages/ForgotPassword";
 import ResetPassword from "./Pages/ResetPassword";
 import ProfileSetting from "./Pages/ProfileSetting";
 import ChangePassword from "./Pages/ChangePassword";
+import MyAddress from "./Pages/MyAddress";
+import AddAddress from "./Pages/AddAddress";
 import NotFound from "./Pages/NotFound";
 
 function App() {
@@ -23,6 +25,8 @@ function App() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/profile-setting" element={<ProfileSetting />} />
           <Route path="/change-password" element={<ChangePassword />} />
+          <Route path="/my-address" element={<MyAddress />} />
+          <Route path="/add-address" element={<AddAddress />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
     </div>
