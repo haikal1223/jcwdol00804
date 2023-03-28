@@ -11,6 +11,7 @@ import ProfileSetting from "./Pages/ProfileSetting";
 import ChangePassword from "./Pages/ChangePassword";
 import MyAddress from "./Pages/MyAddress";
 import AddAddress from "./Pages/AddAddress";
+import ProductDetail from "./Pages/ProductDetail";
 import NotFound from "./Pages/NotFound";
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
           <Route path="/change-password" element={<ChangePassword />} />
           <Route path="/my-address" element={<MyAddress />} />
           <Route path="/add-address" element={<AddAddress />} />
+          <Route path="/product-detail/:id" element={<ProductDetail />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
     </div>
