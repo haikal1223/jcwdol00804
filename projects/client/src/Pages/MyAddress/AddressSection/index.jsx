@@ -19,8 +19,8 @@ const AddressSection = () => {
             setAddress(result.data);
         } catch (error) {
             alert(error.response.data.message);
-        }
-    }
+        };
+    };
 
     useEffect(() => {
         getData();
@@ -36,18 +36,18 @@ const AddressSection = () => {
                         return {
                             ...address,
                             is_delete: 1,
-                        }
+                        };
                     } else {
                         return address;
-                    }
-                })
-            })
+                    };
+                });
+            });
             alert(result.data.message);
-            window.location.reload();
+            await getData();
         } catch (error) {
             alert(error.response.data.message);
-        }
-    }
+        };
+    };
 
     // Set an Address to Main Address
     const setMainAddress = async (id) => {
@@ -59,18 +59,18 @@ const AddressSection = () => {
                         return {
                             ...address,
                             is_main: 1,
-                        }
+                        };
                     } else {
                         return address;
-                    }
-                })
-            })
+                    };
+                });
+            });
             alert(result.data.message);
-            window.location.reload();
+            await getData();
         } catch (error) {
             alert(error.response.data.message);
-        }
-    }
+        };
+    };
 
     return (
         <div className="flex flex-col justify-center mx-20 my-10">
@@ -91,8 +91,8 @@ const AddressSection = () => {
                                 {address.is_main === 1 ? (
                                     // Conditions the button if address is_main
                                     <button
-                                    className="rounded-md bg-[#47B4CD] h-7 px-2 text-xs text-white font-semibold shadow-md"
-                                    disabled="disabled">
+                                        className="rounded-md bg-[#47B4CD] h-7 px-2 text-xs text-white font-semibold shadow-md"
+                                        disabled="disabled">
                                         Your Main Address
                                     </button>
                                 ) : (
@@ -115,7 +115,7 @@ const AddressSection = () => {
                 </div>
             ) : (
                 // Conditions if address is empty
-                <div className="flex flex-col justify-center text-center border rounded-md w-full bg-gray-100 p-3 mb-5 rounded shadow">
+                <div className="flex flex-col justify-center text-center border rounded-md w-full bg-gray-100 p-3 mt-5 rounded shadow">
                     <div className="text-lg font-bold">
                         You have no address
                     </div>
