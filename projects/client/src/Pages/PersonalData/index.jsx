@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import BackButton from "../../Components/BackButton";
 import Page from "../../Components/Page";
 import { Avatar } from "@chakra-ui/avatar";
