@@ -31,11 +31,6 @@ module.exports = {
           });
         }
       );
-      //   const result = await dbQuery(
-      //     `INSERT INTO user (name,email,phone,password) VALUES (${db.escape(
-      //       name
-      //     )},${db.escape(email)},${db.escape(phone)},${db.escape(newPass)})`
-      //   );
     }
   },
   verifyEmail: async (req, res) => {
