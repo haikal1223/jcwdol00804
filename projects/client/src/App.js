@@ -11,6 +11,8 @@ import SignIn from "./Pages/SignIn";
 import Axios from "axios";
 import { API_URL } from "./helper";
 import { loginAction } from "./Actions/user";
+import MyCart from "./Pages/MyCart";
+import { getCartList } from "./Actions/cart";
 
 function App() {
   const dispatch = useDispatch();
@@ -25,6 +27,7 @@ function App() {
         .then((res) => {
           // localStorage.setItem("eshop_login", res.data.token); //jangan di set kembali karena token menjadi berbeda
           dispatch(loginAction(res.data));
+          dispatch(getCartList());
         })
         .catch((err) => {
           console.log(err);
@@ -44,6 +47,7 @@ function App() {
         {/* <Route path="/login" element={<Login />} /> */}
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/personal-data" element={<PersonalData />} />
+        <Route path="/my-cart" element={<MyCart />} />
         <Route path="/verify-email" element={<Verify />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/" element={<Home />} />
