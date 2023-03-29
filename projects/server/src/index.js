@@ -3,7 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const { join } = require("path");
 const { db } = require("./config/db");
-const { userRoute } = require("./routers");
+const { userRoute, cartRoute } = require("./routers");
 const bearerToken = require("express-bearer-token");
 const PORT = process.env.PORT || 8000;
 const app = express();
@@ -56,8 +56,11 @@ app.get("/api/greetings", (req, res, next) => {
 //   }
 // });
 
-// sign-up
+// user route
 app.use("/api/user", userRoute);
+
+// cart route
+app.use("/api/cart", cartRoute);
 
 //#endregion
 
