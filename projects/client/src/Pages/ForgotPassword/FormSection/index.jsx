@@ -23,7 +23,6 @@ const FormSection = () => {
         alert(result.data.message);
         formik.resetForm();
       } catch (error) {
-        console.log(error);
         alert(error.response.data.message);
       }
     },

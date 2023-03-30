@@ -3,7 +3,7 @@ import Page from "../../Components/Page";
 import FormSection from "./FormSection";
 import LogoSection from "./LogoSection";
 
-const ForgotPassword = () => {
+const SignIn = () => {
   return (
     <Page isNavbar={false} isFooter={false}>
       <div>
@@ -14,4 +14,4 @@ const ForgotPassword = () => {
   );
 };
 
-export default ForgotPassword;
+export default SignIn;
