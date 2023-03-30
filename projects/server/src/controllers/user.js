@@ -198,7 +198,9 @@ module.exports = {
   uploadProfileImg: (req, res) => {
     db.query(
       `UPDATE user SET ? WHERE id=${req.decript.id}`,
-      { profile_img: `/imgProfile/${req.files[0].filename}` },
+      {
+        profile_img: `/imgProfile/${req.files[0].filename}`,
+      },
       (error, results) => {
         if (error) {
           return res.status(500).send({

@@ -301,7 +301,7 @@ const FormSection = () => {
         </form>
         <div className="text-center mt-2">
           Already have an account ?{" "}
-          <Link to="/login">
+          <Link to="/sign-in">
             <span className="text-[#689C36]">Sign in</span>
           </Link>
         </div>
