@@ -65,16 +65,20 @@ const Navbar = ({ navTitle, isLogged }) => {
                 <BiShoppingBag size={24} className="mr-4" />
                 Products
               </li>
-              <Link to="/my-cart">
+              {id && (
+                <Link to="/my-cart">
+                  <li className="flex py-2 items-center">
+                    <BiCartAlt size={24} className="mr-4" />
+                    My Cart
+                  </li>
+                </Link>
+              )}
+              {id && (
                 <li className="flex py-2 items-center">
-                  <BiCartAlt size={24} className="mr-4" />
-                  My Cart
+                  <HiOutlineDocumentDuplicate size={24} className="mr-4" />
+                  Order
                 </li>
-              </Link>
-              <li className="flex py-2 items-center">
-                <HiOutlineDocumentDuplicate size={24} className="mr-4" />
-                Order
-              </li>
+              )}
               {id && (
                 <li
                   className="flex py-2 items-center cursor-pointer"

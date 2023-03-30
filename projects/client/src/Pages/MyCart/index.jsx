@@ -30,6 +30,10 @@ const MyCart = () => {
   const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
+    dispatch(getCartList());
+  }, []);
+
+  useEffect(() => {
     setCheckedItem(cartList.map((val) => false));
   }, [cartList]);
 
