@@ -13,6 +13,7 @@ import { API_URL } from "./helper";
 import { loginAction } from "./Actions/user";
 import MyCart from "./Pages/MyCart";
 import { getCartList } from "./Actions/cart";
+import RestrictedRoutes from "./Utils/RestrictedRoutes";
 
 function App() {
   const dispatch = useDispatch();
@@ -25,7 +26,7 @@ function App() {
         },
       })
         .then((res) => {
-          // localStorage.setItem("eshop_login", res.data.token); //jangan di set kembali karena token menjadi berbeda
+          localStorage.setItem("eshop_login", res.data.token);
           dispatch(loginAction(res.data));
           dispatch(getCartList());
         })
@@ -42,18 +43,17 @@ function App() {
 
   return (
     <div>
-      {/* <Page> */}
       <Routes>
-        {/* <Route path="/login" element={<Login />} /> */}
-        <Route path="/sign-in" element={<SignIn />} />
-        <Route path="/personal-data" element={<PersonalData />} />
-        <Route path="/my-cart" element={<MyCart />} />
-        <Route path="/verify-email" element={<Verify />} />
-        <Route path="/sign-up" element={<SignUp />} />
         <Route path="/" element={<Home />} />
+        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/sign-up" element={<SignUp />} />
+        <Route element={<RestrictedRoutes />}>
+          <Route path="/personal-data" element={<PersonalData />} />
+          <Route path="/my-cart" element={<MyCart />} />
+          <Route path="/verify-email" element={<Verify />} />
+        </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
-      {/* </Page> */}
     </div>
   );
 }
