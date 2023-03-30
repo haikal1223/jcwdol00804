@@ -5,6 +5,7 @@ const {
     validateForgot,
     validateNewPass,
     validateSignIn
+    validateReset
 } = require("../config/validator");
 const { readToken } = require("../config/token");
 
