@@ -63,16 +63,31 @@ const MyCart = () => {
   };
 
   const handleQuantity = async (type, id, product_id) => {
+    let token = localStorage.getItem("xmart_login");
     await axios.patch(
       `${API_URL}/cart/update-cart-qty`,
       { type, id, product_id },
-      { timeout: 1000 }
+      {
+        timeout: 1000,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
     dispatch(getCartList());
   };
 
   const handleDelete = async (id) => {
-    await axios.patch(`${API_URL}/cart/delete-item`, { id });
+    let token = localStorage.getItem("xmart_login");
+    await axios.patch(
+      `${API_URL}/cart/delete-item`,
+      { id },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     dispatch(getCartList());
   };
 
