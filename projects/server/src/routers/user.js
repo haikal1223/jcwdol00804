@@ -5,7 +5,6 @@ const {
   validateForgot,
   validateNewPass,
   validateSignIn,
-  validateReset,
   validateEditProfile,
 } = require("../config/validator");
 const { readToken } = require("../config/token");
@@ -32,18 +31,5 @@ route.patch(
   userController.uploadProfileImg
 );
 route.get("/get-user-info", readToken, userController.getUserInfo);
-route.post("/forgot-password", validateForgot, userController.forgotPass);
-route.patch(
-  "/reset-password",
-  validateNewPass,
-  readToken,
-  userController.resetPass
-);
-route.patch(
-  "/change-password",
-  validateNewPass,
-  readToken,
-  userController.changePass
-);
 
 module.exports = route;

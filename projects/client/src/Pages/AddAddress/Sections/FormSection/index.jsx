@@ -20,7 +20,7 @@ const FormSection = () => {
             const result = await axios.get(`${API_URL}/cities-data/get-province`);
             setProvinceData(result.data);
         } catch (error) {
-
+            alert(error.response.data.message);
         }
     }
     const getCities = async (value) => {
@@ -30,7 +30,7 @@ const FormSection = () => {
             });
             setCitiesData(result.data);
         } catch (error) {
-
+            alert(error.response.data.message);
         }
     }
 
