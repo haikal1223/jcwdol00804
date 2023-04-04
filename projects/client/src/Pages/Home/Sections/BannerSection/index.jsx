@@ -1,4 +1,3 @@
-import React from 'react'
 import banner from "../../../../Assets/Banners/banner1.png"
 
 const BannerSection = () => {

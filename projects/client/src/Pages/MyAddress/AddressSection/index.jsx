@@ -29,7 +29,7 @@ const AddressSection = () => {
     // Soft Delete an Address
     const deleteAddress = async (id) => {
         try {
-            const result = await axios.put(`${API_URL}/address/${id}/delete`);
+            const result = await axios.put(`${API_URL}/address/delete/${id}`);
             setAddress(prevAddress => {
                 return prevAddress.map(address => {
                     if (address.id === id) {
@@ -52,7 +52,7 @@ const AddressSection = () => {
     // Set an Address to Main Address
     const setMainAddress = async (id) => {
         try {
-            const result = await axios.put(`${API_URL}/address/${id}/set-main`);
+            const result = await axios.put(`${API_URL}/address/set-main/${id}`);
             setAddress(prevAddress => {
                 return prevAddress.map(address => {
                     if (address.id === id) {

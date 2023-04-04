@@ -1,11 +1,19 @@
-import React from 'react'
 import FeaturedComponent from '../../Components/FeaturedComponent';
+import { Link } from 'react-router-dom';
 
 const FeaturedSection = () => {
     return (
         <div className="flex flex-col text-base text-left font-bold px-5 py-5">
-            <div>
-                Featured products
+            <div className="flex justify-between">
+                <div>
+                    Featured products
+                </div>
+                <Link
+                    to={'/product-list'}>
+                    <div className="underline hover:text-[#82CD47]">
+                        All products
+                    </div>
+                </Link>
             </div>
             <FeaturedComponent />
         </div>

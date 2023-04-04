@@ -4,7 +4,7 @@ import axios from "axios";
 import { API_URL } from "../../../helper";
 import { AiFillPlusCircle, AiFillMinusCircle } from "react-icons/ai";
 import { BiCartAlt } from "react-icons/bi";
-import img from "../../../Assets/Items/item1.png"
+import img from "../../../Assets/default.png"
 
 const DetailSection = () => {
     const { id } = useParams();
@@ -16,16 +16,16 @@ const DetailSection = () => {
     // Get Data from API
     const getDetail = async () => {
         try {
-            const result = await axios.get(`${API_URL}/product/${id}`);
+            const result = await axios.get(`${API_URL}/product/detail/${id}`);
             setDetail(result.data.data);
         } catch (error) {
             alert(error.response.data.message);
         }
     }
-    
+
     useEffect(() => {
         getDetail();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const onPlus = () => {
@@ -51,7 +51,7 @@ const DetailSection = () => {
                 <div className="text-3xl font-bold text-gray-900">
                     {detail.name}
                 </div>
-                <div className="flex items-center">
+                <div className="flex items-center pt-2">
                     <button
                         onClick={onMinus}>
                         <AiFillMinusCircle size={25} color="#82CD47" />
@@ -73,7 +73,7 @@ const DetailSection = () => {
             <div className="flex my-2">
                 <div className="flex">
                     <div className="text-2xl text-[#86C649] font-semibold">
-                        Rp. {detail.price},-
+                        Rp. {detail.price?.toLocaleString()},-
                     </div>
                 </div>
             </div>
