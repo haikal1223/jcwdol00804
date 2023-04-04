@@ -78,44 +78,38 @@ module.exports = {
     try {
       const { email } = req.body;
       db.query(
-        `SELECT * from user WHERE email=${db.escape(email)};`,
-        (error, results) => {
+        `SELECT * from user WHERE email=${db.escape(email)};`, (error, results) => {
           if (!results.length) {
             return res.status(409).send({
               success: false,
-              message:
-                "Email address is not Registered, Please enter a Registered Email",
+              message: "Email address is not Registered, Please enter a Registered Email"
             });
           } else {
             const token = createToken({ ...results[0] });
-            transporter.sendMail(
-              {
-                from: "XMART ADMIN",
-                to: email,
-                subject: "Reset password",
-                html: `<div>
+            transporter.sendMail({
+              from: 'XMART ADMIN',
+              to: email,
+              subject: 'Reset password',
+              html: `<div>
               <h3>
               Click link below to Reset your password
               </h3>
               <a href="http://localhost:3000/reset-password?t=${token}">
               Reset now
               </a>
-              </div>`,
-              },
-              (error, info) => {
-                if (error) {
-                  return res.status(400).send(error);
-                }
-                return res.status(200).send({
-                  success: true,
-                  message: "Check your email to reset your password",
-                  info,
-                });
+              </div>`
+            }, (error, info) => {
+              if (error) {
+                return res.status(400).send(error);
               }
-            );
-          }
-        }
-      );
+              return res.status(200).send({
+                success: true,
+                message: 'Check your email to reset your password',
+                info
+              });
+            });
+          };
+        });
     } catch (error) {
       return res.status(500).send(error);
     }
@@ -126,56 +120,47 @@ module.exports = {
     try {
       const { password } = req.body;
       const newPass = await hashPass(password);
-      db.query(
-        `UPDATE user set password=${db.escape(newPass)} 
-      WHERE id=${db.escape(req.decript.id)};`,
-        (error, results) => {
-          if (error) {
-            return res.status(500).send({
-              success: false,
-              message: error,
-            });
-          }
-          return res.status(200).send({
-            success: true,
-            message: "Reset Password success",
+      db.query(`UPDATE user set password=${db.escape(newPass)} 
+      WHERE id=${db.escape(req.decript.id)};`, (error, results) => {
+        if (error) {
+          return res.status(500).send({
+            success: false,
+            message: error
           });
         }
-      );
+        return res.status(200).send({
+          success: true,
+          message: 'Reset Password success'
+        });
+      });
     } catch (error) {
       return res.status(500).send(error);
-    }
+    };
   },
   // =======
   // Sign in
   signIn: async (req, res) => {
     try {
-      db.query(
-        `SELECT * from user 
-      WHERE email=${db.escape(req.body.email)};`,
-        (error, results) => {
-          if (error) {
-            return res.status(500).send({
-              success: false,
-              message: error,
-            });
-          }
-          const passCheck = bcrypt.compareSync(
-            req.body.password,
-            results[0].password
-          );
-          // delete results[0].password;
-          if (passCheck) {
-            const token = createToken({ ...results[0] });
-            return res.status(200).send({ ...results[0], token });
-          } else {
-            return res.status(401).send({
-              success: false,
-              message: "Your password is wrong",
-            });
-          }
-        }
-      );
+      db.query(`SELECT * from user 
+      WHERE email=${db.escape(req.body.email)};`, (error, results) => {
+        if (error) {
+          return res.status(500).send({
+            success: false,
+            message: error
+          });
+        };
+        const passCheck = bcrypt.compareSync(req.body.password, results[0].password);
+        // delete results[0].password;
+        if (passCheck) {
+          const token = createToken({ ...results[0] });
+          return res.status(200).send({ ...results[0], token });
+        } else {
+          return res.status(401).send({
+            success: false,
+            message: 'Your password is wrong'
+          });
+        };
+      });
     } catch (error) {
       return res.status(500).send(error);
     }

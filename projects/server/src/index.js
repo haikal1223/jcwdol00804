@@ -3,8 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const { join } = require("path");
 const { db } = require("./config/db");
-const { userRoute } = require("./routers");
-const bearerToken = require("express-bearer-token");
+const { userRoute, addressRoute, citiesDataRoute } = require("./routers");
 const PORT = process.env.PORT || 8000;
 const app = express();
 const bearerToken = require("express-bearer-token");
@@ -59,8 +58,10 @@ app.get("/api/greetings", (req, res, next) => {
 //   }
 // });
 
-// sign-up
+// Route
 app.use("/api/user", userRoute);
+app.use("/api/address", addressRoute);
+app.use("/api/cities-data", citiesDataRoute);
 
 //#endregion
 

@@ -20,7 +20,7 @@ const SettingSection = () => {
                     Personal Data
                 </div>
                 <Link to='/personal-data'>
-                <IoIosArrowForward className="my-auto" size={22} />
+                    <IoIosArrowForward className="my-auto" size={22} />
                 </Link>
             </div>
             <div className="flex justify-between text-base font-semibold my-3">
@@ -29,7 +29,7 @@ const SettingSection = () => {
                     Change Password
                 </div>
                 <Link to='/change-password'>
-                <IoIosArrowForward className="my-auto" size={22} />
+                    <IoIosArrowForward className="my-auto" size={22} />
                 </Link>
             </div>
             <div className="flex justify-between text-base font-semibold my-3">
@@ -37,14 +37,16 @@ const SettingSection = () => {
                 <div className="my-auto pl-2 pr-36">
                     My Address
                 </div>
-                <IoIosArrowForward className="my-auto" size={22} />
+                <Link to='/my-address'>
+                    <IoIosArrowForward className="my-auto" size={22} />
+                </Link>
             </div>
             <div className="flex justify-between text-base font-semibold my-3">
                 <BiLogOutCircle className="my-auto" size={25} />
                 <div className="my-auto pr-40">
                     Sign out
                 </div>
-                    <IoIosArrowForward className="my-auto" size={22} />
+                <IoIosArrowForward className="my-auto" size={22} />
             </div>
         </div>
     )
