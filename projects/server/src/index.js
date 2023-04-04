@@ -18,7 +18,8 @@ app.use(bearerToken());
 //     ],
 //   })
 // );
-
+app.use(bearerToken());
+app.use(express.static("public"));
 app.use(express.json());
 
 //#region API ROUTES

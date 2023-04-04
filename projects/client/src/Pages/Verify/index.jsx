@@ -26,7 +26,7 @@ function Verify() {
   }
   return (
     <Page isNavbar={false} isFooter={false}>
-    <div className="font-sans grid justify-items-center items-center container mx-auto text-center p-10">
+    <div className="font-sans grid justify-items-center items-center container mx-auto text-center p-10 min-h-screen">
       <div>
         <div className="object-fit-contain h-1/2 w-1/2 mx-auto">
           <img src={verify} alt="verify-symbol" />
