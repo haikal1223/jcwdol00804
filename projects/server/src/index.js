@@ -3,7 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const { join } = require("path");
 const { db } = require("./config/db");
-const { userRoute, cartRoute } = require("./routers");
+const { userRoute, cartRoute, orderRoute } = require("./routers");
 const bearerToken = require("express-bearer-token");
 const PORT = process.env.PORT || 8000;
 const app = express();
@@ -61,6 +61,9 @@ app.use("/api/user", userRoute);
 
 // cart route
 app.use("/api/cart", cartRoute);
+
+// order route
+app.use("/api/order", orderRoute);
 
 //#endregion
 
