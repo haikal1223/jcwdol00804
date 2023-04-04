@@ -1,4 +1,5 @@
 const { check, validationResult } = require("express-validator");
+const { db, dbQuery } = require("./db");
 
 module.exports = {
   validateSignUp: async (req, res, next) => {
@@ -120,6 +121,40 @@ module.exports = {
         next();
       }
     } catch (error) {
+      return res.status(500).send(error);
+    }
+  },
+  validateEditProfile: async (req, res, next) => {
+    try {
+      await check("name").isString().notEmpty().run(req);
+      await check("email")
+        .isString()
+        .notEmpty()
+        .isEmail()
+        .withMessage("Invalid email format")
+        .run(req);
+      await check("birthdate")
+        .isDate()
+        .custom((value) => {
+          if (new Date(value) >= new Date()) {
+            throw new Error(
+              `Birthdate cannot beyond ${new Date().toLocaleDateString("id")}`
+            );
+          }
+          return true;
+        })
+        .optional({ nullable: true })
+        .run(req);
+      await check("gender")
+        .isIn(["male", "female"])
+        .optional({ nullable: true })
+        .run(req);
+      const validation = validationResult(req);
+      if (validation.isEmpty()) {
+        next();
+      }
+    } catch (error) {
+      console.log(error);
       return res.status(500).send(error);
     }
   },
