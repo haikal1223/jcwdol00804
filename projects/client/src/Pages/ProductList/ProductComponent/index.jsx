@@ -16,7 +16,7 @@ const ProductComponent = () => {
     const location = useLocation();
     const [products, setProducts] = useState([]);
     const [categoryList, setCategoryList] = useState([]);
-    const [category, setCategory] = useState("");
+    const [category, setCategory] = useState(location.state ? location.state.from : "");
     const [name, setName] = useState("");
     const [nameValue, setNameValue] = useState("");
     const [by, setBy] = useState("name");
@@ -24,11 +24,10 @@ const ProductComponent = () => {
     const [page, setPage] = useState(1);
     const limit = 10;
 
-
     const getProducts = async () => {
         try {
             const { data } =
-                await axios.get(`${API_URL}/product/product-list?category=${location.state ? location.state.from : category}&name=${name}&by=${by}&order=${order}&limit=${limit}&page=${page}`);
+                await axios.get(`${API_URL}/product/product-list?category=${category}&name=${name}&by=${by}&order=${order}&limit=${limit}&page=${page}`);
             setProducts(data.data);
         } catch (error) {
             alert(error.response.data.message);
