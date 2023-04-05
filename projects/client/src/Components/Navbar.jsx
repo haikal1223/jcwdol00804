@@ -74,10 +74,12 @@ const Navbar = ({ navTitle, isLogged }) => {
                 </Link>
               )}
               {id && (
-                <li className="flex py-2 items-center">
-                  <HiOutlineDocumentDuplicate size={24} className="mr-4" />
-                  Order
-                </li>
+                <Link to="/order-list">
+                  <li className="flex py-2 items-center">
+                    <HiOutlineDocumentDuplicate size={24} className="mr-4" />
+                    Order
+                  </li>
+                </Link>
               )}
               {id && (
                 <li

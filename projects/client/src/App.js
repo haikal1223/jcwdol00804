@@ -21,6 +21,9 @@ import { loginAction } from "./Actions/user";
 import MyCart from "./Pages/MyCart";
 import { getCartList } from "./Actions/cart";
 import RestrictedRoutes from "./Utils/RestrictedRoutes";
+import OrderConfirmation from "./Pages/OrderConfirmation";
+import Payment from "./Pages/Payment";
+import OrderList from "./Pages/OrderList";
 
 function App() {
   const dispatch = useDispatch();
@@ -65,6 +68,9 @@ function App() {
           <Route path="/my-address" element={<MyAddress />} />
           <Route path="/add-address" element={<AddAddress />} />
           <Route path="/product-detail/:id" element={<ProductDetail />} />
+          <Route path="/order-confirmation" element={<OrderConfirmation />} />
+          <Route path="/payment" element={<Payment />} />
+          <Route path="/order-list" element={<OrderList />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

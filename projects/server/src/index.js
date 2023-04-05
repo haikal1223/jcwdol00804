@@ -9,6 +9,7 @@ const {
   citiesDataRoute,
   productRoute,
   cartRoute,
+  orderRoute,
 } = require("./routers");
 const PORT = process.env.PORT || 8000;
 const app = express();
@@ -67,6 +68,12 @@ app.get("/api/greetings", (req, res, next) => {
 // user route
 app.use("/api/user", userRoute);
 
+// cart route
+app.use("/api/cart", cartRoute);
+
+// order route
+app.use("/api/order", orderRoute);
+
 // address route
 app.use("/api/address", addressRoute);
 
@@ -75,9 +82,6 @@ app.use("/api/cities-data", citiesDataRoute);
 
 // product route
 app.use("/api/product", productRoute);
-
-// cart route
-app.use("/api/cart", cartRoute);
 
 //#endregion
 
