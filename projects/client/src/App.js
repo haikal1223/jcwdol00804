@@ -37,7 +37,7 @@ function App() {
         },
       })
         .then((res) => {
-          localStorage.setItem("eshop_login", res.data.token);
+          localStorage.setItem("xmart_login", res.data.token);
           dispatch(loginAction(res.data));
           dispatch(getCartList());
         })
