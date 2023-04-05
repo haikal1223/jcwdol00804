@@ -20,7 +20,6 @@ module.exports = {
     );
   },
   initCartUser: (req, res) => {
-    const user_id = 0;
     db.query(
       `SELECT id from user WHERE email=${db.escape(req.body.email)}`,
       (err, result) => {

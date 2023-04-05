@@ -20,6 +20,7 @@ import { API_URL } from "./helper";
 import { loginAction } from "./Actions/user";
 import MyCart from "./Pages/MyCart";
 import { getCartList } from "./Actions/cart";
+import RestrictedRoutes from "./Utils/RestrictedRoutes";
 
 function App() {
   const dispatch = useDispatch();
@@ -32,7 +33,7 @@ function App() {
         },
       })
         .then((res) => {
-          // localStorage.setItem("eshop_login", res.data.token); //jangan di set kembali karena token menjadi berbeda
+          localStorage.setItem("eshop_login", res.data.token);
           dispatch(loginAction(res.data));
           dispatch(getCartList());
         })
@@ -51,18 +52,20 @@ function App() {
     <div>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/sign-up" element={<SignUp />} />
         <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/sign-up" element={<SignUp />} />
         <Route path="/verify-email" element={<Verify />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/personal-data" element={<PersonalData />} />
-        <Route path="/my-cart" element={<MyCart />} />
-        <Route path="/profile-setting" element={<ProfileSetting />} />
         <Route path="/change-password" element={<ChangePassword />} />
-        <Route path="/my-address" element={<MyAddress />} />
-        <Route path="/add-address" element={<AddAddress />} />
-        <Route path="/product-detail/:id" element={<ProductDetail />} />
+        <Route element={<RestrictedRoutes />}>
+          <Route path="/personal-data" element={<PersonalData />} />
+          <Route path="/my-cart" element={<MyCart />} />
+          <Route path="/profile-setting" element={<ProfileSetting />} />
+          <Route path="/my-address" element={<MyAddress />} />
+          <Route path="/add-address" element={<AddAddress />} />
+          <Route path="/product-detail/:id" element={<ProductDetail />} />
+        </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>

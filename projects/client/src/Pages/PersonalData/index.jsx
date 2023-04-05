@@ -14,6 +14,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { updateProfile } from "../../Actions/user";
 import { format } from "date-fns";
+import toast, { Toaster } from "react-hot-toast";
 
 const PersonalData = () => {
   const dispatch = useDispatch();
@@ -96,14 +97,16 @@ const PersonalData = () => {
             },
           }
         );
-        const formData = new FormData();
-        formData.append("images", values.images);
-        await axios.patch(`${API_URL}/user/upload-profile-img`, formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        alert(result.data.message);
+        if (values.images) {
+          const formData = new FormData();
+          formData.append("images", values.images);
+          await axios.patch(`${API_URL}/user/upload-profile-img`, formData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+        }
+        toast(result.data.message);
         setIsModal(!isModal);
         setIsEditting(!isEditting);
         let resultImg = await axios.get(`${API_URL}/user/get-user-info`, {
@@ -122,7 +125,6 @@ const PersonalData = () => {
         );
       } catch (error) {
         console.log(error);
-        alert(error.response.data.message);
       }
     },
   });
@@ -141,6 +143,7 @@ const PersonalData = () => {
 
   return (
     <Page isFooter={false} isNavbar={false}>
+      <Toaster />
       <div className="relative">
         <div className="rounded-full bg-gradient-to-b from-[#ffffff] to-[#C4F594] w-[700px] h-[700px] absolute -top-[700%] -left-[23%]"></div>
         <BackButton />
@@ -158,7 +161,7 @@ const PersonalData = () => {
             src={
               formik.values.images
                 ? URL.createObjectURL(formik.values.images)
-                : `http://localhost:8000/${profile_img}`
+                : formik.values.images && `http://localhost:8000/${profile_img}`
             }
             borderRadius="50%"
             w="100px"
@@ -296,8 +299,9 @@ const PersonalData = () => {
                   name="gender"
                   className="px-[7px]"
                   {...formik.getFieldProps("gender")}
+                  value={gender ? gender : "select-gender"}
                 >
-                  <option value="" disabled selected hidden>
+                  <option value="select-gender" hidden>
                     Select gender
                   </option>
                   <option value="male">Male</option>
@@ -335,9 +339,9 @@ const PersonalData = () => {
                       onClick={() => setIsModal(!isModal)}
                     >
                       <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
                         d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
