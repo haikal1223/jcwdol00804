@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import "./App.css";
 import { useDispatch } from "react-redux";
-import { Routes, Route } from "react-router-dom";
 import Home from "./Pages/Home";
 import SignUp from "./Pages/SignUp";
+import { Routes, Route } from "react-router-dom";
 import SignIn from "./Pages/SignIn";
 import Verify from "./Pages/Verify";
 import ForgotPassword from "./Pages/ForgotPassword";
@@ -18,6 +18,8 @@ import NotFound from "./Pages/NotFound";
 import Axios from "axios";
 import { API_URL } from "./helper";
 import { loginAction } from "./Actions/user";
+import MyCart from "./Pages/MyCart";
+import { getCartList } from "./Actions/cart";
 
 function App() {
   const dispatch = useDispatch();
@@ -32,6 +34,7 @@ function App() {
         .then((res) => {
           // localStorage.setItem("eshop_login", res.data.token); //jangan di set kembali karena token menjadi berbeda
           dispatch(loginAction(res.data));
+          dispatch(getCartList());
         })
         .catch((err) => {
           console.log(err);
@@ -46,23 +49,24 @@ function App() {
 
   return (
     <div>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/sign-up" element={<SignUp />} />
-          <Route path="/sign-in" element={<SignIn />} />
-          <Route path="/verify-email" element={<Verify />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/personal-data" element={<PersonalData />} />
-          <Route path="/profile-setting" element={<ProfileSetting />} />
-          <Route path="/change-password" element={<ChangePassword />} />
-          <Route path="/my-address" element={<MyAddress />} />
-          <Route path="/add-address" element={<AddAddress />} />
-          <Route path="/product-detail/:id" element={<ProductDetail />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/verify-email" element={<Verify />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/personal-data" element={<PersonalData />} />
+        <Route path="/my-cart" element={<MyCart />} />
+        <Route path="/profile-setting" element={<ProfileSetting />} />
+        <Route path="/change-password" element={<ChangePassword />} />
+        <Route path="/my-address" element={<MyAddress />} />
+        <Route path="/add-address" element={<AddAddress />} />
+        <Route path="/product-detail/:id" element={<ProductDetail />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </div>
   );
-};
+}
 
 export default App;

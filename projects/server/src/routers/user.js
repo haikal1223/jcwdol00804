@@ -15,8 +15,18 @@ route.patch("/verify", userController.verifyEmail);
 route.post("/sign-in", validateSignIn, userController.signIn);
 route.get("/keep-login", readToken, userController.keepLogin);
 route.post("/forgot-password", validateForgot, userController.forgotPass);
-route.patch("/reset-password", validateNewPass, readToken, userController.resetPass);
-route.patch("/change-password", validateNewPass, readToken, userController.changePass);
+route.patch(
+  "/reset-password",
+  validateNewPass,
+  readToken,
+  userController.resetPass
+);
+route.patch(
+  "/change-password",
+  validateNewPass,
+  readToken,
+  userController.changePass
+);
 route.patch(
   "/update-profile",
   validateEditProfile,

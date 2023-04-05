@@ -55,7 +55,7 @@ const FormSection = () => {
       phone: Yup.string()
         .required("phone number is a required field")
         .matches(
-          /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/g,
+          /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s./0-9]*$/g,
           "Invalid phone number"
         ),
       password: Yup.string()
@@ -72,6 +72,7 @@ const FormSection = () => {
       try {
         setisSubmitting(true);
         const result = await axios.post(`${API_URL}/user/sign-up`, values);
+        await axios.post(`${API_URL}/cart/add-new-cart`, values.email);
         setisSubmitting(false);
         alert(result.data.message);
         formik.resetForm();
@@ -299,7 +300,7 @@ const FormSection = () => {
         </form>
         <div className="text-center mt-2">
           Already have an account ?{" "}
-          <Link to='/sign-in'>
+          <Link to="/sign-in">
             <span className="text-[#689C36]">Sign in</span>
           </Link>
         </div>
