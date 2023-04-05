@@ -32,11 +32,30 @@ const FormSection = () => {
     },
     validationSchema: Yup.object({
       name: Yup.string().required(),
-      email: Yup.string().required().email("Invalid email format"),
+      email: Yup.string()
+        .required()
+        .test("Unique Email", "Email already in use", (value) => {
+          return new Promise((resolve, reject) => {
+            axios
+              .get(`${API_URL}/user/unique-email/${value}`)
+              .then((res) => {
+                resolve(true);
+              })
+              .catch((error) => {
+                if (
+                  error.response.data.message ===
+                  "Email already in use. please use another email"
+                ) {
+                  resolve(false);
+                }
+              });
+          });
+        })
+        .email("Invalid email format"),
       phone: Yup.string()
         .required("phone number is a required field")
         .matches(
-          /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/g,
+          /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s./0-9]*$/g,
           "Invalid phone number"
         ),
       password: Yup.string()
@@ -53,6 +72,7 @@ const FormSection = () => {
       try {
         setisSubmitting(true);
         const result = await axios.post(`${API_URL}/user/sign-up`, values);
+        await axios.post(`${API_URL}/cart/add-new-cart`, values.email);
         setisSubmitting(false);
         alert(result.data.message);
         formik.resetForm();
@@ -199,17 +219,88 @@ const FormSection = () => {
                 </div>
               )}
           </div>
-          <button
-            type="submit"
-            className="rounded-full bg-[#82CD47] w-8/12 h-[38px] text-white mt-6 text-[22px] font-[600] leading-6 shadow-md"
-            disabled={isSubmitting}
-          >
-            Sign Up
-          </button>
+          {isSubmitting ? (
+            <button
+              className="rounded-full bg-[#82CD47] w-8/12 h-[38px] text-white mt-6 text-[22px] font-[600] flex flex-row items-center justify-center shadow-md"
+              disabled
+            >
+              <svg
+                className="w-10 h-10 mr-1 animate-spin inline text-white"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 4.75V6.25"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></path>
+                <path
+                  d="M17.1266 6.87347L16.0659 7.93413"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></path>
+                <path
+                  d="M19.25 12L17.75 12"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></path>
+                <path
+                  d="M17.1266 17.1265L16.0659 16.0659"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></path>
+                <path
+                  d="M12 17.75V19.25"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></path>
+                <path
+                  d="M7.9342 16.0659L6.87354 17.1265"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></path>
+                <path
+                  d="M6.25 12L4.75 12"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></path>
+                <path
+                  d="M7.9342 7.93413L6.87354 6.87347"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></path>
+              </svg>
+              Registering...
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="rounded-full bg-[#82CD47] w-8/12 h-[38px] text-white mt-6 text-[22px] font-[600] leading-6 shadow-md"
+            >
+              Sign Up
+            </button>
+          )}
         </form>
         <div className="text-center mt-2">
           Already have an account ?{" "}
-          <Link to='/sign-in'>
+          <Link to="/sign-in">
             <span className="text-[#689C36]">Sign in</span>
           </Link>
         </div>

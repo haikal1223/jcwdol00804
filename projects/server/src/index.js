@@ -3,7 +3,13 @@ const express = require("express");
 const cors = require("cors");
 const { join } = require("path");
 const { db } = require("./config/db");
-const { userRoute, addressRoute, citiesDataRoute, productRoute } = require("./routers");
+const {
+  userRoute,
+  addressRoute,
+  citiesDataRoute,
+  productRoute,
+  cartRoute,
+} = require("./routers");
 const PORT = process.env.PORT || 8000;
 const app = express();
 const bearerToken = require("express-bearer-token");
@@ -18,7 +24,8 @@ app.use(bearerToken());
 //     ],
 //   })
 // );
-
+app.use(bearerToken());
+app.use(express.static("public"));
 app.use(express.json());
 
 //#region API ROUTES
@@ -62,6 +69,18 @@ app.use("/api/user", userRoute);
 app.use("/api/address", addressRoute);
 app.use("/api/cities-data", citiesDataRoute);
 app.use("/api/product", productRoute);
+
+// address route
+app.use("/api/address", addressRoute);
+
+// cities data route
+app.use("/api/cities-data", citiesDataRoute);
+
+// product route
+app.use("/api/product", productRoute);
+
+// cart route
+app.use("/api/cart", cartRoute);
 
 //#endregion
 

@@ -52,7 +52,7 @@ module.exports = {
                 if (!results.length) {
                     return res.status(404).send({
                         success: false,
-                        message: 'Product not found',
+                        message: "Product not found",
                     });
                 };
                 return res.status(200).send({
@@ -87,6 +87,7 @@ module.exports = {
             return res.status(500).send(error);
         };
     },
+    // Get Featured Products
     getFeaturedProducts: async (req, res) => {
         try {
             db.query(`SELECT id, name, price, weight from product
@@ -102,9 +103,9 @@ module.exports = {
                     success: true,
                     data: results,
                 });
-            })
+            });
         } catch (error) {
             return res.status(500).send(error);
-        }
-    }
+        };
+    },
 }
