@@ -145,6 +145,30 @@ module.exports = {
       return res.status(500).send(error);
     }
   },
+  resetPass: async (req, res) => {
+    try {
+      const { password } = req.body;
+      const newPass = await hashPass(password);
+      db.query(
+        `UPDATE user set password=${db.escape(newPass)} 
+      WHERE id=${db.escape(req.decript.id)};`,
+        (error, results) => {
+          if (error) {
+            return res.status(500).send({
+              success: false,
+              message: error,
+            });
+          }
+          return res.status(200).send({
+            success: true,
+            message: "Reset Password success",
+          });
+        }
+      );
+    } catch (error) {
+      return res.status(500).send(error);
+    }
+  },
   // ==========
   // Keep login
   keepLogin: async (req, res) => {
