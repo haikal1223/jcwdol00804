@@ -11,7 +11,7 @@ const { readToken } = require("../config/token");
 const { profileImgUploader } = require("../config/uploader");
 
 route.post("/sign-up", validateSignUp, userController.signUp);
-route.patch("/verify", userController.verifyEmail);
+route.patch("/verify", readToken, userController.verifyEmail);
 route.post("/sign-in", validateSignIn, userController.signIn);
 route.get("/keep-login", readToken, userController.keepLogin);
 route.post("/forgot-password", validateForgot, userController.forgotPass);
