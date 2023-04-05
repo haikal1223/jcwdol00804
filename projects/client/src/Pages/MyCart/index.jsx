@@ -7,9 +7,11 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { API_URL } from "../../helper";
 import { getCartList } from "../../Actions/cart";
+import { useNavigate } from "react-router-dom";
 
 const MyCart = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const cartList = useSelector((state) => {
     return state.cartReducer;
@@ -42,7 +44,7 @@ const MyCart = () => {
     let sum = 0;
     for (const idx in arr) {
       if (arr[idx] === true) {
-        sum += cartList[idx].price;
+        sum += cartList[idx].price * cartList[idx].quantity;
       }
     }
     return sum;
@@ -298,6 +300,27 @@ const MyCart = () => {
     );
   };
 
+  const checkOutBtn = () => {
+    if (checkedItem.every((val) => val === false)) {
+    } else {
+      navigate("/order-confirmation", {
+        state: {
+          totalPrice,
+          shopName: [
+            ...new Set(
+              checkedItem
+                .map((val, idx) => (val ? cartList[idx].branch_name : val))
+                .filter((val) => typeof val !== "boolean")
+            ),
+          ],
+          items: checkedItem
+            .map((val, idx) => (val ? cartList[idx] : val))
+            .filter((val) => typeof val !== "boolean"),
+        },
+      });
+    }
+  };
+
   return (
     <Page isFooter={false} navTitle="My Cart">
       <div>
@@ -318,7 +341,10 @@ const MyCart = () => {
             <span className="mr-2 font-bold">
               Total Price : Rp {totalPrice.toLocaleString("id")}
             </span>
-            <button className="bg-[#82cd47] rounded-full px-3 text-white">
+            <button
+              className="bg-[#82cd47] rounded-full px-3 text-white"
+              onClick={checkOutBtn}
+            >
               Checkout
               <MdShoppingCartCheckout className="inline mb-1 ml-1" size={18} />
             </button>

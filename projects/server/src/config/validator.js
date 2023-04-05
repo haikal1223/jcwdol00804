@@ -234,41 +234,6 @@ module.exports = {
       return res.status(500).send(error);
     }
   },
-  validateAddToCart: async (req, res, next) => {
-    try {
-      const stock = await dbQuery(
-        `SELECT stock from product WHERE id=${req.body.product_id}`
-      );
-      const prevQty = await dbQuery(
-        `SELECT quantity from cart_item WHERE cart_id=${req.body.cart_id} AND product_id=${req.body.product_id}`
-      );
-      await check("quantity")
-        .isNumeric()
-        .notEmpty()
-        .custom((value) => {
-          if (
-            value + (prevQty.length ? prevQty[0].quantity : 0) >
-            stock[0].stock
-          ) {
-            throw new Error("Quantity can not exceeds stock");
-          }
-          return true;
-        })
-        .run(req);
-      const validation = validationResult(req);
-      if (validation.isEmpty()) {
-        next();
-      } else {
-        return res.status(400).send({
-          success: false,
-          message: "Validation invalid ❌",
-          error: validation.errors,
-        });
-      }
-    } catch (error) {
-      return res.status(500).send(error);
-    }
-  },
   validateForgot: async (req, res, next) => {
     try {
       await check("email")
