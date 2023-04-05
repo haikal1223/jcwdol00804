@@ -99,6 +99,52 @@ module.exports = {
       return res.status(500).send(error);
     }
   },
+  forgotPass: async (req, res) => {
+    try {
+      const { email } = req.body;
+      db.query(
+        `SELECT * from user WHERE email=${db.escape(email)};`,
+        (error, results) => {
+          if (!results.length) {
+            return res.status(409).send({
+              success: false,
+              message:
+                "Email address is not Registered, Please enter a Registered Email",
+            });
+          } else {
+            const token = createToken({ ...results[0] });
+            transporter.sendMail(
+              {
+                from: "XMART ADMIN",
+                to: email,
+                subject: "Reset password",
+                html: `<div>
+              <h3>
+              Click link below to Reset your password
+              </h3>
+              <a href="http://localhost:3000/reset-password?t=${token}">
+              Reset now
+              </a>
+              </div>`,
+              },
+              (error, info) => {
+                if (error) {
+                  return res.status(400).send(error);
+                }
+                return res.status(200).send({
+                  success: true,
+                  message: "Check your email to reset your password",
+                  info,
+                });
+              }
+            );
+          }
+        }
+      );
+    } catch (error) {
+      return res.status(500).send(error);
+    }
+  },
   // ==========
   // Keep login
   keepLogin: async (req, res) => {
