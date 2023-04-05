@@ -1,6 +1,7 @@
 const { db, dbQuery } = require("../config/db");
 const { hashPass } = require("../config/encrypt");
 const emailSender = require("../config/emailSender");
+const { transporter } = require("../config/emailSender/transporter");
 const { createToken } = require("../config/token");
 const bcrypt = require("bcrypt");
 
@@ -58,7 +59,7 @@ module.exports = {
           message: `User with email ${email} has been successfully verified!`,
         });
       } catch (error) {
-        console.log(error);
+        return res.status(500).send(error);
       }
     } else {
       return res
@@ -198,9 +199,7 @@ module.exports = {
   uploadProfileImg: (req, res) => {
     db.query(
       `UPDATE user SET ? WHERE id=${req.decript.id}`,
-      {
-        profile_img: `/imgProfile/${req.files[0].filename}`,
-      },
+      { profile_img: `/imgProfile/${req.files[0].filename}` },
       (error, results) => {
         if (error) {
           return res.status(500).send({
@@ -228,5 +227,31 @@ module.exports = {
         return res.status(200).send({ ...results[0], success: true });
       }
     );
+  },
+  // ===============
+  // Change password
+  changePass: async (req, res) => {
+    try {
+      const { password } = req.body;
+      const newPass = await hashPass(password);
+      db.query(
+        `UPDATE user set password=${db.escape(newPass)} 
+      WHERE id=${db.escape(req.decript.id)};`,
+        (error, results) => {
+          if (error) {
+            return res.status(500).send({
+              success: false,
+              message: error,
+            });
+          }
+          return res.status(200).send({
+            success: true,
+            message: "Change Password success",
+          });
+        }
+      );
+    } catch (error) {
+      return res.status(500).send(error);
+    }
   },
 };
