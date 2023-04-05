@@ -3,11 +3,20 @@ const express = require("express");
 const cors = require("cors");
 const { join } = require("path");
 const { db } = require("./config/db");
-const { userRoute, cartRoute, orderRoute } = require("./routers");
-const bearerToken = require("express-bearer-token");
+const {
+  userRoute,
+  addressRoute,
+  citiesDataRoute,
+  productRoute,
+  cartRoute,
+  orderRoute,
+} = require("./routers");
 const PORT = process.env.PORT || 8000;
 const app = express();
+const bearerToken = require("express-bearer-token");
+
 app.use(cors());
+app.use(bearerToken());
 // app.use(
 //   cors({
 //     origin: [
@@ -64,6 +73,15 @@ app.use("/api/cart", cartRoute);
 
 // order route
 app.use("/api/order", orderRoute);
+
+// address route
+app.use("/api/address", addressRoute);
+
+// cities data route
+app.use("/api/cities-data", citiesDataRoute);
+
+// product route
+app.use("/api/product", productRoute);
 
 //#endregion
 

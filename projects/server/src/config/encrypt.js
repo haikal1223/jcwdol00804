@@ -7,7 +7,7 @@ module.exports = {
       const hash = await bcrypt.hash(password, salt);
       return hash;
     } catch (error) {
-      console.log(error);
+      return error;
     }
   },
 };
