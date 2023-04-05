@@ -1,7 +1,6 @@
 import axios from "axios";
 import { API_URL } from "../../../../helper";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 
 const FormSection = () => {
     // Data to API
@@ -149,17 +148,15 @@ const FormSection = () => {
                         }}
                     />
                 </div>
-                {/* Button Add and Route to /my-address */}
-                <Link to='/my-address'>
-                    <div className="flex justify-center">
-                        <button
-                            type="submit"
-                            className="rounded-full bg-[#82CD47] w-8/12 h-[38px] text-white text-[22px] font-[600] leading-6 shadow-md disabled:opacity-50 my-5"
-                            onClick={onSubmit}>
-                            Add
-                        </button>
-                    </div>
-                </Link>
+                {/* Button Add */}
+                <div className="flex justify-center">
+                    <button
+                        type="submit"
+                        className="rounded-full bg-[#82CD47] w-8/12 h-[38px] text-white text-[22px] font-[600] leading-6 shadow-md disabled:opacity-50 my-5"
+                        onClick={onSubmit}>
+                        Add
+                    </button>
+                </div>
             </div>
         </div>
     );
