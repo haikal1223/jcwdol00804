@@ -5,24 +5,21 @@ import { API_URL } from "../../helper";
 import verify from "../../Assets/Verify.png";
 import Page from "../../Components/Page";
 
-function Verify() {
-  const { search } = useLocation();
-  const urlSearchParams = new URLSearchParams(search);
-  const email = urlSearchParams.get("email");
+const Verify = () => {
+  const location = useLocation();
 
-  function verifyEmail() {
-    axios
-      .patch(`${API_URL}/user/verify`, {
-        email,
-      })
-      .then(function (response) {
-        alert(response.data.message);
-        //TODO: redirect to landing page
-      })
-      .catch(function (error) {
-        alert(error.response.data.message);
-        //TODO: show error to frontend
+  const onClick = async () => {
+    try {
+      const token = location.search.split("=")[1];
+      const result = await axios.patch(`${API_URL}/user/verify`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
+      alert(result.data.message)
+    } catch (error) {
+      alert(error.response.data.message);
+    }
   }
   return (
     <Page isNavbar={false} isFooter={false}>
@@ -34,11 +31,10 @@ function Verify() {
           <p className="text-2xl font-bold my-5">
             Please click button below to verify your email
           </p>
-          <p className="text-xl">{email}</p>
         </div>
         <button
           className="font-semibold text-xl py-2 px-8 mt-4 bg-lime-500 text-white rounded-3xl w-full"
-          onClick={verifyEmail}
+          onClick={onClick}
         >
           Verify
         </button>

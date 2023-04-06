@@ -34,38 +34,39 @@ module.exports = {
       );
     }
   },
+  // ============
+  // Verify Email
   verifyEmail: async (req, res) => {
-    const { email } = req.body;
-    if (email) {
-      try {
-        const row = await dbQuery(
-          `SELECT u.is_verified FROM user as u WHERE u.email = '${email}'`
-        );
-        if (!row.length) {
-          return res
-            .status(400)
-            .send({ message: `User with email ${email} is not registered` });
-        }
-        const isVerified = row[0].is_verified === 1;
-        if (isVerified) {
-          return res.status(402).send({
-            message: `User with email ${email} is already verified. Please login`,
-          });
-        }
-        await dbQuery(
-          `UPDATE user set is_verified = 1 WHERE email = '${email}';`
-        );
-        return res.status(201).send({
-          message: `User with email ${email} has been successfully verified!`,
+    try {
+      db.query(`SELECT * FROM user WHERE id=${db.escape(req.decript.id)};`,
+        (error, results) => {
+          if (error) {
+            return res.status(500).send({
+              success: false,
+              message: error,
+            });
+          } else if (results[0].is_verified === 1) {
+            return res.status(402).send({
+              message: `User with email ${db.escape(req.decript.email)} is already verified`,
+            });
+          } else {
+            db.query(`UPDATE user SET is_verified = 1 WHERE id=${db.escape(req.decript.id)}`,
+              (error, results) => {
+                if (error) {
+                  return res.status(500).send({
+                    success: false,
+                    message: error,
+                  });
+                }
+                return res.status(201).send({
+                  message: `User with email ${db.escape(req.decript.email)} has been successfully verified!`,
+                });
+              });
+          };
         });
-      } catch (error) {
-        return res.status(500).send(error);
-      }
-    } else {
-      return res
-        .status(400)
-        .send({ message: "Bad Request: Please provide valid email" });
-    }
+    } catch (error) {
+      return res.status(500).send(error);
+    };
   },
   // ==============================
   // Email check for Reset Password
@@ -166,6 +167,8 @@ module.exports = {
       return res.status(500).send(error);
     }
   },
+  // ===========
+  // Forgot Pass
   forgotPass: async (req, res) => {
     try {
       const { email } = req.body;
@@ -212,6 +215,8 @@ module.exports = {
       return res.status(500).send(error);
     }
   },
+  // ==========
+  // Reset Pass
   resetPass: async (req, res) => {
     try {
       const { password } = req.body;

@@ -1,5 +1,6 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import {
     BiUser,
     BiKey,
@@ -7,8 +8,18 @@ import {
     BiLogOutCircle
 } from "react-icons/bi";
 import { IoIosArrowForward } from "react-icons/io";
+import { logoutAction } from "../../../../Actions/user";
 
 const SettingSection = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const logoutClick = () => {
+        localStorage.removeItem("xmart_login");
+        dispatch(logoutAction());
+        navigate("/");
+    };
+
     return (
         <div className="flex flex-col justify-center mx-20 my-10">
             <div className="text-xl font-bold">
@@ -46,7 +57,9 @@ const SettingSection = () => {
                 <div className="my-auto pr-40">
                     Sign out
                 </div>
-                <IoIosArrowForward className="my-auto" size={22} />
+                <button>
+                    <IoIosArrowForward className="my-auto" size={22} onClick={logoutClick} />
+                </button>
             </div>
         </div>
     )

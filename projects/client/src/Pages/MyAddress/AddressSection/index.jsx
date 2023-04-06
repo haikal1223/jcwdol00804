@@ -52,7 +52,15 @@ const AddressSection = () => {
     // Set an Address to Main Address
     const setMainAddress = async (id) => {
         try {
-            const result = await axios.put(`${API_URL}/address/set-main/${id}`);
+
+            const token = localStorage.getItem('xmart_login');
+            const result = await axios.put(`${API_URL}/address/set-main/${id}`, {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
             setAddress(prevAddress => {
                 return prevAddress.map(address => {
                     if (address.id === id) {

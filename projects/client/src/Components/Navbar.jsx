@@ -5,6 +5,7 @@ import {
   BiShoppingBag,
   BiCartAlt,
   BiLogOut,
+  BiLogIn,
 } from "react-icons/bi";
 import { HiOutlineDocumentDuplicate } from "react-icons/hi";
 import { useDispatch } from "react-redux";
@@ -61,10 +62,14 @@ const Navbar = ({ navTitle, isLogged }) => {
           </Link>
           <nav className="text-lg font-semibold px-2">
             <ul className="flex flex-col text-gray-600">
-              <li className="flex py-2 items-center">
-                <BiShoppingBag size={24} className="mr-4" />
-                Products
-              </li>
+              {id && (
+                <Link to="/product-list">
+                  <li className="flex py-2 items-center">
+                    <BiShoppingBag size={24} className="mr-4" />
+                    Products
+                  </li>
+                </Link>
+              )}
               {id && (
                 <Link to="/my-cart">
                   <li className="flex py-2 items-center">
@@ -81,7 +86,7 @@ const Navbar = ({ navTitle, isLogged }) => {
                   </li>
                 </Link>
               )}
-              {id && (
+              {id ? (
                 <li
                   className="flex py-2 items-center cursor-pointer"
                   onClick={logoutClick}
@@ -89,6 +94,15 @@ const Navbar = ({ navTitle, isLogged }) => {
                   <BiLogOut size={24} className="mr-4" />
                   Sign Out
                 </li>
+              ) : (
+                <Link to="/sign-in">
+                  <li
+                    className="flex py-2 items-center cursor-pointer"
+                  >
+                    <BiLogIn size={24} className="mr-4" />
+                    Sign In
+                  </li>
+                </Link>
               )}
             </ul>
           </nav>
@@ -104,7 +118,7 @@ const Navbar = ({ navTitle, isLogged }) => {
             borderRadius="50%"
             w="35px"
             h="35px"
-            onClick={() => navigate("/personal-data")}
+            onClick={() => navigate("/profile-setting")}
           />
         ) : (
           <button

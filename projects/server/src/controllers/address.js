@@ -1,4 +1,5 @@
 const { db, dbQuery } = require("../config/db");
+const { geocode } = require("opencage-api-client");
 
 module.exports = {
     // Get Address
@@ -26,37 +27,35 @@ module.exports = {
     addAddress: async (req, res) => {
         try {
             const { address, city, province, zipcode } = req.body;
-            db.query(
-                `SELECT address from address 
-                WHERE address=${db.escape(address)};`, (error, results) => {
-                if (results.length) {
-                    return res.status(409).send({
-                        success: false,
-                        message: "Your address is already added",
-                    });
-                } else {
-                    db.query(
-                        `INSERT INTO address
-                            (address, city, province, zipcode, user_id)
-                            VALUES (
-                                ${db.escape(address)},
-                                ${db.escape(city)},
-                                ${db.escape(province)},
-                                ${db.escape(zipcode)},
-                                ${db.escape(req.decript.id)});`, (error, results) => {
-                        if (error) {
-                            return res.status(500).send({
-                                success: false,
-                                message: error,
-                            });
-                        };
-                        return res.status(200).send({
-                            success: true,
-                            message: 'Add Address success',
-                        });
-                    });
-                };
+            const geoResults = await geocode({
+                q: `${address}, ${city}, ${province}`,
+                countrycode: "id",
+                key: process.env.OPENCAGE_KEY
             });
+            const { lat, lng } = geoResults.results[0].geometry;
+            db.query(
+                `INSERT INTO address
+                (address, city, province, zipcode, user_id, lat, lng)
+                VALUES (
+                ${db.escape(address)},
+                ${db.escape(city)},
+                ${db.escape(province)},
+                ${db.escape(zipcode)},
+                ${db.escape(req.decript.id)},
+                ${lat},
+                ${lng});`,
+                (error, results) => {
+                    if (error) {
+                        return res.status(500).send({
+                            success: false,
+                            message: error,
+                        });
+                    };
+                    return res.status(200).send({
+                        success: true,
+                        message: 'Add Address success',
+                    });
+                });
         } catch (error) {
             return res.status(500).send(error);
         };
@@ -87,23 +86,24 @@ module.exports = {
     // Set Main Address
     setMain: async (req, res) => {
         const addressId = req.params.id;
+        const userId = req.decript.id;
         db.query(
-            `UPDATE address SET is_main=0;`, (error, results) => {
+            `UPDATE address SET is_main = CASE
+            WHEN id = ${addressId} 
+            THEN 1
+            ELSE 0
+            END
+            WHERE user_id = ${userId}`,
+            (error, results) => {
                 if (error) {
                     res.status(500).send(error);
                 };
-                db.query(
-                    `UPDATE address SET is_main=1
-                    WHERE id=${addressId};`, (error, results) => {
-                    if (error) {
-                        res.status(500).send(error);
-                    };
-                    return res.status(200).send({
-                        success: true,
-                        message: 'This address is set to your Main Address',
-                        data: results,
-                    });
+                return res.status(200).send({
+                    success: true,
+                    message: 'This address is set to your Main Address',
+                    data: results,
                 });
-            });
+            }
+        );
     },
 }

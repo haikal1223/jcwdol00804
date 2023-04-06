@@ -5,6 +5,7 @@ const { readToken } = require("../config/token");
 route.get("/my-address", readToken, addressController.getAddress);
 route.post("/add-address", readToken, addressController.addAddress);
 route.put("/delete/:id", addressController.deleteAddress);
-route.put("/set-main/:id", addressController.setMain);
+route.put("/set-main/:id", readToken, addressController.setMain);
+
 
 module.exports = route;
