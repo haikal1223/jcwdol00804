@@ -52,6 +52,7 @@ const AddressSection = () => {
     // Set an Address to Main Address
     const setMainAddress = async (id) => {
         try {
+
             const token = localStorage.getItem('xmart_login');
             const result = await axios.put(`${API_URL}/address/set-main/${id}`, {},
                 {
