@@ -1,4 +1,3 @@
-import React from 'react'
 import CategoryComponent from '../../Components/CategoryComponent';
 
 const CategorySection = () => {

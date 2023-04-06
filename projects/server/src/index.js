@@ -65,8 +65,11 @@ app.get("/api/greetings", (req, res, next) => {
 //   }
 // });
 
-// user route
+// Route
 app.use("/api/user", userRoute);
+app.use("/api/address", addressRoute);
+app.use("/api/cities-data", citiesDataRoute);
+app.use("/api/product", productRoute);
 
 // cart route
 app.use("/api/cart", cartRoute);

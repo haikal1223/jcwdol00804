@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import "./App.css";
+import { Routes, Route } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Home from "./Pages/Home";
 import SignUp from "./Pages/SignUp";
-import { Routes, Route } from "react-router-dom";
 import SignIn from "./Pages/SignIn";
 import Verify from "./Pages/Verify";
 import ForgotPassword from "./Pages/ForgotPassword";
@@ -13,6 +13,7 @@ import ProfileSetting from "./Pages/ProfileSetting";
 import ChangePassword from "./Pages/ChangePassword";
 import MyAddress from "./Pages/MyAddress";
 import AddAddress from "./Pages/AddAddress";
+import ProductList from "./Pages/ProductList";
 import ProductDetail from "./Pages/ProductDetail";
 import NotFound from "./Pages/NotFound";
 import Axios from "axios";
@@ -68,6 +69,7 @@ function App() {
           <Route path="/my-address" element={<MyAddress />} />
           <Route path="/add-address" element={<AddAddress />} />
           <Route path="/product-detail/:id" element={<ProductDetail />} />
+          <Route path="/product-list" element={<ProductList />} />
           <Route path="/order-confirmation" element={<OrderConfirmation />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/order-list" element={<OrderList />} />
@@ -76,6 +78,6 @@ function App() {
       </Routes>
     </div>
   );
-}
+};
 
 export default App;
