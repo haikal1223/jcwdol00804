@@ -72,7 +72,7 @@ const FormSection = () => {
       try {
         setisSubmitting(true);
         const result = await axios.post(`${API_URL}/user/sign-up`, values);
-        await axios.post(`${API_URL}/cart/add-new-cart`, values.email);
+        // await axios.post(`${API_URL}/cart/add-new-cart`, values.email);
         setisSubmitting(false);
         alert(result.data.message);
         formik.resetForm();

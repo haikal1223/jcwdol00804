@@ -1,7 +1,6 @@
 const { db, dbQuery } = require("../config/db");
 const { hashPass } = require("../config/encrypt");
-const emailSender = require("../config/emailSender");
-const { transporter } = require("../config/emailSender/transporter");
+const { transporter } = require("../config/transporter");
 const { createToken } = require("../config/token");
 const bcrypt = require("bcrypt");
 
@@ -18,27 +17,45 @@ module.exports = {
         message: "Email already exist, please use another Email",
       });
     } else {
-      db.query(
-        "INSERT INTO user SET ?",
+      db.query("INSERT INTO user SET ?",
         { name, email, phone, password: newPass },
         (error, results, fields) => {
           if (error) throw error;
-          emailSender.sendEmail(email);
-          return res.status(201).send({
-            data: results,
-            success: true,
-            message:
-              "Sign up success ✅, please check your email for account verification",
-          });
-        }
-      );
-    }
+          db.query(`SELECT * from user WHERE email=${db.escape(email)}`,
+            (error, results) => {
+              const token = createToken({ ...results[0] });
+              transporter.sendMail({
+                from: 'XMART ADMIN',
+                to: email,
+                subject: 'Verify Account',
+                html: `<div>
+                <h3>
+                Click link below to Verify your account
+                </h3>
+                <a href="http://localhost:3000/verify-email?t=${token}">
+                Verify now
+                </a>
+                </div>`
+              }, (error, info) => {
+                if (error) {
+                  return res.status(400).send(error);
+                }
+                return res.status(200).send({
+                  success: true,
+                  message: "Sign up success ✅, please check your email for account verification",
+                  info
+                });
+              });
+            });
+        });
+    };
   },
   // ============
   // Verify Email
   verifyEmail: async (req, res) => {
     try {
-      db.query(`SELECT * FROM user WHERE id=${db.escape(req.decript.id)};`,
+      console.log(req.decript.email);
+      db.query(`SELECT * FROM user WHERE email=${db.escape(req.decript.email)};`,
         (error, results) => {
           if (error) {
             return res.status(500).send({
@@ -50,7 +67,7 @@ module.exports = {
               message: `User with email ${db.escape(req.decript.email)} is already verified`,
             });
           } else {
-            db.query(`UPDATE user SET is_verified = 1 WHERE id=${db.escape(req.decript.id)}`,
+            db.query(`UPDATE user SET is_verified = 1 WHERE email=${db.escape(req.decript.email)}`,
               (error, results) => {
                 if (error) {
                   return res.status(500).send({
