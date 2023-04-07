@@ -60,14 +60,14 @@ module.exports = {
       }
     );
   },
-  addtoCart: async (req, res) => {
-    const { quantity, product_id, cart_id } = req.body;
+  addToCart: async (req, res) => {
+    const { quantity, product_id } = req.body;
     const checkItem = await dbQuery(
-      `SELECT quantity from cart_item WHERE cart_id=${cart_id} AND product_id=${product_id}`
+      `SELECT quantity from cart_item WHERE cart_id=${req.decript.cart_id} AND product_id=${product_id} AND is_delete=0`
     );
     if (checkItem.length) {
       db.query(
-        `UPDATE cart_item SET ? WHERE cart_id=${cart_id} AND product_id=${product_id}`,
+        `UPDATE cart_item SET ? WHERE cart_id=${req.decript.cart_id} AND product_id=${product_id} AND is_delete=0`,
         { quantity: quantity + checkItem[0].quantity },
         (err, result2) => {
           if (err) {
@@ -85,7 +85,7 @@ module.exports = {
     } else {
       db.query(
         `INSERT INTO cart_item SET ?`,
-        { quantity, cart_id: cart_id, product_id },
+        { quantity, cart_id: req.decript.cart_id, product_id },
         (err, result3) => {
           if (err) {
             return res.status(500).send({
@@ -174,6 +174,38 @@ module.exports = {
           success: true,
           message: "Delete item from cart success",
         });
+      }
+    );
+  },
+  replaceCart: (req, res) => {
+    const { quantity, product_id } = req.body;
+    db.query(
+      `UPDATE cart_item SET ? WHERE cart_id=${req.decript.cart_id}`,
+      { is_delete: 1 },
+      (error, result) => {
+        if (error) {
+          return res.status(500).send({
+            success: false,
+            message: err,
+          });
+        }
+        db.query(
+          `INSERT INTO cart_item SET ?`,
+          { quantity, cart_id: req.decript.cart_id, product_id },
+          (error, result) => {
+            if (error) {
+              return res.status(500).send({
+                success: false,
+                message: err,
+              });
+            }
+            return res.status(201).send({
+              success: true,
+              message:
+                "Previous cart item deleted, add new item to cart success",
+            });
+          }
+        );
       }
     );
   },
