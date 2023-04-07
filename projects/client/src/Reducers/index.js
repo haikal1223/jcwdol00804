@@ -1,6 +1,7 @@
 import { configureStore, applyMiddleware } from "@reduxjs/toolkit";
 import { userReducer } from "./user";
 import { cartReducer } from "./cart";
+import { storeReducer } from "./store";
 import reduxThunk from "redux-thunk";
 
 export const globalStore = configureStore(
@@ -9,6 +10,7 @@ export const globalStore = configureStore(
     reducer: {
       userReducer,
       cartReducer,
+      storeReducer,
     },
   },
   applyMiddleware(reduxThunk)
