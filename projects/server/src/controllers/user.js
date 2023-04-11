@@ -7,38 +7,43 @@ const bcrypt = require("bcrypt");
 
 module.exports = {
   signUp: async (req, res) => {
-    const { name, email, phone, password } = req.body;
-    const newPass = await hashPass(password);
-    const checkEmail = await dbQuery(
-      `SELECT email from user WHERE email=${db.escape(email)}`
-    );
-    if (checkEmail.length) {
-      return res.status(409).send({
-        success: false,
-        message: "Email already exist, please use another Email",
-      });
-    } else {
-      db.query(
-        "INSERT INTO user SET ?",
-        { name, email, phone, password: newPass },
-        (error, results, fields) => {
-          if (error) throw error;
-          emailSender.sendEmail(email);
-          return res.status(201).send({
-            data: results,
-            success: true,
-            message:
-              "Sign up success ✅, please check your email for account verification",
-          });
-        }
+    try {
+      const { name, email, phone, password } = req.body;
+      const newPass = await hashPass(password);
+      const checkEmail = await dbQuery(
+        `SELECT email from user WHERE email=${db.escape(email)}`
       );
+      if (checkEmail.length) {
+        return res.status(409).send({
+          success: false,
+          message: "Email already exist, please use another Email",
+        });
+      } else {
+        db.query(
+          "INSERT INTO user SET ?",
+          { name, email, phone, password: newPass },
+          (error, results, fields) => {
+            if (error) throw error;
+            emailSender.sendEmail(email);
+            return res.status(201).send({
+              data: results,
+              success: true,
+              message:
+                "Sign up success ✅, please check your email for account verification",
+            });
+          }
+        );
+      }
+    } catch (error) {
+      return res.status(500).send(error);
     }
   },
   // ============
   // Verify Email
   verifyEmail: async (req, res) => {
     try {
-      db.query(`SELECT * FROM user WHERE id=${db.escape(req.decript.id)};`,
+      db.query(
+        `SELECT * FROM user WHERE id=${db.escape(req.decript.id)};`,
         (error, results) => {
           if (error) {
             return res.status(500).send({
@@ -47,10 +52,15 @@ module.exports = {
             });
           } else if (results[0].is_verified === 1) {
             return res.status(402).send({
-              message: `User with email ${db.escape(req.decript.email)} is already verified`,
+              message: `User with email ${db.escape(
+                req.decript.email
+              )} is already verified`,
             });
           } else {
-            db.query(`UPDATE user SET is_verified = 1 WHERE id=${db.escape(req.decript.id)}`,
+            db.query(
+              `UPDATE user SET is_verified = 1 WHERE id=${db.escape(
+                req.decript.id
+              )}`,
               (error, results) => {
                 if (error) {
                   return res.status(500).send({
@@ -59,14 +69,18 @@ module.exports = {
                   });
                 }
                 return res.status(201).send({
-                  message: `User with email ${db.escape(req.decript.email)} has been successfully verified!`,
+                  message: `User with email ${db.escape(
+                    req.decript.email
+                  )} has been successfully verified!`,
                 });
-              });
-          };
-        });
+              }
+            );
+          }
+        }
+      );
     } catch (error) {
       return res.status(500).send(error);
-    };
+    }
   },
   // ==============================
   // Email check for Reset Password
@@ -74,38 +88,44 @@ module.exports = {
     try {
       const { email } = req.body;
       db.query(
-        `SELECT * from user WHERE email=${db.escape(email)};`, (error, results) => {
+        `SELECT * from user WHERE email=${db.escape(email)};`,
+        (error, results) => {
           if (!results.length) {
             return res.status(409).send({
               success: false,
-              message: "Email address is not Registered, Please enter a Registered Email"
+              message:
+                "Email address is not Registered, Please enter a Registered Email",
             });
           } else {
             const token = createToken({ ...results[0] });
-            transporter.sendMail({
-              from: 'XMART ADMIN',
-              to: email,
-              subject: 'Reset password',
-              html: `<div>
+            transporter.sendMail(
+              {
+                from: "XMART ADMIN",
+                to: email,
+                subject: "Reset password",
+                html: `<div>
               <h3>
               Click link below to Reset your password
               </h3>
               <a href="http://localhost:3000/reset-password?t=${token}">
               Reset now
               </a>
-              </div>`
-            }, (error, info) => {
-              if (error) {
-                return res.status(400).send(error);
+              </div>`,
+              },
+              (error, info) => {
+                if (error) {
+                  return res.status(400).send(error);
+                }
+                return res.status(200).send({
+                  success: true,
+                  message: "Check your email to reset your password",
+                  info,
+                });
               }
-              return res.status(200).send({
-                success: true,
-                message: 'Check your email to reset your password',
-                info
-              });
-            });
-          };
-        });
+            );
+          }
+        }
+      );
     } catch (error) {
       return res.status(500).send(error);
     }
@@ -116,22 +136,25 @@ module.exports = {
     try {
       const { password } = req.body;
       const newPass = await hashPass(password);
-      db.query(`UPDATE user set password=${db.escape(newPass)} 
-      WHERE id=${db.escape(req.decript.id)};`, (error, results) => {
-        if (error) {
-          return res.status(500).send({
-            success: false,
-            message: error
+      db.query(
+        `UPDATE user set password=${db.escape(newPass)} 
+      WHERE id=${db.escape(req.decript.id)};`,
+        (error, results) => {
+          if (error) {
+            return res.status(500).send({
+              success: false,
+              message: error,
+            });
+          }
+          return res.status(200).send({
+            success: true,
+            message: "Reset Password success",
           });
         }
-        return res.status(200).send({
-          success: true,
-          message: 'Reset Password success'
-        });
-      });
+      );
     } catch (error) {
       return res.status(500).send(error);
-    };
+    }
   },
   // =======
   // Sign in
