@@ -30,13 +30,13 @@ const FeaturedComponent = ({ branchName }) => {
           <div className="flex flex-row flex-wrap justify-center">
             <div
               className="flex-col justify-center box-content rounded drop-shadow-md 
-                        h-40 w-32 bg-white text-xs m-2"
+                        h-44 w-32 bg-white text-xs m-2 "
             >
               <img className="h-20 w-20 mx-auto my-2" src={img} alt="img" />
               <div className="text-center text-xs text-[#86C649]">
                 Rp. {product.price.toLocaleString()},-
               </div>
-              <div className="text-center text-sm font-medium">
+              <div className="text-center text-sm font-medium product-name">
                 {product.name}
               </div>
               <div className="text-center text-xs text-gray-500 font-light">

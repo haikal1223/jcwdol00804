@@ -26,9 +26,10 @@ const ProductComponent = () => {
   );
   const [name, setName] = useState("");
   const [nameValue, setNameValue] = useState("");
-  const { branchName } = useSelector((state) => {
+  const { branchName, isLogged } = useSelector((state) => {
     return {
       branchName: state.storeReducer.defaultStore,
+      isLogged: state.userReducer.id,
     };
   });
   const [by, setBy] = useState("name");
@@ -282,11 +283,11 @@ const ProductComponent = () => {
             <div
               className="flex-col justify-center box-content 
                             rounded-lg drop-shadow-md h-42 w-32 bg-white
-                            text-xs mx-5 my-2 pt-2"
+                            text-xs mx-5 my-2 pt-2 address"
             >
               <Link to={`/product-detail/${product.id}`}>
                 <img className="h-20 w-20 mx-auto mt-1" src={img} alt="img" />
-                <div className="text-center text-sm font-medium">
+                <div className="text-center text-sm font-medium product-name h-10">
                   {product.name}
                 </div>
                 <div
@@ -299,8 +300,13 @@ const ProductComponent = () => {
               {/* Button Add to cart */}
               <div className="flex justify-end">
                 <button
-                  className="text-[#82CD47] hover:text-[#BFF099]"
+                  className={
+                    isLogged
+                      ? "text-[#82CD47] hover:text-[#BFF099]"
+                      : "text-[#82cd47] cursor-not-allowed"
+                  }
                   onClick={() => handleAddToCart(product.id, product.branch_id)}
+                  disabled={!isLogged}
                 >
                   <AiFillPlusCircle size={30} />
                 </button>
