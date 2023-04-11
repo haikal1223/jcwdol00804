@@ -6,9 +6,15 @@ import { AiFillPlusCircle, AiFillMinusCircle } from "react-icons/ai";
 import { BiCartAlt } from "react-icons/bi";
 import img from "../../../Assets/default.png";
 import toast, { Toaster } from "react-hot-toast";
+import { useSelector } from "react-redux";
 
 const DetailSection = () => {
   const { id } = useParams();
+  const { isLogged } = useSelector((state) => {
+    return {
+      isLogged: state.userReducer.id,
+    };
+  });
 
   // Fetching Data from API
   const [detail, setDetail] = useState([]);
@@ -177,19 +183,24 @@ const DetailSection = () => {
       {/* Button */}
       <div className="flex justify-between my-10">
         <button
-          className="flex justify-around items-center 
-                    rounded-md bg-white w-44 h-8 
-                    text-[#86C649] text-[22px] font-[600] shadow-md px-2
-                    hover:bg-[#82CD47] hover:text-white"
+          className={
+            isLogged
+              ? "flex justify-around items-center rounded-md bg-white w-44 h-8 text-[#86C649] text-[22px] font-[600] shadow-md px-2 hover:bg-[#82CD47] hover:text-white"
+              : "flex justify-around items-center rounded-md bg-[#82cd47] w-44 h-8 text-white text-[22px] font-[600] shadow-md px-2 cursor-not-allowed"
+          }
+          disabled={!isLogged}
           onClick={handleAddToCart}
         >
           <BiCartAlt size={25} />
           Add to Cart
         </button>
         <button
-          className="rounded-md bg-[#82CD47] w-36 h-8 
-                    text-white text-[22px] font-[600] shadow-md px-2
-                    hover:bg-white hover:text-[#86C649]"
+          className={
+            isLogged
+              ? "flex ml-2 justify-around items-center rounded-md bg-white w-44 h-8 text-[#86C649] text-[22px] font-[600] shadow-md px-2 hover:bg-[#82CD47] hover:text-white"
+              : "flex ml-2 justify-around items-center rounded-md bg-[#82cd47] w-44 h-8 text-white text-[22px] font-[600] shadow-md px-2 cursor-not-allowed"
+          }
+          disabled={!isLogged}
         >
           Buy Now
         </button>
