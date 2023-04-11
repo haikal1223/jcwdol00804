@@ -121,4 +121,49 @@ module.exports = {
       return res.status(500).send(error);
     }
   },
+  adjustStockAfterOrder: (req, res) => {
+    try {
+      const { items } = req.body;
+      const adjustStock = (stock, quantity, product_id) => {
+        return new Promise(async (resolve, reject) => {
+          try {
+            db.query(
+              `UPDATE product SET ? WHERE id = ${product_id}`,
+              { stock: stock - quantity },
+              (err, result) => {
+                if (err) throw new Error(err);
+                resolve(true);
+              }
+            );
+          } catch (error) {
+            reject(error);
+          }
+        });
+      };
+      Promise.all(
+        items.map(async (val) => {
+          let result = await adjustStock(
+            val.stock,
+            val.quantity,
+            val.product_id
+          );
+          return result;
+        })
+      )
+        .then(() => {
+          return res.status(200).send({
+            success: true,
+            message: "Adjust product stock after order success",
+          });
+        })
+        .catch((err) => {
+          return res.status(500).send({
+            success: false,
+            message: "Adjust product stock failed",
+          });
+        });
+    } catch (error) {
+      return res.status(500).send(error);
+    }
+  },
 };

@@ -16,5 +16,10 @@ route.post(
 route.patch("/update-cart-qty", readToken, cartController.updateCartQuantity);
 route.patch("/delete-item", readToken, cartController.deleteFromCart);
 route.patch("/replace-cart", readToken, cartController.replaceCart);
+route.patch(
+  "/delete-cart-item-after-order",
+  readToken,
+  cartController.deleteCartItemAfterOrder
+);
 
 module.exports = route;

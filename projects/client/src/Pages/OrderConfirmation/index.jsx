@@ -1,14 +1,122 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Page from "../../Components/Page";
 import BackButton from "../../Components/BackButton";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FcShop } from "react-icons/fc";
+import ModalAddress from "./ModalAddress";
+import ModalCourier from "./ModalCourier";
+import axios from "axios";
+import { API_URL } from "../../helper";
+import toast, { Toaster } from "react-hot-toast";
 
 const OrderConfirmation = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [isModalAddress, setIsModalAddress] = useState(false);
+  const [isModalCourier, setIsModalCourier] = useState(false);
+  const [addressList, setAddressList] = useState([]);
+  const [address, setAddress] = useState({});
+  const [courierList, setCourierList] = useState([]);
+  const [courier, setCourier] = useState({});
+  const [isSubmitting, setisSubmitting] = useState(false);
+
+  const token = localStorage.getItem("xmart_login");
+  useEffect(() => {
+    axios
+      .get(`${API_URL}/address/my-address`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setAddressList(res.data);
+        setAddress(res.data[0]);
+      });
+  }, [token]);
+
+  useEffect(() => {
+    setCourierList([]);
+    if (Object.keys(address).length !== 0) {
+      axios
+        .get(
+          `${API_URL}/address/available-courier?origin=${location.state.shopCityName}&destination=${address.city}&weight=${location.state.totalWeight}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((res) => {
+          setCourierList(res.data);
+        });
+    }
+  }, [address, location.state.shopCityName, location.state.totalWeight, token]);
+
+  const handleSubmit = () => {
+    if (
+      Object.keys(address).length !== 0 &&
+      Object.keys(courier).length !== 0
+    ) {
+      setisSubmitting(true);
+      let promise1 = axios.patch(
+        `${API_URL}/product/adjust-stock-after-order`,
+        { items: location.state.items },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      let promise2 = axios.patch(
+        `${API_URL}/cart/delete-cart-item-after-order`,
+        { items: location.state.items },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      let promise3 = axios.post(
+        `${API_URL}/order/create-new-order`,
+        {
+          items: location.state.items,
+          address_id: address.id,
+          courier: `${courier.name} - ${courier.description} (${courier.service}) - ETA : ${courier.cost[0].etd}`,
+          shipping_cost: courier.cost[0].value,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      Promise.all([promise1, promise2, promise3])
+        .then(() => {
+          setisSubmitting(false);
+          navigate("/payment", { replace: true });
+        })
+        .catch((err) => console.log(err));
+    } else {
+      toast.error("Address and courier may not be empty");
+    }
+  };
+
   return (
     <Page isFooter={false} isNavbar={false}>
+      <ModalAddress
+        isModalAddress={isModalAddress}
+        addressList={addressList}
+        modalOpener={setIsModalAddress}
+        setAddress={setAddress}
+        setCourier={setCourier}
+      />
+      <ModalCourier
+        isModalCourier={isModalCourier}
+        courierList={courierList}
+        modalOpener={setIsModalCourier}
+        setCourier={setCourier}
+      />
+      <Toaster />
       <div className="relative">
         <BackButton />
         <div className="text-center text-xl py-5 font-bold z-10 relative">
@@ -61,20 +169,58 @@ const OrderConfirmation = () => {
               <div className="h-[1px] bg-slate-200 w-[95%] mt-1 ml-3"></div>
               <div className="flex flex-row justify-between items-center px-5 mt-3">
                 <span className="text-[#6CC51D] font-bold">Address</span>
-                <div className="w-[50%] border rounded-full bg-slate-100 border-[#6CC51D]  text-center cursor-pointer">
+                <div
+                  className="w-[50%] border rounded-full bg-slate-100 border-[#6CC51D]  text-center cursor-pointer"
+                  onClick={() => setIsModalAddress(!isModalAddress)}
+                >
                   Select address
                 </div>
               </div>
               <div className="px-5 max-h-[80px] mt-2 address">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Inventore unde perspiciatis tempore amet, sunt culpa reiciendis
-                tempora aliquid assumenda maxime Lorem, ipsum.
+                {address ? (
+                  <>
+                    {address.is_main ? (
+                      <span className="block text-xs bg-red-500/[.5] text-center w-[22%] rounded-full font-semibold">
+                        Main Address
+                      </span>
+                    ) : null}
+                    {address.address}
+                    <span className="block">{`${address.city}, ${address.province}, ${address.zipcode}`}</span>
+                  </>
+                ) : (
+                  <>
+                    <div className="text-red-500">
+                      You don't have an address yet.
+                    </div>
+                    <Link
+                      to="/add-address"
+                      className="px-5 py-[1px] bg-emerald-200 rounded-lg font-[600] mt-1"
+                    >
+                      Add Address
+                    </Link>
+                  </>
+                )}
               </div>
-              <div className="flex flex-row justify-between items-center px-5 mt-4 mb-2">
-                <span className="text-[#6CC51D] font-bold">Courier</span>
-                <div className="w-[50%] border rounded-full bg-slate-100 border-[#6CC51D] text-center cursor-pointer">
-                  Select available courier
+              <div className="flex flex-col px-5 mt-4 mb-2">
+                <div className="flex flex-row justify-between items-center">
+                  <span className="text-[#6CC51D] font-bold">Courier</span>
+                  <div
+                    className="w-[50%] border rounded-full bg-slate-100 border-[#6CC51D] text-center cursor-pointer"
+                    onClick={() => setIsModalCourier(!isModalCourier)}
+                  >
+                    Select available courier
+                  </div>
                 </div>
+                {Object.keys(courier).length !== 0 && (
+                  <>
+                    <div className="mt-2 font-bold">{courier.name}</div>
+                    <div>
+                      {courier.description} ({courier.service}) - Rp{" "}
+                      {courier.cost[0].value.toLocaleString("id")} (ETA :{" "}
+                      {courier.cost[0].etd})
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -102,16 +248,24 @@ const OrderConfirmation = () => {
                 <span>Rp {location.state.totalPrice.toLocaleString("id")}</span>
               </div>
               <div className="flex flex-row justify-between px-5 mt-2">
-                <span>Total Delivery Cost</span>
-                <span>Rp 40.000</span>
+                <span>
+                  Total Delivery Cost{" "}
+                  {`(${location.state.totalWeight.toLocaleString("id")} gram)`}
+                </span>
+                <span>
+                  Rp{" "}
+                  {Object.keys(courier).length !== 0
+                    ? courier.cost[0].value.toLocaleString("id")
+                    : 0}
+                </span>
               </div>
               <div className="flex flex-row justify-between px-5 mt-2">
                 <span>Discount Delivery Cost</span>
-                <span>-Rp 40.000</span>
+                <span>-Rp 0</span>
               </div>
               <div className="flex flex-row justify-between px-5 mt-2">
                 <span>Voucher Applied</span>
-                <span>-Rp 20.000</span>
+                <span>-Rp 0</span>
               </div>
               <div className="h-[1px] bg-slate-200 w-[95%] mt-2 ml-3"></div>
             </div>
@@ -121,18 +275,92 @@ const OrderConfirmation = () => {
                 Rp{" "}
                 {location.state.totalPrice - 20000 <= 0
                   ? "0"
-                  : (location.state.totalPrice - 20000).toLocaleString("id")}
+                  : (
+                      location.state.totalPrice +
+                      (Object.keys(courier).length !== 0 &&
+                        courier.cost[0].value)
+                    ).toLocaleString("id")}
               </span>
             </div>
           </div>
         </div>
-        <button
-          type="submit"
-          onClick={() => navigate("/payment")}
-          className="bg-[#82cd47] h-[38px] w-8/12 rounded-full px-3 mt-10 mb-16 self-center text-[22px] font-[600] shadow-md text-white"
-        >
-          Proceed To Payment
-        </button>
+        {isSubmitting ? (
+          <button
+            disabled
+            className="bg-[#82cd47] h-[38px] w-8/12 rounded-full px-3 mt-10 mb-16 self-center text-[22px] font-[600] shadow-md text-white"
+          >
+            <svg
+              className="w-10 h-10 mr-1 animate-spin inline text-white"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 4.75V6.25"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></path>
+              <path
+                d="M17.1266 6.87347L16.0659 7.93413"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></path>
+              <path
+                d="M19.25 12L17.75 12"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></path>
+              <path
+                d="M17.1266 17.1265L16.0659 16.0659"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></path>
+              <path
+                d="M12 17.75V19.25"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></path>
+              <path
+                d="M7.9342 16.0659L6.87354 17.1265"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></path>
+              <path
+                d="M6.25 12L4.75 12"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></path>
+              <path
+                d="M7.9342 7.93413L6.87354 6.87347"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></path>
+            </svg>
+          </button>
+        ) : (
+          <button
+            onClick={handleSubmit}
+            className="bg-[#82cd47] h-[38px] w-8/12 rounded-full px-3 mt-10 mb-16 self-center text-[22px] font-[600] shadow-md text-white"
+          >
+            Proceed To Payment
+          </button>
+        )}
       </div>
     </Page>
   );
