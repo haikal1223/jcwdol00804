@@ -297,7 +297,7 @@ const PersonalData = () => {
                   name="gender"
                   className="px-[7px]"
                   {...formik.getFieldProps("gender")}
-                  value={gender ? gender : "select-gender"}
+                  defaultValue={gender ? gender : "select-gender"}
                 >
                   <option value="select-gender" hidden>
                     Select gender
