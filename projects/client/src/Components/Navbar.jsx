@@ -62,14 +62,12 @@ const Navbar = ({ navTitle, isLogged }) => {
           </Link>
           <nav className="text-lg font-semibold px-2">
             <ul className="flex flex-col text-gray-600">
-              {id && (
-                <Link to="/product-list">
-                  <li className="flex py-2 items-center">
-                    <BiShoppingBag size={24} className="mr-4" />
-                    Products
-                  </li>
-                </Link>
-              )}
+              <Link to="/product-list">
+                <li className="flex py-2 items-center">
+                  <BiShoppingBag size={24} className="mr-4" />
+                  Products
+                </li>
+              </Link>
               {id && (
                 <Link to="/my-cart">
                   <li className="flex py-2 items-center">
@@ -96,9 +94,7 @@ const Navbar = ({ navTitle, isLogged }) => {
                 </li>
               ) : (
                 <Link to="/sign-in">
-                  <li
-                    className="flex py-2 items-center cursor-pointer"
-                  >
+                  <li className="flex py-2 items-center cursor-pointer">
                     <BiLogIn size={24} className="mr-4" />
                     Sign In
                   </li>
