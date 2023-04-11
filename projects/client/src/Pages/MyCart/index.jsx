@@ -16,7 +16,6 @@ const MyCart = () => {
   const cartList = useSelector((state) => {
     return state.cartReducer;
   });
-  console.log(cartList);
 
   const shopName = cartList.map((val) => val.branch_name)[0];
 
@@ -159,10 +158,17 @@ const MyCart = () => {
         )}
         {/* Cart Active List */}
         <div>
-          <div className="flex flex-row items-center border-b-2 border-[#82CD47]/[.5] mt-3 py-2">
-            <FcShop className="ml-2 mr-1" />
-            <span className="font-bold">{shopName}</span>
-          </div>
+          {cartList.length ? (
+            <div className="flex flex-row items-center border-b-2 border-[#82CD47]/[.5] mt-3 py-2">
+              <FcShop className="ml-2 mr-1" />
+              <span className="font-bold">{shopName}</span>
+            </div>
+          ) : (
+            <div className="flex flex-row items-center justify-center h-[70vh] text-red-500">
+              Your cart is empty
+            </div>
+          )}
+
           {cartList.map((val2, idx2) => {
             if (val2.quantity <= val2.stock) {
               return (
@@ -296,6 +302,13 @@ const MyCart = () => {
           items: checkedItem
             .map((val, idx) => (val ? cartList[idx] : val))
             .filter((val) => typeof val !== "boolean"),
+          totalWeight: checkedItem
+            .map((val, idx) =>
+              val ? cartList[idx].weight * cartList[idx].quantity : val
+            )
+            .filter((val) => typeof val !== "boolean")
+            .reduce((p, c) => p + c),
+          shopCityName: cartList.map((val) => val.branch_cityname)[0],
         },
       });
     }
