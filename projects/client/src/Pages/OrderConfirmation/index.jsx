@@ -273,7 +273,7 @@ const OrderConfirmation = () => {
               <span className="font-bold">Total Shopping</span>
               <span className="font-bold">
                 Rp{" "}
-                {location.state.totalPrice - 20000 <= 0
+                {location.state.totalPrice <= 0
                   ? "0"
                   : (
                       location.state.totalPrice +

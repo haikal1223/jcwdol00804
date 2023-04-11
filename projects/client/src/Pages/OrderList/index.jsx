@@ -271,7 +271,7 @@ const OrderList = () => {
             </div>
           );
         })}
-        <div className="self-center absolute bottom-5 flex flex-row items-center">
+        <div className="self-center mt-10 mb-10 flex flex-row items-center">
           <MdKeyboardDoubleArrowLeft
             size={25}
             className="mr-1 cursor-pointer"
