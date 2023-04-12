@@ -161,8 +161,8 @@ module.exports = {
   signIn: async (req, res) => {
     try {
       db.query(
-        `SELECT * from user 
-      WHERE email=${db.escape(req.body.email)};`,
+        `SELECT user.*, branch.name AS branch_name from user JOIN branch ON branch.id = user.branch_id
+      WHERE user.email=${db.escape(req.body.email)};`,
         (error, results) => {
           if (error) {
             return res.status(500).send({
@@ -269,8 +269,8 @@ module.exports = {
   keepLogin: async (req, res) => {
     try {
       db.query(
-        `SELECT * from user
-      WHERE id=${db.escape(req.decript.id)};`,
+        `SELECT user.*, branch.name AS branch_name from user JOIN branch ON branch.id = user.branch_id
+      WHERE user.id=${db.escape(req.decript.id)};`,
         (error, results) => {
           if (error) {
             return res.status(500).send({
