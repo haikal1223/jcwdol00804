@@ -33,7 +33,8 @@ const OrderList = () => {
   const [invoiceNo, setInvoiceNo] = useState("");
   const [status, setStatus] = useState("");
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(1);
+  const [limit, setLimit] = useState(0);
+  const [countResult, setCountResult] = useState(0);
   const [openDate, setOpenDate] = useState(false);
   const [orderList, setOrderList] = useState([]);
   const token = localStorage.getItem("xmart_login");
@@ -68,9 +69,9 @@ const OrderList = () => {
       .then((res) => {
         setOrderList(res.data.result);
         setLimit(res.data.limit);
+        setCountResult(res.data.allResult.length);
       })
       .catch((err) => {
-        setOrderList([]);
         console.log(err);
       });
   }, [
@@ -271,7 +272,7 @@ const OrderList = () => {
             </div>
           );
         })}
-        <div className="self-center mt-10 mb-10 flex flex-row items-center">
+        <div className="self-center mt-8 mb-10 flex flex-row items-center">
           <MdKeyboardDoubleArrowLeft
             size={25}
             className="mr-1 cursor-pointer"
@@ -283,19 +284,19 @@ const OrderList = () => {
             onClick={() => page > 1 && setPage(page - 1)}
           />
           <span className="mb-[1px]">
-            Page {page} of {Math.ceil(orderList.length / limit)}
+            Page {page} of {countResult && Math.ceil(countResult / limit)}
           </span>
           <MdKeyboardArrowRight
             size={25}
             className="ml-3 cursor-pointer"
             onClick={() =>
-              page < Math.ceil(orderList.length / limit) && setPage(page + 1)
+              page < Math.ceil(countResult / limit) && setPage(page + 1)
             }
           />
           <MdKeyboardDoubleArrowRight
             size={25}
             className="ml-1 cursor-pointer"
-            onClick={() => setPage(Math.ceil(orderList.length / limit))}
+            onClick={() => setPage(Math.ceil(countResult / limit))}
           />
         </div>
       </div>
