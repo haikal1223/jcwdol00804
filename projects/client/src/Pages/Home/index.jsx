@@ -5,14 +5,26 @@ import FeaturedSection from "./Sections/FeaturedSection";
 import { FcShop } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
 import { changeStoreAction } from "../../Actions/store";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { API_URL } from "../../helper";
 
 const Home = () => {
   const dispatch = useDispatch();
+  const [branchList, setBranchList] = useState([]);
+
   const { branchName } = useSelector((state) => {
     return {
       branchName: state.storeReducer.defaultStore,
     };
   });
+
+  useEffect(() => {
+    axios.get(`${API_URL}/product/get-branch-list`).then((res) => {
+      setBranchList(res.data);
+    });
+  }, []);
+
   return (
     <Page navTitle="Home">
       <div className="container">
@@ -25,8 +37,13 @@ const Home = () => {
               dispatch(changeStoreAction({ defaultStore: e.target.value }))
             }
           >
-            <option value="Xmart PIK Jakarta">Xmart PIK Jakarta</option>
-            <option value="Xmart Tiara Medan">Xmart Tiara Medan</option>
+            {branchList.map((val, idx) => {
+              return (
+                <option key={idx} value={val.name}>
+                  {val.name}
+                </option>
+              );
+            })}
           </select>
         </div>
         {/* Greeting */}

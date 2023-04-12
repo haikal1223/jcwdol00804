@@ -38,6 +38,7 @@ const ProductComponent = () => {
   const limit = 10;
   const [isModal, setIsModal] = useState(false);
   const [modalProductId, setModalProductId] = useState();
+  const [branchList, setBranchList] = useState([]);
 
   const getProducts = async () => {
     try {
@@ -61,6 +62,9 @@ const ProductComponent = () => {
 
   useEffect(() => {
     getProducts();
+    axios.get(`${API_URL}/product/get-branch-list`).then((res) => {
+      setBranchList(res.data);
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category, name, by, order, limit, page, branchName]);
 
@@ -212,8 +216,13 @@ const ProductComponent = () => {
             dispatch(changeStoreAction({ defaultStore: e.target.value }))
           }
         >
-          <option value="Xmart PIK Jakarta">Xmart PIK Jakarta</option>
-          <option value="Xmart Tiara Medan">Xmart Tiara Medan</option>
+          {branchList.map((val, idx) => {
+            return (
+              <option key={idx} value={val.name}>
+                {val.name}
+              </option>
+            );
+          })}
         </select>
       </div>
       <div className="flex flex-col justify-center px-14">

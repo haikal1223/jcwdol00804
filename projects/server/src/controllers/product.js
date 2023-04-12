@@ -166,4 +166,15 @@ module.exports = {
       return res.status(500).send(error);
     }
   },
+  getBranchList: (req, res) => {
+    db.query(`SELECT name from branch`, (err, result) => {
+      if (err) {
+        return res.status(404).send({
+          success: false,
+          message: "You don't have any branch store",
+        });
+      }
+      return res.status(200).send(result);
+    });
+  },
 };
