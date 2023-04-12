@@ -151,7 +151,6 @@ module.exports = {
             req.body.password,
             results[0].password
           );
-          delete results[0].password;
           if (passCheck) {
             const token = createToken({ ...results[0] });
             return res.status(200).send({ ...results[0], token });
@@ -160,9 +159,8 @@ module.exports = {
               success: false,
               message: "Your password is wrong",
             });
-          }
-        }
-      );
+          };
+        });
     } catch (error) {
       return res.status(500).send(error);
     }
@@ -206,14 +204,12 @@ module.exports = {
                   message: "Check your email to reset your password",
                   info,
                 });
-              }
-            );
-          }
-        }
-      );
+              });
+          };
+        });
     } catch (error) {
       return res.status(500).send(error);
-    }
+    };
   },
   // ==========
   // Reset Pass
@@ -230,16 +226,15 @@ module.exports = {
               success: false,
               message: error,
             });
-          }
+          };
           return res.status(200).send({
             success: true,
             message: "Reset Password success",
           });
-        }
-      );
+        });
     } catch (error) {
       return res.status(500).send(error);
-    }
+    };
   },
   // ==========
   // Keep login
@@ -254,15 +249,13 @@ module.exports = {
               success: false,
               message: error,
             });
-          }
-          delete results[0].password;
+          };
           const token = createToken({ ...results[0] });
           return res.status(200).send({ ...results[0], token });
-        }
-      );
+        });
     } catch (error) {
       return res.status(500).send(error);
-    }
+    };
   },
   editProfile: (req, res) => {
     const { name, email, birthdate, gender } = req.body;
@@ -373,26 +366,36 @@ module.exports = {
   // Change password
   changePass: async (req, res) => {
     try {
-      const { password } = req.body;
-      const newPass = await hashPass(password);
-      db.query(
-        `UPDATE user set password=${db.escape(newPass)}
-      WHERE id=${db.escape(req.decript.id)};`,
-        (error, results) => {
-          if (error) {
-            return res.status(500).send({
-              success: false,
-              message: error,
-            });
-          }
-          return res.status(200).send({
-            success: true,
-            message: "Change Password success",
-          });
-        }
+      const { oldpassword, password } = req.body;
+      const passCheck = bcrypt.compareSync(
+        oldpassword,
+        req.decript.password,
       );
+      if (!passCheck) {
+        return res.status(406).send({
+          success: false,
+          message: "Your old password is wrong"
+        });
+      } else {
+        const newPass = await hashPass(password);
+        db.query(
+          `UPDATE user set password=${db.escape(newPass)}
+          WHERE id=${db.escape(req.decript.id)};`,
+          (error, results) => {
+            if (error) {
+              return res.status(500).send({
+                success: false,
+                message: error,
+              });
+            };
+            return res.status(200).send({
+              success: true,
+              message: "Change Password success",
+            });
+          });
+      };
     } catch (error) {
       return res.status(500).send(error);
-    }
+    };
   },
 };
