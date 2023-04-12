@@ -86,7 +86,7 @@ const OrderList = () => {
   ]);
 
   return (
-    <Page isFooter={false} navTitle="Order">
+    <Page isFooter={false} navTitle="Order List">
       <div className="flex flex-col px-5">
         {/* Search Inv */}
         <div className="relative">
