@@ -4,7 +4,7 @@ import ProductSection from "./ProductSection";
 
 const ProductList = () => {
   return (
-    <Page isNavbar={true} isFooter={false}>
+    <Page isFooter={false} navTitle="Product List">
       <ProductSection />
     </Page>
   );

@@ -55,7 +55,7 @@ module.exports = {
         .notEmpty()
         .isEmail()
         .withMessage("Invalid email format")
-        .run(req)
+        .run(req);
       const validation = validationResult(req);
       if (validation.isEmpty()) {
         next();
@@ -104,7 +104,7 @@ module.exports = {
         .notEmpty()
         .isEmail()
         .withMessage("Invalid email format")
-        .run(req)
+        .run(req);
       await check("password")
         .isString()
         .isLength({ min: 8 })
@@ -204,7 +204,7 @@ module.exports = {
         `SELECT stock from product WHERE id=${req.body.product_id}`
       );
       const prevQty = await dbQuery(
-        `SELECT quantity from cart_item WHERE cart_id=${req.body.cart_id} AND product_id=${req.body.product_id}`
+        `SELECT quantity from cart_item WHERE cart_id=${req.decript.cart_id} AND product_id=${req.body.product_id}`
       );
       await check("quantity")
         .isNumeric()

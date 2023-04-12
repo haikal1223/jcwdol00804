@@ -106,7 +106,7 @@ const PersonalData = () => {
             },
           });
         }
-        toast(result.data.message);
+        toast.success(result.data.message);
         setIsModal(!isModal);
         setIsEditting(!isEditting);
         let resultImg = await axios.get(`${API_URL}/user/get-user-info`, {
@@ -157,7 +157,6 @@ const PersonalData = () => {
         {isEditting ? (
           // Untuk preview
           <Avatar
-            name={name}
             src={
               formik.values.images
                 ? URL.createObjectURL(formik.values.images)
@@ -171,7 +170,6 @@ const PersonalData = () => {
         ) : (
           // Untuk hasil
           <Avatar
-            name={name}
             src={profile_img && `http://localhost:8000/${profile_img}`}
             borderRadius="50%"
             w="100px"
@@ -299,7 +297,7 @@ const PersonalData = () => {
                   name="gender"
                   className="px-[7px]"
                   {...formik.getFieldProps("gender")}
-                  value={gender ? gender : "select-gender"}
+                  defaultValue={gender ? gender : "select-gender"}
                 >
                   <option value="select-gender" hidden>
                     Select gender

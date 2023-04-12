@@ -21,14 +21,23 @@ import {
   MdKeyboardDoubleArrowRight,
 } from "react-icons/md";
 import { format } from "date-fns";
+import axios from "axios";
+import { API_URL } from "../../helper";
+import { useNavigate } from "react-router-dom";
 
 const OrderList = () => {
+  const navigate = useNavigate();
   const [sortDateNewest, setSortDateNewest] = useState(true);
   const [sortInvAsc, setSortInvAsc] = useState(true);
+  const [sortBy, setSortBy] = useState("created_at");
   const [invoiceNo, setInvoiceNo] = useState("");
   const [status, setStatus] = useState("");
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(0);
+  const [countResult, setCountResult] = useState(0);
   const [openDate, setOpenDate] = useState(false);
-
+  const [orderList, setOrderList] = useState([]);
+  const token = localStorage.getItem("xmart_login");
   const searchRef = useRef("");
 
   const [dateRange, setDateRange] = useState([
@@ -39,15 +48,45 @@ const OrderList = () => {
     },
   ]);
 
-  useEffect(() => {}, [
+  useEffect(() => {
+    axios
+      .get(
+        `${API_URL}/order/get-order-list?inv=${invoiceNo}&status=${status}&start_date=${format(
+          dateRange[0].startDate,
+          "yyyy-MM-dd"
+        )}&end_date=${format(
+          dateRange[0].endDate,
+          "yyyy-MM-dd"
+        )}&sort_by=${sortBy}&order=${
+          sortBy === "invoice_no" ? sortInvAsc : sortDateNewest
+        }&page=${page}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        setOrderList(res.data.result);
+        setLimit(res.data.limit);
+        setCountResult(res.data.allResult.length);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [
     sortDateNewest,
     sortInvAsc,
     invoiceNo,
     status,
     dateRange,
+    token,
+    sortBy,
+    page,
   ]);
+
   return (
-    <Page isFooter={false} navTitle="Order">
+    <Page isFooter={false} navTitle="Order List">
       <div className="flex flex-col px-5">
         {/* Search Inv */}
         <div className="relative">
@@ -78,22 +117,25 @@ const OrderList = () => {
             onChange={(e) => setStatus(e.target.value)}
           >
             <option value="">Semua Status</option>
-            <option value="menunggu-pembayaran">Menunggu Pembayaran</option>
-            <option value="menunggu-konfirmasi">
+            <option value="Menunggu Pembayaran">Menunggu Pembayaran</option>
+            <option value="Menunggu Konfirmasi Pembayaran">
               Menunggu Konfirmasi Pembayaran
             </option>
-            <option value="diproses">Diproses</option>
-            <option value="dikirim">Dikirim</option>
-            <option value="pesanan-dikonfirmasi">Pesanan Dikonfirmasi</option>
-            <option value="dibatalkan">Dibatalkan</option>
+            <option value="Diproses">Diproses</option>
+            <option value="Dikirim">Dikirim</option>
+            <option value="Pesanan Dikonfirmasi">Pesanan Dikonfirmasi</option>
+            <option value="Dibatalkan">Dibatalkan</option>
           </select>
           <div
             className={
-              sortDateNewest
-                ? "flex flex-row items-center ml-1 cursor-pointer border rounded-full font-bold px-2 bg-gradient-to-tl from-lime-300 "
-                : "flex flex-row items-center ml-1 cursor-pointer border rounded-full font-bold px-2 bg-gradient-to-br from-lime-300 "
+              sortBy === "created_at"
+                ? "flex flex-row items-center ml-1 cursor-pointer border-2 rounded-full font-bold px-2 bg-gradient-to-tl from-lime-300 shadow-emerald-400/70 shadow-md border-emerald-400/60"
+                : "flex flex-row items-center ml-1 cursor-pointer border rounded-full font-bold px-2 bg-gradient-to-tl from-lime-300"
             }
-            onClick={() => setSortDateNewest(!sortDateNewest)}
+            onClick={() => {
+              setSortBy("created_at");
+              setSortDateNewest(!sortDateNewest);
+            }}
           >
             {sortDateNewest ? (
               <>
@@ -109,11 +151,14 @@ const OrderList = () => {
           </div>
           <div
             className={
-              sortInvAsc
-                ? "flex flex-row items-center ml-1 cursor-pointer border rounded-full font-bold px-2 bg-gradient-to-tl from-lime-300 "
-                : "flex flex-row items-center ml-1 cursor-pointer border rounded-full font-bold px-2 bg-gradient-to-br from-lime-300 "
+              sortBy === "invoice_no"
+                ? "flex flex-row items-center ml-1 cursor-pointer border-2 rounded-full font-bold px-2 bg-gradient-to-tl from-lime-300 shadow-emerald-400/70 shadow-md border-emerald-400/60"
+                : "flex flex-row items-center ml-1 cursor-pointer border rounded-full font-bold px-2 bg-gradient-to-tl from-lime-300 "
             }
-            onClick={() => setSortInvAsc(!sortInvAsc)}
+            onClick={() => {
+              setSortBy("invoice_no");
+              setSortInvAsc(!sortInvAsc);
+            }}
           >
             {sortInvAsc ? (
               <>
@@ -168,56 +213,90 @@ const OrderList = () => {
       <div className="h-[6px] bg-slate-200 w-[100%] mt-4 mb-2 "></div>
       {/* Result */}
       <div className="flex flex-col px-5">
-        <div className="container rounded-xl shadow-md border h-min-[200px] w-[440px] py-2 mb-8 mt-2 ">
-          <div className="flex flex-row items-center justify-between px-3">
-            <div className="flex flex-row items-center">
-              <BiReceipt size={30} />
-              <div className="flex flex-col ml-2 ">
-                <span className="text-xs font-bold text-slate-400">
-                  INV.20230404/XM/000000001
+        {orderList.map((val, idx) => {
+          return (
+            <div
+              key={idx}
+              onClick={() => navigate(`/order-detail/${val.id}`)}
+              className="container rounded-xl shadow-md border h-min-[200px] w-[440px] py-2 mt-2 mb-2"
+            >
+              <div className="flex flex-row items-center justify-between px-3">
+                <div className="flex flex-row items-center">
+                  <BiReceipt size={30} />
+                  <div className="flex flex-col ml-2 ">
+                    <span className="text-xs font-bold text-slate-400">
+                      {val.invoice_no}
+                    </span>
+                    <span className="text-sm font-bold text-[#6cc51d]">
+                      {format(new Date(val.created_at), "d MMM yyyy")}
+                    </span>
+                  </div>
+                </div>
+                <div
+                  className={
+                    ["Menunggu Pembayaran", "Dibatalkan"].includes(val.status)
+                      ? "text-xs bg-red-300 bg-opacity-40 text-red-500 p-1 rounded-lg font-semibold"
+                      : "text-xs bg-lime-300 bg-opacity-40 text-[#6CC51D] p-1 rounded-lg font-semibold"
+                  }
+                >
+                  {val.status}
+                </div>
+              </div>
+              <div className="h-[1px] bg-slate-200 w-[95%] mt-1 ml-3"></div>
+              <div className="flex flex-row px-3 items-center">
+                <img
+                  src="https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-6.png"
+                  alt=""
+                  className=" w-12 h-12 mt-2 border text-xs"
+                />
+                <div className="flex flex-col ml-2 mt-1 truncate">
+                  <div className="text-sm font-bold w-[100%] truncate">
+                    {val.name}
+                  </div>
+                  <span className="text-slate-400 text-xs font-semibold">
+                    {val.quantity} {val.quantity > 1 ? "items" : "item"}
+                  </span>
+                </div>
+              </div>
+              {val.total_items === 0 ? null : (
+                <div className="px-3 text-slate-400 text-xs font-semibold mt-1">
+                  +{val.total_items - 1} produk lainnya
+                </div>
+              )}
+              <div className="px-3 mt-1 text-center">
+                <span className="font-bold">Total Purchase : </span>
+                <span className="font-bold text-[#6CC51D]">
+                  Rp {val.total_purchased.toLocaleString("id")}
                 </span>
-                <span className="text-sm font-bold">4 April 2023</span>
               </div>
             </div>
-            <div className="text-xs bg-lime-300 bg-opacity-40 text-[#6CC51D] p-1 rounded-lg font-semibold ">
-              Menunggu Pembayaran
-            </div>
-          </div>
-          <div className="h-[1px] bg-slate-200 w-[95%] mt-1 ml-3"></div>
-          <div className="flex flex-row px-3 items-center">
-            <img
-              src="https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-6.png"
-              alt=""
-              className=" w-12 h-12 mt-2 border text-xs"
-            />
-            <div className="flex flex-col ml-2 mt-1 truncate">
-              <div className="text-sm font-bold w-[100%] truncate">
-                RELX PIXEL DISPOSABLE - watermelon ice
-              </div>
-              <span className="text-slate-400 text-xs font-semibold">
-                1 item
-              </span>
-            </div>
-          </div>
-          <div className="px-3 text-slate-400 text-xs font-semibold mt-1">
-            + 2 produk lainnya
-          </div>
-          <div className="px-3 mt-1 text-center">
-            <span className="font-bold">Total Purchase : </span>
-            <span className="font-bold text-[#6CC51D]">Rp 180.000</span>
-          </div>
-        </div>
-        <div className="self-center absolute bottom-5 flex flex-row items-center">
+          );
+        })}
+        <div className="self-center mt-8 mb-10 flex flex-row items-center">
           <MdKeyboardDoubleArrowLeft
             size={25}
             className="mr-1 cursor-pointer"
+            onClick={() => setPage(1)}
           />
-          <MdKeyboardArrowLeft size={25} className="mr-3 cursor-pointer" />
-          <span className="mb-[1px]">Page 1 of 3</span>
-          <MdKeyboardArrowRight size={25} className="ml-3 cursor-pointer" />
+          <MdKeyboardArrowLeft
+            size={25}
+            className="mr-3 cursor-pointer"
+            onClick={() => page > 1 && setPage(page - 1)}
+          />
+          <span className="mb-[1px]">
+            Page {page} of {countResult && Math.ceil(countResult / limit)}
+          </span>
+          <MdKeyboardArrowRight
+            size={25}
+            className="ml-3 cursor-pointer"
+            onClick={() =>
+              page < Math.ceil(countResult / limit) && setPage(page + 1)
+            }
+          />
           <MdKeyboardDoubleArrowRight
             size={25}
             className="ml-1 cursor-pointer"
+            onClick={() => setPage(Math.ceil(countResult / limit))}
           />
         </div>
       </div>

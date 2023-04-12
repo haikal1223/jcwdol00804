@@ -2,11 +2,12 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { API_URL } from "../../../helper";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useState } from "react";
 
 const FormSection = () => {
+  const navigate = useNavigate();
   const [eyeOpen, setEyeOpen] = useState(false);
   const [eyeOpen2, setEyeOpen2] = useState(false);
   const [isSubmitting, setisSubmitting] = useState(false);
@@ -72,10 +73,13 @@ const FormSection = () => {
       try {
         setisSubmitting(true);
         const result = await axios.post(`${API_URL}/user/sign-up`, values);
-        await axios.post(`${API_URL}/cart/add-new-cart`, values.email);
+        await axios.post(`${API_URL}/cart/add-new-cart`, {
+          email: values.email,
+        });
         setisSubmitting(false);
         alert(result.data.message);
         formik.resetForm();
+        navigate("/sign-in");
       } catch (error) {
         alert(error.response.data.message);
       }
@@ -233,58 +237,58 @@ const FormSection = () => {
                 <path
                   d="M12 4.75V6.25"
                   stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 ></path>
                 <path
                   d="M17.1266 6.87347L16.0659 7.93413"
                   stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 ></path>
                 <path
                   d="M19.25 12L17.75 12"
                   stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 ></path>
                 <path
                   d="M17.1266 17.1265L16.0659 16.0659"
                   stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 ></path>
                 <path
                   d="M12 17.75V19.25"
                   stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 ></path>
                 <path
                   d="M7.9342 16.0659L6.87354 17.1265"
                   stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 ></path>
                 <path
                   d="M6.25 12L4.75 12"
                   stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 ></path>
                 <path
                   d="M7.9342 7.93413L6.87354 6.87347"
                   stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 ></path>
               </svg>
               Registering...

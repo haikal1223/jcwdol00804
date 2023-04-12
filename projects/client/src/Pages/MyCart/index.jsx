@@ -17,9 +17,7 @@ const MyCart = () => {
     return state.cartReducer;
   });
 
-  const shopList = cartList
-    .map((val) => val.branch_name)
-    .filter((val, index, self) => self.indexOf(val) === index);
+  const shopName = cartList.map((val) => val.branch_name)[0];
 
   const outOfStockList = cartList.filter((val) => val.quantity > val.stock);
 
@@ -60,7 +58,9 @@ const MyCart = () => {
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      const updatedCheckedItem = checkedItem.map((val) => true);
+      const updatedCheckedItem = checkedItem.map((val, idx) =>
+        cartList[idx].quantity > cartList[idx].stock ? false : true
+      );
       setCheckedItem(updatedCheckedItem);
       setTotalPrice(sumSelected(updatedCheckedItem));
     } else {
@@ -156,97 +156,89 @@ const MyCart = () => {
             </div>
           </div>
         )}
-
         {/* Cart Active List */}
-        {shopList.map((val, idx) => {
-          return (
-            <div key={idx}>
-              <div className="flex flex-row items-center border-b-2 border-[#82CD47]/[.5] mt-3 py-2">
-                <FcShop className="ml-2 mr-1" />
-                <span className="font-bold">{val}</span>
-              </div>
-              {cartList.map((val2, idx2) => {
-                if (val2.branch_name === val && val2.quantity <= val2.stock) {
-                  return (
-                    <div
-                      className="flex flex-row items-center border-b-2 py-1 relative"
-                      key={idx2}
-                    >
-                      <input
-                        type="checkbox"
-                        id={`checkbox-${idx2}`}
-                        checked={checkedItem[idx2] ?? ""}
-                        onChange={() => handleChecked(idx2)}
-                      />
-                      <img
-                        src="https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-6.png"
-                        alt={val2.name}
-                        className=" w-24 h-24 ml-2 my-2 border text-xs"
-                      />
-                      <div className="flex flex-col ml-2">
-                        <span className="font-bold w-[210px]">{val2.name}</span>
-                        <span className="text-[#6CC51D] font-bold">
-                          Rp {val2.price.toLocaleString("id")}
-                        </span>
-                      </div>
-                      <div className="flex flex-col absolute right-0 mr-2 justify-center items-center">
-                        <div className="flex flex-row items-center ">
-                          <button
-                            className="rounded-full w-[22px] h-[22px] bg-[#82CD47] text-2xl text-white flex items-center justify-center"
-                            onClick={() =>
-                              handleQuantity(
-                                "decrement",
-                                val2.id,
-                                val2.product_id
-                              )
-                            }
-                            disabled={val2.quantity === 1}
-                          >
-                            <span className="mb-[5px]">-</span>
-                          </button>
-                          <span className="mb-1 ml-2 mr-2">
-                            {val2.quantity}
-                          </span>
-                          <button
-                            className="rounded-full w-[22px] h-[22px] bg-[#82CD47] text-2xl text-white flex items-center justify-center mr-2"
-                            onClick={() =>
-                              handleQuantity(
-                                "increment",
-                                val2.id,
-                                val2.product_id
-                              )
-                            }
-                            disabled={val2.quantity === val2.stock}
-                          >
-                            <span className="mb-[5px]">+</span>
-                          </button>
-                          <TbTrashX
-                            size={20}
-                            className="mb-1 cursor-pointer"
-                            onClick={() => {
-                              setIsModal(!isModal);
-                              setModalData({
-                                productName: val2.name,
-                                deleteId: val2.id,
-                                shopName: val2.branch_name,
-                              });
-                            }}
-                          />
-                        </div>
-                        {val2.quantity === val2.stock && (
-                          <div className="text-red-500 animate-pulse">
-                            Stock : {val2.stock}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                }
-                return null;
-              })}
+        <div>
+          {cartList.length ? (
+            <div className="flex flex-row items-center border-b-2 border-[#82CD47]/[.5] mt-3 py-2">
+              <FcShop className="ml-2 mr-1" />
+              <span className="font-bold">{shopName}</span>
             </div>
-          );
-        })}
+          ) : (
+            <div className="flex flex-row items-center justify-center h-[70vh] text-red-500">
+              Your cart is empty
+            </div>
+          )}
+
+          {cartList.map((val2, idx2) => {
+            if (val2.quantity <= val2.stock) {
+              return (
+                <div
+                  className="flex flex-row items-center border-b-2 py-1 relative"
+                  key={idx2}
+                >
+                  <input
+                    type="checkbox"
+                    id={`checkbox-${idx2}`}
+                    checked={checkedItem[idx2] ?? ""}
+                    onChange={() => handleChecked(idx2)}
+                  />
+                  <img
+                    src="https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-6.png"
+                    alt={val2.name}
+                    className=" w-24 h-24 ml-2 my-2 border text-xs"
+                  />
+                  <div className="flex flex-col ml-2">
+                    <span className="font-bold w-[210px]">{val2.name}</span>
+                    <span className="text-[#6CC51D] font-bold">
+                      Rp {val2.price.toLocaleString("id")}
+                    </span>
+                  </div>
+                  <div className="flex flex-col absolute right-0 mr-2 justify-center items-center">
+                    <div className="flex flex-row items-center ">
+                      <button
+                        className="rounded-full w-[22px] h-[22px] bg-[#82CD47] text-2xl text-white flex items-center justify-center"
+                        onClick={() =>
+                          handleQuantity("decrement", val2.id, val2.product_id)
+                        }
+                        disabled={val2.quantity === 1}
+                      >
+                        <span className="mb-[5px]">-</span>
+                      </button>
+                      <span className="mb-1 ml-2 mr-2">{val2.quantity}</span>
+                      <button
+                        className="rounded-full w-[22px] h-[22px] bg-[#82CD47] text-2xl text-white flex items-center justify-center mr-2"
+                        onClick={() =>
+                          handleQuantity("increment", val2.id, val2.product_id)
+                        }
+                        disabled={val2.quantity === val2.stock}
+                      >
+                        <span className="mb-[5px]">+</span>
+                      </button>
+                      <TbTrashX
+                        size={20}
+                        className="mb-1 cursor-pointer"
+                        onClick={() => {
+                          setIsModal(!isModal);
+                          setModalData({
+                            productName: val2.name,
+                            deleteId: val2.id,
+                            shopName: val2.branch_name,
+                          });
+                        }}
+                      />
+                    </div>
+                    {val2.quantity === val2.stock && (
+                      <div className="text-red-500 animate-pulse">
+                        Stock : {val2.stock}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            }
+            return null;
+          })}
+        </div>
         {/* Out of Stock */}
         {outOfStockList.length ? (
           <div className="flex flex-row items-center border-b-2 border-[#82CD47]/[.5] mt-3 py-2">
@@ -306,16 +298,17 @@ const MyCart = () => {
       navigate("/order-confirmation", {
         state: {
           totalPrice,
-          shopName: [
-            ...new Set(
-              checkedItem
-                .map((val, idx) => (val ? cartList[idx].branch_name : val))
-                .filter((val) => typeof val !== "boolean")
-            ),
-          ],
+          shopName,
           items: checkedItem
             .map((val, idx) => (val ? cartList[idx] : val))
             .filter((val) => typeof val !== "boolean"),
+          totalWeight: checkedItem
+            .map((val, idx) =>
+              val ? cartList[idx].weight * cartList[idx].quantity : val
+            )
+            .filter((val) => typeof val !== "boolean")
+            .reduce((p, c) => p + c),
+          shopCityName: cartList.map((val) => val.branch_cityname)[0],
         },
       });
     }

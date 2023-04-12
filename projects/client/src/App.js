@@ -25,6 +25,7 @@ import RestrictedRoutes from "./Utils/RestrictedRoutes";
 import OrderConfirmation from "./Pages/OrderConfirmation";
 import Payment from "./Pages/Payment";
 import OrderList from "./Pages/OrderList";
+import OrderDetail from "./Pages/OrderDetail";
 
 function App() {
   const dispatch = useDispatch();
@@ -62,22 +63,23 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/change-password" element={<ChangePassword />} />
+        <Route path="/product-detail/:id" element={<ProductDetail />} />
+        <Route path="/product-list" element={<ProductList />} />
         <Route element={<RestrictedRoutes />}>
           <Route path="/personal-data" element={<PersonalData />} />
           <Route path="/my-cart" element={<MyCart />} />
           <Route path="/profile-setting" element={<ProfileSetting />} />
           <Route path="/my-address" element={<MyAddress />} />
           <Route path="/add-address" element={<AddAddress />} />
-          <Route path="/product-detail/:id" element={<ProductDetail />} />
-          <Route path="/product-list" element={<ProductList />} />
           <Route path="/order-confirmation" element={<OrderConfirmation />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/order-list" element={<OrderList />} />
+          <Route path="/order-detail/:id" element={<OrderDetail />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   );
-};
+}
 
 export default App;
