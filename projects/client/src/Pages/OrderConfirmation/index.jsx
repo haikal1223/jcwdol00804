@@ -29,8 +29,16 @@ const OrderConfirmation = () => {
         },
       })
       .then((res) => {
-        setAddressList(res.data);
-        setAddress(res.data[0]);
+        if (res.data.length === 0) {
+          setAddressList([]);
+          setAddress({});
+        } else {
+          setAddressList(res.data);
+          setAddress(res.data[0]);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
       });
   }, [token]);
 
@@ -177,7 +185,7 @@ const OrderConfirmation = () => {
                 </div>
               </div>
               <div className="px-5 max-h-[80px] mt-2 address">
-                {address ? (
+                {Object.keys(address).length !== 0 ? (
                   <>
                     {address.is_main ? (
                       <span className="block text-xs bg-red-500/[.5] text-center w-[22%] rounded-full font-semibold">

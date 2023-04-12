@@ -38,7 +38,7 @@ const ModalAddress = ({
                   return (
                     <div
                       key={idx}
-                      className="shadow-md w-full text-center py-2 rounded-lg mt-4 border cursor-pointer hover:bg-emerald-100/[.5]"
+                      className="shadow-md w-full text-center py-2 px-1 rounded-lg mt-4 border cursor-pointer hover:bg-emerald-100/[.5]"
                       onClick={() => {
                         setAddress(val);
                         setCourier({});
