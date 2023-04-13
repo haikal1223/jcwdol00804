@@ -33,43 +33,65 @@ module.exports = {
       }
     );
   },
-  getOrderList: (req, res) => {
+  getOrderList: (req, response) => {
     const { inv, status, start_date, end_date, order, sort_by, page } =
       req.query;
-    let limit = 4;
+    let limit = 3;
     let offset = (page - 1) * limit;
-    const query = `SELECT b.id, c.product_img, a.quantity, b.status, b.invoice_no, b.created_at, c.name, SUM(a.quantity * c. price) AS total_purchased, COUNT(a.id) AS total_items 
-    FROM order_item a 
-    JOIN xmart.order b ON a.order_id = b.id 
-    JOIN product c ON c.id = a.product_id 
-    WHERE b.user_id = ${req.decript.id} 
-    AND b.invoice_no LIKE '%${inv}%' 
-    AND b.status LIKE '%${status}%' 
-    AND b.created_at >= '${start_date} 00:00:00' 
-    AND b.created_at <= '${end_date} 23:59:59' 
-    GROUP BY b.id HAVING total_items <> 0 
-    ORDER BY b.${sort_by} ${order === "true"
-        ? sort_by === "created_at"
-          ? "DESC"
-          : "ASC"
-        : sort_by === "created_at"
-          ? "ASC"
-          : "DESC"
-      } LIMIT ${limit} OFFSET ${offset}`;
-    db.query(query, (err, result) => {
-      if (err) {
-        return res.status(500).send({
-          success: false,
-          message: err,
-        });
-      }
-      if (!result.length) {
-        return res.status(404).send({
+    const result = () => {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const res = await dbQuery(
+            `SELECT b.id, c.product_img, a.quantity, b.status, b.invoice_no, b.created_at, c.name, SUM(a.quantity * c. price) AS total_purchased, COUNT(a.id) AS total_items FROM order_item a JOIN xmart.order b ON a.order_id = b.id JOIN product c ON c.id = a.product_id WHERE b.user_id = ${
+              req.decript.id
+            } AND b.invoice_no LIKE '%${inv}%' AND b.status LIKE '%${status}%' AND b.created_at >= '${start_date} 00:00:00' AND b.created_at <= '${end_date} 23:59:59' GROUP BY b.id HAVING total_items <> 0 ORDER BY b.${sort_by} ${
+              order === "true"
+                ? sort_by === "created_at"
+                  ? "DESC"
+                  : "ASC"
+                : sort_by === "created_at"
+                ? "ASC"
+                : "DESC"
+            } LIMIT ${limit} OFFSET ${offset}`
+          );
+          resolve(res);
+        } catch (error) {
+          reject(error);
+        }
+      });
+    };
+    const allResult = () => {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const res = await dbQuery(
+            `SELECT b.id, c.product_img, a.quantity, b.status, b.invoice_no, b.created_at, c.name, SUM(a.quantity * c. price) AS total_purchased, COUNT(a.id) AS total_items FROM order_item a JOIN xmart.order b ON a.order_id = b.id JOIN product c ON c.id = a.product_id WHERE b.user_id = ${
+              req.decript.id
+            } AND b.invoice_no LIKE '%${inv}%' AND b.status LIKE '%${status}%' AND b.created_at >= '${start_date} 00:00:00' AND b.created_at <= '${end_date} 23:59:59' GROUP BY b.id HAVING total_items <> 0 ORDER BY b.${sort_by} ${
+              order === "true"
+                ? sort_by === "created_at"
+                  ? "DESC"
+                  : "ASC"
+                : sort_by === "created_at"
+                ? "ASC"
+                : "DESC"
+            }`
+          );
+          resolve(res);
+        } catch (error) {
+          reject(error);
+        }
+      });
+    };
+    Promise.all([result(), allResult()]).then((res) => {
+      if (!res[0].length) {
+        return response.status(404).send({
           success: false,
           message: "Order list not found",
         });
       }
-      return res.status(200).send({ result, limit });
+      return response
+        .status(200)
+        .send({ result: res[0], limit, allResult: res[1] });
     });
   },
   getOrderDetail: (req, res) => {

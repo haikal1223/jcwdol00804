@@ -11,5 +11,6 @@ route.patch(
   readToken,
   productController.adjustStockAfterOrder
 );
+route.get("/get-branch-list", productController.getBranchList);
 
 module.exports = route;

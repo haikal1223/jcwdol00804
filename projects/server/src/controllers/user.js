@@ -1,49 +1,64 @@
 const { db, dbQuery } = require("../config/db");
 const { hashPass } = require("../config/encrypt");
-const emailSender = require("../config/emailSender");
-const { transporter } = require("../config/emailSender/transporter");
+const { transporter } = require("../config/transporter");
 const { createToken } = require("../config/token");
 const bcrypt = require("bcrypt");
 
 module.exports = {
   signUp: async (req, res) => {
-    try {
-      const { name, email, phone, password } = req.body;
-      const newPass = await hashPass(password);
-      const checkEmail = await dbQuery(
-        `SELECT email from user WHERE email=${db.escape(email)}`
-      );
-      if (checkEmail.length) {
-        return res.status(409).send({
-          success: false,
-          message: "Email already exist, please use another Email",
-        });
-      } else {
-        db.query(
-          "INSERT INTO user SET ?",
-          { name, email, phone, password: newPass },
-          (error, results, fields) => {
-            if (error) throw error;
-            emailSender.sendEmail(email);
-            return res.status(201).send({
-              data: results,
-              success: true,
-              message:
-                "Sign up success ✅, please check your email for account verification",
+  try {
+    const { name, email, phone, password } = req.body;
+    const newPass = await hashPass(password);
+    const checkEmail = await dbQuery(
+      `SELECT email from user WHERE email=${db.escape(email)}`
+    );
+    if (checkEmail.length) {
+      return res.status(409).send({
+        success: false,
+        message: "Email already exist, please use another Email",
+      });
+    } else {
+      db.query("INSERT INTO user SET ?",
+        { name, email, phone, password: newPass },
+        (error, results, fields) => {
+          if (error) throw error;
+          db.query(`SELECT * from user WHERE email=${db.escape(email)}`,
+            (error, results) => {
+              const token = createToken({ ...results[0] });
+              transporter.sendMail({
+                from: 'XMART ADMIN',
+                to: email,
+                subject: 'Verify Account',
+                html: `<div>
+                <h3>
+                Click link below to Verify your account
+                </h3>
+                <a href="http://localhost:3000/verify-email?t=${token}">
+                Verify now
+                </a>
+                </div>`
+              }, (error, info) => {
+                if (error) {
+                  return res.status(400).send(error);
+                }
+                return res.status(200).send({
+                  success: true,
+                  message: "Sign up success ✅, please check your email for account verification",
+                  info
+                });
+              });
             });
-          }
-        );
-      }
+        });
+    }
     } catch (error) {
-      return res.status(500).send(error);
+       return res.status(500).send(error)
     }
   },
   // ============
   // Verify Email
   verifyEmail: async (req, res) => {
     try {
-      db.query(
-        `SELECT * FROM user WHERE id=${db.escape(req.decript.id)};`,
+      db.query(`SELECT * FROM user WHERE email=${db.escape(req.decript.email)};`,
         (error, results) => {
           if (error) {
             return res.status(500).send({
@@ -57,10 +72,7 @@ module.exports = {
               )} is already verified`,
             });
           } else {
-            db.query(
-              `UPDATE user SET is_verified = 1 WHERE id=${db.escape(
-                req.decript.id
-              )}`,
+            db.query(`UPDATE user SET is_verified = 1 WHERE email=${db.escape(req.decript.email)}`,
               (error, results) => {
                 if (error) {
                   return res.status(500).send({
@@ -174,7 +186,6 @@ module.exports = {
             req.body.password,
             results[0].password
           );
-          delete results[0].password;
           if (passCheck) {
             const token = createToken({ ...results[0] });
             return res.status(200).send({ ...results[0], token });
@@ -183,9 +194,8 @@ module.exports = {
               success: false,
               message: "Your password is wrong",
             });
-          }
-        }
-      );
+          };
+        });
     } catch (error) {
       return res.status(500).send(error);
     }
@@ -229,14 +239,12 @@ module.exports = {
                   message: "Check your email to reset your password",
                   info,
                 });
-              }
-            );
-          }
-        }
-      );
+              });
+          };
+        });
     } catch (error) {
       return res.status(500).send(error);
-    }
+    };
   },
   // ==========
   // Reset Pass
@@ -253,16 +261,15 @@ module.exports = {
               success: false,
               message: error,
             });
-          }
+          };
           return res.status(200).send({
             success: true,
             message: "Reset Password success",
           });
-        }
-      );
+        });
     } catch (error) {
       return res.status(500).send(error);
-    }
+    };
   },
   // ==========
   // Keep login
@@ -277,15 +284,13 @@ module.exports = {
               success: false,
               message: error,
             });
-          }
-          delete results[0].password;
+          };
           const token = createToken({ ...results[0] });
           return res.status(200).send({ ...results[0], token });
-        }
-      );
+        });
     } catch (error) {
       return res.status(500).send(error);
-    }
+    };
   },
   editProfile: (req, res) => {
     const { name, email, birthdate, gender } = req.body;
@@ -396,26 +401,36 @@ module.exports = {
   // Change password
   changePass: async (req, res) => {
     try {
-      const { password } = req.body;
-      const newPass = await hashPass(password);
-      db.query(
-        `UPDATE user set password=${db.escape(newPass)}
-      WHERE id=${db.escape(req.decript.id)};`,
-        (error, results) => {
-          if (error) {
-            return res.status(500).send({
-              success: false,
-              message: error,
-            });
-          }
-          return res.status(200).send({
-            success: true,
-            message: "Change Password success",
-          });
-        }
+      const { oldpassword, password } = req.body;
+      const passCheck = bcrypt.compareSync(
+        oldpassword,
+        req.decript.password,
       );
+      if (!passCheck) {
+        return res.status(406).send({
+          success: false,
+          message: "Your old password is wrong"
+        });
+      } else {
+        const newPass = await hashPass(password);
+        db.query(
+          `UPDATE user set password=${db.escape(newPass)}
+          WHERE id=${db.escape(req.decript.id)};`,
+          (error, results) => {
+            if (error) {
+              return res.status(500).send({
+                success: false,
+                message: error,
+              });
+            };
+            return res.status(200).send({
+              success: true,
+              message: "Change Password success",
+            });
+          });
+      };
     } catch (error) {
       return res.status(500).send(error);
-    }
+    };
   },
 };
