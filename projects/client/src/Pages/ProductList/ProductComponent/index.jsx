@@ -212,8 +212,7 @@ const ProductComponent = () => {
             dispatch(changeStoreAction({ defaultStore: e.target.value }))
           }
         >
-          <option value="Xmart PIK Jakarta">Xmart PIK Jakarta</option>
-          <option value="Xmart Tiara Medan">Xmart Tiara Medan</option>
+          <option value="XMart Jakarta">XMart Jakarta</option>
         </select>
       </div>
       <div className="flex flex-col justify-center px-14">
@@ -283,7 +282,8 @@ const ProductComponent = () => {
             <div
               className="flex-col justify-center box-content 
                             rounded-lg drop-shadow-md h-42 w-32 bg-white
-                            text-xs mx-5 my-2 pt-2 address"
+                            text-xs mx-5 my-2 pt-2 address
+                            hover:border border-[#86C649]"
             >
               <Link to={`/product-detail/${product.id}`}>
                 <img className="h-20 w-20 mx-auto mt-1" src={img} alt="img" />

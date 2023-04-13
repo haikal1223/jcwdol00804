@@ -72,7 +72,7 @@ function App() {
           <Route path="/my-address" element={<MyAddress />} />
           <Route path="/add-address" element={<AddAddress />} />
           <Route path="/order-confirmation" element={<OrderConfirmation />} />
-          <Route path="/payment" element={<Payment />} />
+          <Route path="/payment/:id" element={<Payment />} />
           <Route path="/order-list" element={<OrderList />} />
           <Route path="/order-detail/:id" element={<OrderDetail />} />
         </Route>

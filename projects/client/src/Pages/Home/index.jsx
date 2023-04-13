@@ -25,8 +25,8 @@ const Home = () => {
               dispatch(changeStoreAction({ defaultStore: e.target.value }))
             }
           >
-            <option value="Xmart PIK Jakarta">Xmart PIK Jakarta</option>
-            <option value="Xmart Tiara Medan">Xmart Tiara Medan</option>
+            <option value="XMart Jakarta">XMart Jakarta</option>
+            {/* <option value="Xmart Tiara Medan">Xmart Tiara Medan</option> */}
           </select>
         </div>
         {/* Greeting */}
