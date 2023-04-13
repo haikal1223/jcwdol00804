@@ -27,6 +27,7 @@ const PageAdmin = ({ children }) => {
   return (
     <div className="flex">
       {open ? (
+        // Sidebar Tutup
         <div className="w-16 flex flex-col h-screen p-3 bg-gray-800 shadow duration-300">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -51,7 +52,7 @@ const PageAdmin = ({ children }) => {
               <ul className="pt-2 pb-4 space-y-1 text-sm">
                 <li className="rounded-sm">
                   <Link
-                    href="#"
+                    to="#"
                     className="flex items-center p-2 space-x-3 rounded-md"
                   >
                     <svg
@@ -73,7 +74,7 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      href="#"
+                      to="#"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BsTags className="w-6 h-5 text-gray-100" />
@@ -82,7 +83,7 @@ const PageAdmin = ({ children }) => {
                 ) : (
                   <li className="rounded-sm">
                     <Link
-                      href="#"
+                      to="#"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BiGitBranch className="w-6 h-6 text-gray-100" />
@@ -92,7 +93,7 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      href="#"
+                      to="#"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BiCategoryAlt className="w-6 h-6 text-gray-100" />
@@ -102,7 +103,7 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      href="#"
+                      to="#"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BiReceipt className="w-6 h-6 text-gray-100" />
@@ -112,7 +113,7 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      href="#"
+                      to="#"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <TbDiscount2 className="w-6 h-6 text-gray-100" />
@@ -121,7 +122,7 @@ const PageAdmin = ({ children }) => {
                 ) : null}
                 <li className="rounded-sm">
                   <Link
-                    href="#"
+                    to="#"
                     className="flex items-center p-2 space-x-3 rounded-md"
                   >
                     <TbReportMoney className="w-6 h-6 text-gray-100" />
@@ -130,7 +131,7 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      href="#"
+                      to="#"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <TbArrowsExchange2 className="w-6 h-6 text-gray-100" />
@@ -166,6 +167,7 @@ const PageAdmin = ({ children }) => {
           </div>
         </div>
       ) : (
+        // Sidebar Buka
         <div className="w-60 flex flex-col h-screen p-3 bg-gray-800 shadow duration-300">
           <div className="space-y-3">
             <div className="flex flex-row items-center justify-between">
@@ -224,7 +226,7 @@ const PageAdmin = ({ children }) => {
               <ul className="pt-2 pb-4 space-y-1 text-sm">
                 <li className="rounded-sm">
                   <Link
-                    href="#"
+                    to="#"
                     className="flex items-center p-2 space-x-3 rounded-md"
                   >
                     <svg
@@ -247,7 +249,7 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      href="#"
+                      to="#"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BsTags className="w-6 h-5 text-gray-100" />
@@ -257,7 +259,7 @@ const PageAdmin = ({ children }) => {
                 ) : (
                   <li className="rounded-sm">
                     <Link
-                      href="#"
+                      to="#"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BiGitBranch className="w-6 h-6 text-gray-100" />
@@ -268,7 +270,7 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      href="#"
+                      to="#"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BiCategoryAlt className="w-6 h-6 text-gray-100" />
@@ -279,7 +281,7 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      href="#"
+                      to="#"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BiReceipt className="w-6 h-6 text-gray-100" />
@@ -290,7 +292,7 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      href="#"
+                      to="#"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <TbDiscount2 className="w-6 h-6 text-gray-100" />
@@ -300,7 +302,7 @@ const PageAdmin = ({ children }) => {
                 ) : null}
                 <li className="rounded-sm">
                   <Link
-                    href="#"
+                    to="#"
                     className="flex items-center p-2 space-x-3 rounded-md"
                   >
                     <TbReportMoney className="w-6 h-6 text-gray-100" />
@@ -310,7 +312,7 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      href="#"
+                      to="#"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <TbArrowsExchange2 className="w-6 h-6 text-gray-100" />
@@ -342,7 +344,7 @@ const PageAdmin = ({ children }) => {
                         d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
                       />
                     </svg>
-                    <span className="text-gray-100">Logout</span>
+                    <span className="text-gray-100">Sign out</span>
                   </button>
                 </li>
               </ul>

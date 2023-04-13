@@ -104,6 +104,7 @@ function App() {
                 <Route path="/payment" element={<Payment />} />
                 <Route path="/order-list" element={<OrderList />} />
                 <Route path="/order-detail/:id" element={<OrderDetail />} />
+                <Route path="*" element={<NotFound />} />
               </Route>
             </>
           ) : null}

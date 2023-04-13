@@ -185,13 +185,20 @@ module.exports = {
   signIn: async (req, res) => {
     try {
       db.query(
-        `SELECT user.*, branch.name AS branch_name from user JOIN branch ON branch.id = user.branch_id
+        `SELECT user.*, branch.name AS branch_name from user LEFT JOIN branch ON branch.id = user.branch_id
       WHERE user.email=${db.escape(req.body.email)};`,
         (error, results) => {
           if (error) {
             return res.status(500).send({
               success: false,
               message: error,
+            });
+          }
+          if (!results.length) {
+            return res.status(404).send({
+              success: false,
+              message:
+                "This email is not registered, please input the correct email",
             });
           }
           const passCheck = bcrypt.compareSync(
@@ -219,7 +226,7 @@ module.exports = {
   keepLogin: async (req, res) => {
     try {
       db.query(
-        `SELECT user.*, branch.name AS branch_name from user JOIN branch ON branch.id = user.branch_id
+        `SELECT user.*, branch.name AS branch_name from user LEFT JOIN branch ON branch.id = user.branch_id
       WHERE user.id=${db.escape(req.decript.id)};`,
         (error, results) => {
           if (error) {
