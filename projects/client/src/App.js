@@ -27,6 +27,9 @@ import Payment from "./Pages/Payment";
 import OrderList from "./Pages/OrderList";
 import OrderDetail from "./Pages/OrderDetail";
 import AdminHome from "./Pages/Admin/Home";
+import ManageProduct from "./Pages/Admin/ManageProduct";
+import AddProduct from "./Pages/Admin/AddProduct";
+import EditProduct from "./Pages/Admin/EditProduct";
 
 function App() {
   const dispatch = useDispatch();
@@ -54,6 +57,10 @@ function App() {
           setSpinner(true);
         })
         .catch((err) => {
+          if (err.response.status === 401) {
+            localStorage.removeItem("xmart_login");
+            setSpinner(true);
+          }
           console.log(err);
         });
     } else {
@@ -111,6 +118,9 @@ function App() {
           {role_id === 2 || role_id === 3 ? (
             <>
               <Route path="/admin" element={<AdminHome />} />
+              <Route path="/admin/manage-product" element={<ManageProduct />} />
+              <Route path="/admin/add-product" element={<AddProduct />} />
+              <Route path="/admin/edit-product/:id" element={<EditProduct />} />
               <Route path="*" element={<NotFound />} />
             </>
           ) : null}
