@@ -23,9 +23,9 @@ const NotFound = () => {
         <button
           className="rounded-full bg-[#82CD47] w-7/12 h-[38px] text-white mt-10 text-[20px] font-[600] leading-6 shadow-md"
           onClick={() => {
-            if (role_id === 1) {
+            if (!role_id || role_id === 1) {
               navigate("/");
-            } else {
+            } else if (role_id === 2 || role_id === 3) {
               navigate("/admin");
             }
           }}
