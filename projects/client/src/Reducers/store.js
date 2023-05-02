@@ -1,5 +1,5 @@
 const INITIAL_STATE = {
-  defaultStore: "XMart Jakarta",
+  defaultStore: "Xmart PIK Jakarta",
 };
 
 export const storeReducer = (state = INITIAL_STATE, action) => {

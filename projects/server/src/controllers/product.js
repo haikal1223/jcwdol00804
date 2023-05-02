@@ -399,7 +399,6 @@ module.exports = {
             product_id: req.params.id,
             type: "add_stock",
             quantity_change: addStock,
-            is_increase: 1,
           },
           (err2, results2) => {
             if (err2) {
@@ -418,7 +417,7 @@ module.exports = {
     );
   },
   adjustStock: (req, res) => {
-    const { actualQty, quantity_change, is_increase } = req.body;
+    const { actualQty, quantity_change } = req.body;
     if (actualQty < 0) {
       return res.status(400).send({
         success: false,
@@ -443,7 +442,6 @@ module.exports = {
             product_id: req.params.id,
             type: "stock_adjustment",
             quantity_change,
-            is_increase,
           },
           (err2, results2) => {
             if (err2) {
