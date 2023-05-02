@@ -27,6 +27,9 @@ import Payment from "./Pages/Payment";
 import OrderList from "./Pages/OrderList";
 import OrderDetail from "./Pages/OrderDetail";
 import AdminHome from "./Pages/Admin/Home";
+import ManageProduct from "./Pages/Admin/ManageProduct";
+import AddProduct from "./Pages/Admin/AddProduct";
+import EditProduct from "./Pages/Admin/EditProduct";
 
 function App() {
   const dispatch = useDispatch();
@@ -54,6 +57,10 @@ function App() {
           setSpinner(true);
         })
         .catch((err) => {
+          if (err.response.status === 401) {
+            localStorage.removeItem("xmart_login");
+            setSpinner(true);
+          }
           console.log(err);
         });
     } else {
@@ -77,6 +84,7 @@ function App() {
               <Route path="/sign-up" element={<SignUp />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/verify-email" element={<Verify />} />
               <Route path="/product-detail/:id" element={<ProductDetail />} />
               <Route path="/product-list" element={<ProductList />} />
               <Route path="*" element={<NotFound />} />
@@ -85,11 +93,9 @@ function App() {
           {role_id === 1 ? (
             <>
               <Route path="/" element={<Home />} />
-              <Route path="/sign-in" element={<SignIn />} />
-              <Route path="/sign-up" element={<SignUp />} />
               <Route path="/product-detail/:id" element={<ProductDetail />} />
               <Route path="/product-list" element={<ProductList />} />
-              <Route path="/verify-email" element={<Verify />} /
+              <Route path="/verify-email" element={<Verify />} />
               <Route path="/change-password" element={<ChangePassword />} />
               <Route element={<RestrictedRoutes />}>
                 <Route path="/personal-data" element={<PersonalData />} />
@@ -100,7 +106,10 @@ function App() {
                 <Route path="/payment/:id" element={<Payment />} />
                 <Route path="/order-list" element={<OrderList />} />
                 <Route path="/order-detail/:id" element={<OrderDetail />} />
-                <Route path="/order-confirmation" element={<OrderConfirmation />} />               
+                <Route
+                  path="/order-confirmation"
+                  element={<OrderConfirmation />}
+                />
                 <Route path="*" element={<NotFound />} />
               </Route>
             </>
@@ -108,6 +117,9 @@ function App() {
           {role_id === 2 || role_id === 3 ? (
             <>
               <Route path="/admin" element={<AdminHome />} />
+              <Route path="/admin/manage-product" element={<ManageProduct />} />
+              <Route path="/admin/add-product" element={<AddProduct />} />
+              <Route path="/admin/edit-product/:id" element={<EditProduct />} />
               <Route path="*" element={<NotFound />} />
             </>
           ) : null}
