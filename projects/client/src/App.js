@@ -82,6 +82,9 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/sign-in" element={<SignIn />} />
               <Route path="/sign-up" element={<SignUp />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/verify-email" element={<Verify />} />
               <Route path="/product-detail/:id" element={<ProductDetail />} />
               <Route path="/product-list" element={<ProductList />} />
               <Route path="*" element={<NotFound />} />
@@ -90,13 +93,9 @@ function App() {
           {role_id === 1 ? (
             <>
               <Route path="/" element={<Home />} />
-              <Route path="/sign-in" element={<SignIn />} />
-              <Route path="/sign-up" element={<SignUp />} />
               <Route path="/product-detail/:id" element={<ProductDetail />} />
               <Route path="/product-list" element={<ProductList />} />
               <Route path="/verify-email" element={<Verify />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/change-password" element={<ChangePassword />} />
               <Route element={<RestrictedRoutes />}>
                 <Route path="/personal-data" element={<PersonalData />} />
@@ -104,13 +103,13 @@ function App() {
                 <Route path="/profile-setting" element={<ProfileSetting />} />
                 <Route path="/my-address" element={<MyAddress />} />
                 <Route path="/add-address" element={<AddAddress />} />
+                <Route path="/payment/:id" element={<Payment />} />
+                <Route path="/order-list" element={<OrderList />} />
+                <Route path="/order-detail/:id" element={<OrderDetail />} />
                 <Route
                   path="/order-confirmation"
                   element={<OrderConfirmation />}
                 />
-                <Route path="/payment" element={<Payment />} />
-                <Route path="/order-list" element={<OrderList />} />
-                <Route path="/order-detail/:id" element={<OrderDetail />} />
                 <Route path="*" element={<NotFound />} />
               </Route>
             </>
