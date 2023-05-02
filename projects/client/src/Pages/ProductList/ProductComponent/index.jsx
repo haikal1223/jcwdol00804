@@ -292,7 +292,8 @@ const ProductComponent = () => {
             <div
               className="flex-col justify-center box-content 
                             rounded-lg drop-shadow-md h-42 w-32 bg-white
-                            text-xs mx-5 my-2 pt-2 address"
+                            text-xs mx-5 my-2 pt-2
+                            hover:border border-[#86C649]"
             >
               <Link to={`/product-detail/${product.id}`}>
                 <img className="h-20 w-20 mx-auto mt-1" src={img} alt="img" />

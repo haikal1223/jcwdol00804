@@ -33,7 +33,7 @@ const CategoryComponent = ({ branchName }) => {
             state={{ from: category.category_id }}
           >
             <div className="box-content rounded h-16 w-16 bg-white text-xs text-center mx-2 my-2">
-              <img className="h-15 w-15 mx-auto my-2" src={img} alt="img" />
+              <img className="h-15 w-15 mx-auto my-2 hover:border border-[#86C649]" src={img} alt="img" />
               <div className="text-gray-500 text-center mt-2">
                 {category.category_id}
               </div>
