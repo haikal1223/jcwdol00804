@@ -259,10 +259,26 @@ module.exports = {
               message: err,
             });
           }
-          return res.status(201).send({
-            success: true,
-            message: "Add product success",
-          });
+          db.query(
+            `INSERT INTO stock_history SET ?`,
+            {
+              product_id: results.insertId,
+              type: "add_stock",
+              quantity_change: 0,
+            },
+            (err2, results2) => {
+              if (err2) {
+                return res.status(500).send({
+                  success: false,
+                  message: err2,
+                });
+              }
+              return res.status(201).send({
+                success: true,
+                message: "Add product success",
+              });
+            }
+          );
         }
       );
     } catch (error) {
