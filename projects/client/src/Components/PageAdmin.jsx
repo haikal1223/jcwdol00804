@@ -133,7 +133,7 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      to="#"
+                      to="/admin/stock-movement-report"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <TbArrowsExchange2 className="w-6 h-6 text-gray-100" />
@@ -321,7 +321,7 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      to="#"
+                      to="/admin/stock-movement-report"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <TbArrowsExchange2 className="w-6 h-6 text-gray-100" />

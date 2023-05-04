@@ -105,6 +105,7 @@ const ManageProduct = () => {
       .catch((err) => {
         console.log(err);
         setProductList([]);
+        setCountResult(0);
       });
   }, [search, currentPage, token, sortBy, sortNameAsc, sortPriceAsc]);
 

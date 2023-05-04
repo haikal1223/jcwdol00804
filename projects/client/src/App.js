@@ -30,6 +30,7 @@ import AdminHome from "./Pages/Admin/Home";
 import ManageProduct from "./Pages/Admin/ManageProduct";
 import AddProduct from "./Pages/Admin/AddProduct";
 import EditProduct from "./Pages/Admin/EditProduct";
+import StockMovementReport from "./Pages/Admin/StockMovementReport";
 
 function App() {
   const dispatch = useDispatch();
@@ -120,6 +121,10 @@ function App() {
               <Route path="/admin/manage-product" element={<ManageProduct />} />
               <Route path="/admin/add-product" element={<AddProduct />} />
               <Route path="/admin/edit-product/:id" element={<EditProduct />} />
+              <Route
+                path="/admin/stock-movement-report"
+                element={<StockMovementReport />}
+              />
               <Route path="*" element={<NotFound />} />
             </>
           ) : null}
