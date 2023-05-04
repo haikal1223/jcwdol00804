@@ -282,7 +282,7 @@ const OrderReport = () => {
                             return (
                                 <div
                                     key={idx}
-                                    onClick={() => navigate(`/order-report/${val.id}`)}
+                                    onClick={() => navigate(`/admin/order-report/${val.id}`)}
                                     className="container rounded-xl shadow-md border h-min-[200px] w-full py-2 mx-2 mb-[5px]"
                                 >
                                     <div className="flex flex-row items-center justify-between px-3">

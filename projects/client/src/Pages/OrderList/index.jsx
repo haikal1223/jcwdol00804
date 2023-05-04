@@ -57,8 +57,7 @@ const OrderList = () => {
         )}&end_date=${format(
           dateRange[0].endDate,
           "yyyy-MM-dd"
-        )}&sort_by=${sortBy}&order=${
-          sortBy === "invoice_no" ? sortInvAsc : sortDateNewest
+        )}&sort_by=${sortBy}&order=${sortBy === "invoice_no" ? sortInvAsc : sortDateNewest
         }&page=${page}`,
         {
           headers: {
@@ -123,8 +122,8 @@ const OrderList = () => {
             </option>
             <option value="Diproses">Diproses</option>
             <option value="Dikirim">Dikirim</option>
-            <option value="Pesanan Dikonfirmasi">Pesanan Dikonfirmasi</option>
             <option value="Dibatalkan">Dibatalkan</option>
+            <option value="Selesai">Selesai</option>
           </select>
           <div
             className={

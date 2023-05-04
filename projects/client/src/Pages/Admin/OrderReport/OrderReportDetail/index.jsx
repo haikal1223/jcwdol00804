@@ -246,7 +246,7 @@ const OrderReportDetail = () => {
                                     text-white text-xl font-[500]
                                     leading-6 shadow-md
                                     hover:opacity-50 mx-2"
-                        onClick={() => navigate("/order-report")}
+                        onClick={() => navigate("/admin/order-report")}
                     >
                         Back
                     </button>

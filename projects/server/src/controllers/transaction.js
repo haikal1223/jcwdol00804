@@ -342,4 +342,29 @@ module.exports = {
             return res.status(500).send(error);
         }
     },
+    completeOrder: (req, res) => {
+        try {
+            db.query(
+                `UPDATE xmart.order SET ?
+                WHERE id=${req.params.id}`,
+                {
+                    status: "Selesai",
+                },
+                (error, results) => {
+                    if (error) {
+                        return res.status(500).send({
+                            success: false,
+                            message: error,
+                        });
+                    }
+                    return res.status(200).send({
+                        success: true,
+                        message: `Pesanan Selesai`,
+                    });
+                }
+            );
+        } catch (error) {
+            return res.status(500).send(error);
+        }
+    },
 }

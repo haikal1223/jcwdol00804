@@ -11,5 +11,6 @@ route.patch("/accept-payment/:id", transactionController.acceptPayment);
 route.patch("/refuse-payment/:id", transactionController.refusePayment);
 route.patch("/send-order/:id", transactionController.sendOrder);
 route.patch("/cancel-order/:id", transactionController.cancelOrder);
+route.patch("/complete-order/:id", transactionController.completeOrder);
 
 module.exports = route;
