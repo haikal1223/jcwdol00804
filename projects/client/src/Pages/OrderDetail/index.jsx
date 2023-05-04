@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Page from "../../Components/Page";
 import BackButton from "../../Components/BackButton";
 import { FcShop } from "react-icons/fc";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../../helper";
 import { format } from "date-fns";
@@ -11,12 +11,19 @@ const OrderDetail = () => {
   const [orderDetail, setOrderDetail] = useState({});
   const [productInfo, setProductInfo] = useState([]);
 
+  const navigate = useNavigate();
   const { id } = useParams();
   const getTotalPrice = (arr) => {
     return arr.map((val) => val.price * val.quantity).reduce((p, c) => p + c);
   };
 
-  useEffect(() => {
+  const handleCancel = async () => {
+    axios.patch(`${API_URL}/order/cancel-order/${id}`);
+    alert("Order Canceled")
+    getOrderDetail();
+  }
+
+  const getOrderDetail = async () => {
     const token = localStorage.getItem("xmart_login");
     let promise1 = axios.get(`${API_URL}/order/get-order-detail/${id}`, {
       headers: {
@@ -35,6 +42,10 @@ const OrderDetail = () => {
         setProductInfo(res[1].data);
       })
       .catch((err) => console.log(err));
+  }
+  useEffect(() => {
+    getOrderDetail();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   return (
@@ -178,12 +189,18 @@ const OrderDetail = () => {
             </div>
           </div>
         </div>
-        {orderDetail.status && orderDetail.status === "Menunggu Pembayaran" ? (
+        {orderDetail.status
+          && orderDetail.status === "Menunggu Pembayaran" ? (
           <div className="self-center mb-16">
-            <button className="mr-2 py-[2px] px-4 bg-red-500 rounded-full text-lg font-semibold shadow-md text-white">
+            <button
+              className="mr-2 py-[2px] px-4 bg-red-500 rounded-full text-lg font-semibold shadow-md text-white"
+              onClick={handleCancel}
+            >
               Cancel Order
             </button>
-            <button className="px-4 py-[2px]  bg-[#82cd47] rounded-full text-lg font-semibold  shadow-md text-white">
+            <button
+              className="px-4 py-[2px]  bg-[#82cd47] rounded-full text-lg font-semibold  shadow-md text-white"
+              onClick={() => navigate(`/payment/${id}`)}>
               Proceed To Payment
             </button>
           </div>

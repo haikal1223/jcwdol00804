@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { logoutAction } from "../Actions/user";
@@ -8,30 +8,31 @@ import { BiCategoryAlt, BiReceipt, BiGitBranch } from "react-icons/bi";
 import { TbDiscount2, TbReportMoney, TbArrowsExchange2 } from "react-icons/tb";
 import { GiQueenCrown } from "react-icons/gi";
 import { Avatar } from "@chakra-ui/avatar";
+import { toogleSideBarAction } from "../Actions/admin";
 
 const PageAdmin = ({ children }) => {
-  const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { role_id, profile_img, name, email, branch_name } = useSelector(
-    (state) => {
+
+  const { role_id, profile_img, name, email, branch_name, sidebar } =
+    useSelector((state) => {
       return {
         role_id: state.userReducer.role_id,
         profile_img: state.userReducer.profile_img,
         name: state.userReducer.name,
         email: state.userReducer.email,
         branch_name: state.userReducer.branch_name,
+        sidebar: state.adminReducer.toogleSideBar,
       };
-    }
-  );
+    });
   return (
     <div className="flex">
-      {open ? (
+      {!sidebar ? (
         // Sidebar Tutup
-        <div className="w-16 flex flex-col h-screen p-3 bg-gray-800 shadow duration-300">
+        <div className="w-[5%] flex flex-col min-h-screen p-3 bg-gray-800 shadow duration-200">
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <button onClick={() => setOpen(!open)}>
+            <div className="flex justify-center mr-1">
+              <button onClick={() => dispatch(toogleSideBarAction(true))}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="w-6 h-6 text-white ml-2"
@@ -48,7 +49,8 @@ const PageAdmin = ({ children }) => {
                 </svg>
               </button>
             </div>
-            <div className="flex-1">
+            {/* Menu */}
+            <div className="flex justify-center">
               <ul className="pt-2 pb-4 space-y-1 text-sm">
                 <li className="rounded-sm">
                   <Link
@@ -74,7 +76,7 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      to="/admin"
+                      to="/admin/manage-product"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BsTags className="w-6 h-5 text-gray-100" />
@@ -83,7 +85,7 @@ const PageAdmin = ({ children }) => {
                 ) : (
                   <li className="rounded-sm">
                     <Link
-                      to="/manage-branch"
+                      to="/admin/manage-branch"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BiGitBranch className="w-6 h-6 text-gray-100" />
@@ -93,7 +95,7 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      to="/manage-category"
+                      to="/admin/manage-category"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BiCategoryAlt className="w-6 h-6 text-gray-100" />
@@ -103,7 +105,7 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      to="/manage-order"
+                      to="/admin/manage-order"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BiReceipt className="w-6 h-6 text-gray-100" />
@@ -112,7 +114,7 @@ const PageAdmin = ({ children }) => {
                 ) : (
                   <li className="rounded-sm">
                     <Link
-                      to="/order-report"
+                      to="/admin/order-report"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BiReceipt className="w-6 h-6 text-gray-100" />
@@ -177,7 +179,7 @@ const PageAdmin = ({ children }) => {
         </div>
       ) : (
         // Sidebar Buka
-        <div className="w-60 flex flex-col h-screen p-3 bg-gray-800 shadow duration-300">
+        <div className="w-[22%] flex flex-col min-h-screen p-3 bg-gray-800 shadow duration-300">
           <div className="space-y-3">
             <div className="flex flex-row items-center justify-between">
               <img
@@ -186,7 +188,7 @@ const PageAdmin = ({ children }) => {
                 className="w-14 h-14 top-[.5px] left-4 absolute"
               />
               <h2 className="text-xl font-bold text-white ml-16">Dashboard</h2>
-              <button onClick={() => setOpen(!open)}>
+              <button onClick={() => dispatch(toogleSideBarAction(false))}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="w-6 h-6 text-white"
@@ -203,6 +205,7 @@ const PageAdmin = ({ children }) => {
                 </svg>
               </button>
             </div>
+            {/* Admin Info */}
             <div className="flex flex-col items-center">
               <Avatar
                 src={profile_img && `http://localhost:8000/${profile_img}`}
@@ -211,26 +214,31 @@ const PageAdmin = ({ children }) => {
                 borderRadius="50%"
                 w="35px"
                 h="35px"
-                onClick={() => navigate("/profile-setting")}
               />
               <span className="text-gray-100 text-sm mt-2 font-bold">
                 {name}
               </span>
               {role_id === 2 ? (
-                <span className="text-gray-300 text-xs mt-1 font-bold">
-                  <BsShop className="inline mb-1 mr-[1px]" />{" "}
-                  {branch_name && branch_name} Branch Admin
-                </span>
+                <>
+                  <span className="text-gray-300 text-xs mt-2 font-bold truncate w-full text-center">
+                    <BsShop className="inline mb-1 mr-[1px]" />{" "}
+                    {branch_name && branch_name}
+                  </span>
+                  <div className="text-gray-300 text-xs font-bold">
+                    Branch Admin
+                  </div>
+                </>
               ) : (
                 <span className="text-gray-300 text-xs mt-1 font-bold flex flex-row items-center">
                   <GiQueenCrown className="inline mr-[2px]" size={16} />
                   Xmart Super Admin
                 </span>
               )}
-              <span className="text-gray-300 text-xs mt-1 font-bold">
+              <span className="text-gray-300 text-xs mt-1 font-bold w-full text-center truncate">
                 {email}
               </span>
             </div>
+            {/* Menu */}
             <div className="flex-1">
               <ul className="pt-2 pb-4 space-y-1 text-sm">
                 <li className="rounded-sm">
@@ -258,7 +266,7 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      to="#"
+                      to="/admin/manage-product"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BsTags className="w-6 h-5 text-gray-100" />
@@ -268,7 +276,7 @@ const PageAdmin = ({ children }) => {
                 ) : (
                   <li className="rounded-sm">
                     <Link
-                      to="/manage-branch"
+                      to="/admin/manage-branch"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BiGitBranch className="w-6 h-6 text-gray-100" />
@@ -279,7 +287,7 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      to="/manage-category"
+                      to="/admin/manage-category"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BiCategoryAlt className="w-6 h-6 text-gray-100" />
@@ -290,7 +298,7 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      to="/manage-order"
+                      to="/admin/manage-order"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BiReceipt className="w-6 h-6 text-gray-100" />
@@ -300,7 +308,7 @@ const PageAdmin = ({ children }) => {
                 ) : (
                   <li className="rounded-sm">
                     <Link
-                      to="/order-report"
+                      to="/admin/order-report"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BiReceipt className="w-6 h-6 text-gray-100" />
@@ -371,7 +379,7 @@ const PageAdmin = ({ children }) => {
           </div>
         </div>
       )}
-      <div className="px-5 py-4">{children}</div>
+      <div className="px-5 py-4 w-full">{children}</div>
     </div>
   );
 };

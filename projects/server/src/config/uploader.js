@@ -2,7 +2,7 @@ const multer = require("multer");
 const fs = require("fs");
 
 module.exports = {
-  profileImgUploader: (directory, filePrefix) => {
+  imgUploader: (directory, filePrefix) => {
     // Define default directory location
     let defaultDir = "./public";
     // Multer configuration
