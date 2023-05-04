@@ -10,6 +10,7 @@ const {
 const { readToken } = require("../config/token");
 const { profileImgUploader } = require("../config/uploader");
 
+// User
 route.post("/sign-up", validateSignUp, userController.signUp);
 route.patch("/verify", readToken, userController.verifyEmail);
 route.post("/sign-in", validateSignIn, userController.signIn);
@@ -41,5 +42,9 @@ route.patch(
   userController.uploadProfileImg
 );
 route.get("/get-user-info", readToken, userController.getUserInfo);
+
+// Admin
+route.get("/get-branch-admin", userController.getBranchAdmin);
+route.post("/add-branch-admin", userController.addBranchAdmin);
 
 module.exports = route;

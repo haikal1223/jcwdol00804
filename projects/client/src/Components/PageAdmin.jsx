@@ -52,7 +52,7 @@ const PageAdmin = ({ children }) => {
               <ul className="pt-2 pb-4 space-y-1 text-sm">
                 <li className="rounded-sm">
                   <Link
-                    to="#"
+                    to="/admin"
                     className="flex items-center p-2 space-x-3 rounded-md"
                   >
                     <svg
@@ -74,7 +74,7 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      to="#"
+                      to="/admin"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BsTags className="w-6 h-5 text-gray-100" />
@@ -83,7 +83,7 @@ const PageAdmin = ({ children }) => {
                 ) : (
                   <li className="rounded-sm">
                     <Link
-                      to="#"
+                      to="/manage-branch"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BiGitBranch className="w-6 h-6 text-gray-100" />
@@ -93,7 +93,7 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      to="#"
+                      to="/manage-category"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BiCategoryAlt className="w-6 h-6 text-gray-100" />
@@ -103,13 +103,22 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      to="#"
+                      to="/manage-order"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BiReceipt className="w-6 h-6 text-gray-100" />
                     </Link>
                   </li>
-                ) : null}
+                ) : (
+                  <li className="rounded-sm">
+                    <Link
+                      to="/order-report"
+                      className="flex items-center p-2 space-x-3 rounded-md"
+                    >
+                      <BiReceipt className="w-6 h-6 text-gray-100" />
+                    </Link>
+                  </li>
+                )}
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
@@ -226,7 +235,7 @@ const PageAdmin = ({ children }) => {
               <ul className="pt-2 pb-4 space-y-1 text-sm">
                 <li className="rounded-sm">
                   <Link
-                    to="#"
+                    to="/admin"
                     className="flex items-center p-2 space-x-3 rounded-md"
                   >
                     <svg
@@ -259,7 +268,7 @@ const PageAdmin = ({ children }) => {
                 ) : (
                   <li className="rounded-sm">
                     <Link
-                      to="#"
+                      to="/manage-branch"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BiGitBranch className="w-6 h-6 text-gray-100" />
@@ -270,7 +279,7 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      to="#"
+                      to="/manage-category"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BiCategoryAlt className="w-6 h-6 text-gray-100" />
@@ -281,14 +290,24 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      to="#"
+                      to="/manage-order"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BiReceipt className="w-6 h-6 text-gray-100" />
                       <span className="text-gray-100">Manage Order</span>
                     </Link>
                   </li>
-                ) : null}
+                ) : (
+                  <li className="rounded-sm">
+                    <Link
+                      to="/order-report"
+                      className="flex items-center p-2 space-x-3 rounded-md"
+                    >
+                      <BiReceipt className="w-6 h-6 text-gray-100" />
+                      <span className="text-gray-100">Order Report</span>
+                    </Link>
+                  </li>
+                )}
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link

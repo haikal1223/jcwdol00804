@@ -27,6 +27,13 @@ import Payment from "./Pages/Payment";
 import OrderList from "./Pages/OrderList";
 import OrderDetail from "./Pages/OrderDetail";
 import AdminHome from "./Pages/Admin/Home";
+import ManageBranch from "./Pages/Admin/ManageBranch";
+import ManageCategory from "./Pages/Admin/ManageCategory";
+import CustomizeCategory from "./Pages/Admin/ManageCategory/CustomizeCategory";
+import OrderReport from "./Pages/Admin/OrderReport";
+import OrderReportDetail from "./Pages/Admin/OrderReport/OrderReportDetail";
+import ManageOrder from "./Pages/Admin/ManageOrder";
+import ManageOrderDetail from "./Pages/Admin/ManageOrder/ManageOrderDetail";
 
 function App() {
   const dispatch = useDispatch();
@@ -75,6 +82,8 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/sign-in" element={<SignIn />} />
               <Route path="/sign-up" element={<SignUp />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/product-detail/:id" element={<ProductDetail />} />
               <Route path="/product-list" element={<ProductList />} />
               <Route path="*" element={<NotFound />} />
@@ -88,8 +97,6 @@ function App() {
               <Route path="/product-detail/:id" element={<ProductDetail />} />
               <Route path="/product-list" element={<ProductList />} />
               <Route path="/verify-email" element={<Verify />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/change-password" element={<ChangePassword />} />
               <Route element={<RestrictedRoutes />}>
                 <Route path="/personal-data" element={<PersonalData />} />
@@ -108,10 +115,23 @@ function App() {
               </Route>
             </>
           ) : null}
-          {role_id === 2 || role_id === 3 ? (
+          {role_id === 2 ? (
             <>
               <Route path="/admin" element={<AdminHome />} />
               <Route path="*" element={<NotFound />} />
+              <Route path="/manage-category" element={<ManageCategory />} />
+              <Route path="/manage-category/:id" element={<CustomizeCategory />} />
+              <Route path="/manage-order" element={<ManageOrder />} />
+              <Route path="/manage-order/:id" element={<ManageOrderDetail />} />
+            </>
+          ) : null}
+          {role_id === 3 ? (
+            <>
+              <Route path="/admin" element={<AdminHome />} />
+              <Route path="*" element={<NotFound />} />
+              <Route path="/manage-branch" element={<ManageBranch />} />
+              <Route path="/order-report" element={<OrderReport />} />
+              <Route path="/order-report/:id" element={<OrderReportDetail />} />
             </>
           ) : null}
         </Routes>

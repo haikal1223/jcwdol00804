@@ -128,7 +128,7 @@ const OrderDetail = () => {
             <div className="flex flex-col">
               <div className="px-5 font-bold">
                 {orderDetail.status &&
-                orderDetail.status === "Menunggu Pembayaran"
+                  orderDetail.status === "Menunggu Pembayaran"
                   ? "Shopping Summary"
                   : "Payment Detail"}
               </div>
@@ -163,7 +163,7 @@ const OrderDetail = () => {
               <span className="font-bold">
                 {" "}
                 {orderDetail.status &&
-                orderDetail.status === "Menunggu Pembayaran"
+                  orderDetail.status === "Menunggu Pembayaran"
                   ? "Total Shopping"
                   : "Total Payment"}
               </span>

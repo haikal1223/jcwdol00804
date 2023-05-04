@@ -243,6 +243,9 @@ const OrderList = () => {
                 </div>
               </div>
               <div className="h-[1px] bg-slate-200 w-[95%] mt-1 ml-3"></div>
+              <div className="text-base font-bold px-3 pt-2">
+                {val.branch_name}
+              </div>
               <div className="flex flex-row px-3 items-center">
                 <img
                   src="https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-6.png"

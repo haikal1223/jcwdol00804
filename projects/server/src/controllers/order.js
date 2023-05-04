@@ -35,20 +35,28 @@ module.exports = {
   getOrderList: (req, response) => {
     const { inv, status, start_date, end_date, order, sort_by, page } =
       req.query;
-    let limit = 3;
+    let limit = 6;
     let offset = (page - 1) * limit;
     const result = () => {
       return new Promise(async (resolve, reject) => {
         try {
           const res = await dbQuery(
-            `SELECT b.id, c.product_img, a.quantity, b.status, b.invoice_no, b.created_at, c.name, SUM(a.quantity * c. price) AS total_purchased, COUNT(a.id) AS total_items FROM order_item a JOIN xmart.order b ON a.order_id = b.id JOIN product c ON c.id = a.product_id WHERE b.user_id = ${
-              req.decript.id
-            } AND b.invoice_no LIKE '%${inv}%' AND b.status LIKE '%${status}%' AND b.created_at >= '${start_date} 00:00:00' AND b.created_at <= '${end_date} 23:59:59' GROUP BY b.id HAVING total_items <> 0 ORDER BY b.${sort_by} ${
-              order === "true"
-                ? sort_by === "created_at"
-                  ? "DESC"
-                  : "ASC"
-                : sort_by === "created_at"
+            `SELECT b.id, c.product_img, d.name AS branch_name, a.quantity, b.status, b.invoice_no, b.created_at, c.name, SUM(a.quantity * c. price) AS total_purchased, COUNT(a.id) AS total_items
+            FROM order_item a
+            JOIN xmart.order b ON a.order_id = b.id
+            JOIN product c ON c.id = a.product_id
+            JOIN branch d ON c.branch_id = d.id
+            WHERE b.user_id = ${req.decript.id} 
+            AND b.invoice_no LIKE '%${inv}%' 
+            AND b.status LIKE '%${status}%' 
+            AND b.created_at >= '${start_date} 00:00:00' 
+            AND b.created_at <= '${end_date} 23:59:59' 
+            GROUP BY b.id HAVING total_items <> 0 
+            ORDER BY b.${sort_by} ${order === "true"
+              ? sort_by === "created_at"
+                ? "DESC"
+                : "ASC"
+              : sort_by === "created_at"
                 ? "ASC"
                 : "DESC"
             } LIMIT ${limit} OFFSET ${offset}`
@@ -63,14 +71,22 @@ module.exports = {
       return new Promise(async (resolve, reject) => {
         try {
           const res = await dbQuery(
-            `SELECT b.id, c.product_img, a.quantity, b.status, b.invoice_no, b.created_at, c.name, SUM(a.quantity * c. price) AS total_purchased, COUNT(a.id) AS total_items FROM order_item a JOIN xmart.order b ON a.order_id = b.id JOIN product c ON c.id = a.product_id WHERE b.user_id = ${
-              req.decript.id
-            } AND b.invoice_no LIKE '%${inv}%' AND b.status LIKE '%${status}%' AND b.created_at >= '${start_date} 00:00:00' AND b.created_at <= '${end_date} 23:59:59' GROUP BY b.id HAVING total_items <> 0 ORDER BY b.${sort_by} ${
-              order === "true"
-                ? sort_by === "created_at"
-                  ? "DESC"
-                  : "ASC"
-                : sort_by === "created_at"
+            `SELECT b.id, c.product_img, d.name AS branch_name, a.quantity, b.status, b.invoice_no, b.created_at, c.name, SUM(a.quantity * c. price) AS total_purchased, COUNT(a.id) AS total_items
+            FROM order_item a
+            JOIN xmart.order b ON a.order_id = b.id
+            JOIN product c ON c.id = a.product_id
+            JOIN branch d ON c.branch_id = d.id
+            WHERE b.user_id = ${req.decript.id} 
+            AND b.invoice_no LIKE '%${inv}%' 
+            AND b.status LIKE '%${status}%' 
+            AND b.created_at >= '${start_date} 00:00:00' 
+            AND b.created_at <= '${end_date} 23:59:59' 
+            GROUP BY b.id HAVING total_items <> 0 
+            ORDER BY b.${sort_by} ${order === "true"
+              ? sort_by === "created_at"
+                ? "DESC"
+                : "ASC"
+              : sort_by === "created_at"
                 ? "ASC"
                 : "DESC"
             }`
@@ -90,12 +106,18 @@ module.exports = {
       }
       return response
         .status(200)
-        .send({ result: res[0], limit, allResult: res[1] });
+        .send({
+          result: res[0], limit,
+          allResult: res[1],
+        });
     });
   },
   getOrderDetail: (req, res) => {
     db.query(
-      `SELECT a.id, a.status, a.courier, a.shipping_cost, a.invoice_no, a.created_at, b.address, b.city, b.province, b.zipcode FROM xmart.order a JOIN address b ON a.address_id = b.id WHERE a.id = ${req.params.id}`,
+      `SELECT a.id, a.status, a.courier, a.shipping_cost, a.invoice_no, a.created_at, b.address, b.city, b.province, b.zipcode 
+      FROM xmart.order a 
+      JOIN address b ON a.address_id = b.id 
+      WHERE a.id = ${req.params.id}`,
       (err, result) => {
         if (err) {
           return res.status(500).send({
