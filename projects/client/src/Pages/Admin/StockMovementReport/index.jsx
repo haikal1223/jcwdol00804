@@ -96,7 +96,7 @@ const StockMovementReport = () => {
         console.log(err);
         setStockDetail([]);
       });
-  }, [sortByDateAsc]);
+  }, [sortByDateAsc, dateRange, openId, token]);
 
   useEffect(() => {
     axios
