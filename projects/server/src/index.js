@@ -11,6 +11,8 @@ const {
   cartRoute,
   orderRoute,
   reportRoute,
+  categoryRoute,
+  transactionRoute,
 } = require("./routers");
 const PORT = process.env.PORT || 8000;
 const app = express();
@@ -86,6 +88,11 @@ app.use("/api/product", productRoute);
 
 // report route
 app.use("/api/report", reportRoute);
+// category route
+app.use("/api/category", categoryRoute);
+
+// transaction route
+app.use("/api/transaction", transactionRoute);
 
 //#endregion
 

@@ -9,7 +9,10 @@ import {
   TbSortDescendingNumbers,
   TbSortAscendingNumbers,
 } from "react-icons/tb";
-import { BiSearch } from "react-icons/bi";
+import {
+  MdKeyboardArrowLeft,
+  MdKeyboardArrowRight
+} from "react-icons/md";
 import img from "../../../Assets/default.png";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,7 +28,6 @@ const ProductComponent = () => {
     location.state ? location.state.from : ""
   );
   const [name, setName] = useState("");
-  const [nameValue, setNameValue] = useState("");
   const { branchName, isLogged } = useSelector((state) => {
     return {
       branchName: state.storeReducer.defaultStore,
@@ -35,7 +37,7 @@ const ProductComponent = () => {
   const [by, setBy] = useState("name");
   const [order, setOrder] = useState("asc");
   const [page, setPage] = useState(1);
-  const limit = 10;
+  const [limit, setLimit] = useState(0);
   const [isModal, setIsModal] = useState(false);
   const [modalProductId, setModalProductId] = useState();
   const [branchList, setBranchList] = useState([]);
@@ -46,6 +48,7 @@ const ProductComponent = () => {
         `${API_URL}/product/product-list?category=${category}&name=${name}&by=${by}&order=${order}&limit=${limit}&page=${page}&branch_name=${branchName}`
       );
       setProducts(data.data);
+      setLimit(data.limit);
     } catch (error) {
       alert(error.response.data.message);
     }
@@ -53,7 +56,9 @@ const ProductComponent = () => {
 
   const fetchCategories = async () => {
     try {
-      const { data } = await axios.get(`${API_URL}/product/categories`);
+      const { data } = await axios.get(
+        `${API_URL}/category/categories?branch_name=${branchName}`
+      );
       setCategoryList(data.data);
     } catch (error) {
       alert(error.response.data.message);
@@ -74,13 +79,21 @@ const ProductComponent = () => {
   }, []);
 
   const handleSortByName = () => {
-    setOrder(order === "asc" ? "desc" : "asc");
-    setBy("name");
+    if (by === "name") {
+      setOrder(order === "asc" ? "desc" : "asc");
+    } else {
+      setBy("name");
+      setOrder("asc");
+    }
   };
 
   const handleSortByPrice = () => {
-    setOrder(order === "asc" ? "desc" : "asc");
-    setBy("price");
+    if (by === "price") {
+      setOrder(order === "asc" ? "desc" : "asc");
+    } else {
+      setBy("price");
+      setOrder("asc");
+    }
   };
 
   const handleCategoryChange = (e) => {
@@ -233,54 +246,50 @@ const ProductComponent = () => {
             placeholder="Search name.."
             type="text"
             onChange={(e) => {
-              setNameValue(e.target.value);
+              setName(e.target.value);
             }}
           />
-          <button
-            className="text-[gray] hover:text-[#82CD47]"
-            onClick={() => {
-              setName(nameValue);
-            }}
-          >
-            <BiSearch size={20} />
-          </button>
         </div>
         {/* Sorting */}
-        <div className="flex justify-center mt-2 mb-5">
+        <div className="flex justify-between mt-2 mb-5">
           <select
-            className="bg-gray-100 rounded w-full text-sm text-gray-400 h-8 px-2 focus:outline-none"
+            className="bg-gray-100 rounded w-40 text-sm text-gray-400 h-8 px-2 focus:outline-none"
             value={category}
             onChange={handleCategoryChange}
           >
             <option value="Select category">Select category</option>
             {categoryList.map((category) => {
               return (
-                <option key={category.category_id} value={category.category_id}>
-                  {category.category_id}
+                <option key={category.id} value={category.name}>
+                  {category.name}
                 </option>
               );
             })}
           </select>
           {/* Button ASC/DESC by name */}
           <button
-            className="text-[gray] hover:text-[#82CD47] mx-2"
-            onClick={() => handleSortByName("name")}
+            className="flex bg-white rounded-md shadow-md text-sm text-[gray] hover:text-[#82CD47] my-[2px] p-1"
+            onClick={handleSortByName}
           >
-            {order === "asc" ? (
-              <TbSortAscendingLetters size={30} />
-            ) : (
-              <TbSortDescendingLetters size={30} />
+            Sort by name
+            {by === "name" && order === "asc" && (
+              <TbSortAscendingLetters size={16} className="mt-1 ml-1"/>
+            )}
+            {by === "name" && order === "desc" && (
+              <TbSortDescendingLetters size={16} className="mt-1 ml-1"/>
             )}
           </button>
           {/* Button ASC/DESC by price */}
           <button
-            className="text-[gray] hover:text-[#82CD47]"
-            onClick={() => handleSortByPrice("price")}
+            className="flex bg-white rounded-md shadow-md text-sm text-[gray] hover:text-[#82CD47] my-[2px] p-1"
+            onClick={handleSortByPrice}
           >
-            {order === "asc" ? (
-              <TbSortAscendingNumbers size={30} />
-            ) : (
-              <TbSortDescendingNumbers size={30} />
+            Sort by price
+            {by === "price" && order === "asc" && (
+              <TbSortAscendingNumbers size={16} className="mt-1 ml-1"/>
+            )}
+            {by === "price" && order === "desc" && (
+              <TbSortDescendingNumbers size={16} className="mt-1 ml-1"/>
             )}
           </button>
         </div>
@@ -326,20 +335,23 @@ const ProductComponent = () => {
         ))}
       </div>
       {/* Pagination */}
-      <div
-        className="flex justify-between my-5 bg-[#AAD27D] 
-                text-white font-semibold rounded-md drop-shadow-md mx-24"
-      >
-        <button className="mx-2" onClick={handlePrevPage} disabled={page <= 1}>
-          Prev
-        </button>
-        <div className="mx-2">Page {page}</div>
+      <div className="flex justify-center my-5 font-semibold">
         <button
-          className="mx-2"
+          className="mx-10"
+          onClick={handlePrevPage}
+          disabled={page <= 1}
+        >
+          <MdKeyboardArrowLeft size={25} />
+        </button>
+        <div className="mx-2">
+          Page {page}
+        </div>
+        <button
+          className="mx-10"
           onClick={handleNextPage}
           disabled={products.length < limit}
         >
-          Next
+          <MdKeyboardArrowRight size={25} />
         </button>
       </div>
     </div>

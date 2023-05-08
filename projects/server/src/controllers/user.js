@@ -382,4 +382,71 @@ module.exports = {
       return res.status(500).send(error);
     }
   },
+  getBranchAdmin: async (req, res) => {
+    try {
+      const { order_by, page, name, branch } = req.query;
+      const limit = 20;
+      const offset = (page - 1) * limit
+      db.query(
+        `SELECT u.id, u.name, u.phone, u.email, r.role_name AS role_id, b.name AS branch_id  
+        FROM user u
+        JOIN role r ON u.role_id = r.id
+        JOIN branch b ON u.branch_id = b.id
+        WHERE role_id=2
+        AND u.name LIKE '%${name}%'
+        AND b.name LIKE '%${branch}%'
+        ORDER BY ${order_by} ASC
+        LIMIT ${limit} OFFSET ${offset};`,
+        (error, results) => {
+          if (error) {
+            return res.status(500).send({
+              success: false,
+              message: error,
+            });
+          };
+          return res.status(200).send({
+            success: true,
+            data: results, limit,
+          });
+        }
+      );
+    } catch (error) {
+      return res.status(500).send(error);
+    };
+  },
+  addBranchAdmin: async (req, res) => {
+    try {
+      const { name, phone, email, password, branch_id } = req.body;
+      const newPass = await hashPass(password);
+      const checkEmail = await dbQuery(
+        `SELECT email from user WHERE email=${db.escape(email)}`
+      );
+      if (checkEmail.length) {
+        return res.status(409).send({
+          success: false,
+          message: "Email is already used",
+        });
+      } else {
+        db.query(
+          "INSERT INTO user SET ?",
+          { name, phone, email, password: newPass, branch_id, role_id: 2 },
+          (error, results, fields) => {
+            if (error) {
+              return res.status(500).send({
+                success: false,
+                message:
+                  "Add Branch Admin Failed, Please fill the empty fields"
+              });
+            };
+            return res.status(200).send({
+              success: true,
+              message:
+                "Add Branch Admin Success"
+            });
+          });
+      };
+    } catch (error) {
+      return res.status(500).send(error);
+    }
+  },
 };
