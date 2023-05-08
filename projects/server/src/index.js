@@ -10,6 +10,7 @@ const {
   productRoute,
   cartRoute,
   orderRoute,
+  reportRoute,
   categoryRoute,
   transactionRoute,
 } = require("./routers");
@@ -67,8 +68,6 @@ app.get("/api/greetings", (req, res, next) => {
 //   }
 // });
 
-// Route
-
 // user route
 app.use("/api/user", userRoute);
 
@@ -87,6 +86,8 @@ app.use("/api/cities-data", citiesDataRoute);
 // product route
 app.use("/api/product", productRoute);
 
+// report route
+app.use("/api/report", reportRoute);
 // category route
 app.use("/api/category", categoryRoute);
 

@@ -84,9 +84,11 @@ const AddProduct = () => {
                   Authorization: `Bearer ${token}`,
                 },
               })
-              .then(() => formik.resetForm())
+              .then(() => {
+                toast.success(res.data.message);
+                formik.resetForm();
+              })
               .catch((err) => console.log(err));
-            toast.success(res.data.message);
           })
           .catch((err) => toast.error(err.response.data.message));
       } else {
@@ -96,7 +98,10 @@ const AddProduct = () => {
               Authorization: `Bearer ${token}`,
             },
           })
-          .then((res) => toast.success(res.data.message))
+          .then((res) => {
+            toast.success(res.data.message);
+            formik.resetForm();
+          })
           .catch((err) => toast.error(err.response.data.message));
       }
     },

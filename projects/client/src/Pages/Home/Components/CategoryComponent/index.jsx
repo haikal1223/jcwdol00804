@@ -43,13 +43,14 @@ const CategoryComponent = ({ branchName }) => {
               ) : (
                 <img
                   className="rounded-md h-15 w-15 mx-auto my-2"
-                  src={category.category_img && `http://localhost:8000/${category.category_img}`}
+                  src={
+                    category.category_img &&
+                    `http://localhost:8000/${category.category_img}`
+                  }
                   alt="category_img"
                 />
               )}
-              <div className="text-center mt-2">
-                {category.name}
-              </div>
+              <div className="text-center mt-2">{category.name}</div>
             </div>
           </Link>
         );

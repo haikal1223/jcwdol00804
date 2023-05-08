@@ -16,8 +16,7 @@ const ModalStockAdjustment = ({
         `${API_URL}/product/admin/adjust-stock/${stockAdjustItem.id}`,
         {
           actualQty,
-          quantity_change: Math.abs(actualQty - stockAdjustItem.stock),
-          is_increase: actualQty - stockAdjustItem.stock < 0 ? 0 : 1,
+          quantity_change: actualQty - stockAdjustItem.stock,
         },
         {
           headers: {

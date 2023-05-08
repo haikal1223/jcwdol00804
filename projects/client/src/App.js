@@ -37,6 +37,7 @@ import ManageOrderDetail from "./Pages/Admin/ManageOrder/ManageOrderDetail";
 import ManageProduct from "./Pages/Admin/ManageProduct";
 import AddProduct from "./Pages/Admin/AddProduct";
 import EditProduct from "./Pages/Admin/EditProduct";
+import StockMovementReport from "./Pages/Admin/StockMovementReport";
 
 function App() {
   const dispatch = useDispatch();
@@ -113,38 +114,49 @@ function App() {
                 <Route path="/payment/:id" element={<Payment />} />
                 <Route path="/order-list" element={<OrderList />} />
                 <Route path="/order-detail/:id" element={<OrderDetail />} />
-                <Route path="/order-confirmation" element={<OrderConfirmation />} />
+                <Route
+                  path="/order-confirmation"
+                  element={<OrderConfirmation />}
+                />
                 <Route path="*" element={<NotFound />} />
-              </Route >
+              </Route>
             </>
-          ) : null
-          }
-          {
-            role_id === 2 ? (
-              <>
-                <Route path="/admin" element={<AdminHome />} />
-                <Route path="/admin/manage-category" element={<ManageCategory />} />
-                <Route path="/admin/manage-category/:id" element={<CustomizeCategory />} />
-                <Route path="/admin/manage-order" element={<ManageOrder />} />
-                <Route path="/admin/manage-order/:id" element={<ManageOrderDetail />} />
-                <Route path="/admin/manage-product" element={<ManageProduct />} />
-                <Route path="/admin/add-product" element={<AddProduct />} />
-                <Route path="/admin/edit-product/:id" element={<EditProduct />} />
-                <Route path="*" element={<NotFound />} />
-              </>
-            ) : null
-          }
-          {
-            role_id === 3 ? (
-              <>
-                <Route path="/admin" element={<AdminHome />} />
-                <Route path="*" element={<NotFound />} />
-                <Route path="/admin/manage-branch" element={<ManageBranch />} />
-                <Route path="/admin/order-report" element={<OrderReport />} />
-                <Route path="/admin/order-report/:id" element={<OrderReportDetail />} />
-              </>
-            ) : null}
-        </Routes >
+          ) : null}
+          {role_id === 2 ? (
+            <>
+              <Route path="/admin" element={<AdminHome />} />
+              <Route
+                path="/admin/manage-category"
+                element={<ManageCategory />}
+              />
+              <Route
+                path="/admin/manage-category/:id"
+                element={<CustomizeCategory />}
+              />
+              <Route path="/admin/manage-order" element={<ManageOrder />} />
+              <Route
+                path="/admin/manage-order/:id"
+                element={<ManageOrderDetail />}
+              />
+              <Route path="/admin/manage-product" element={<ManageProduct />} />
+              <Route path="/admin/add-product" element={<AddProduct />} />
+              <Route path="/admin/edit-product/:id" element={<EditProduct />} />
+              <Route path="*" element={<NotFound />} />
+            </>
+          ) : null}
+          {role_id === 3 ? (
+            <>
+              <Route path="/admin" element={<AdminHome />} />
+              <Route path="/admin/manage-branch" element={<ManageBranch />} />
+              <Route path="/admin/order-report" element={<OrderReport />} />
+              <Route
+                path="/admin/order-report/:id"
+                element={<OrderReportDetail />}
+              />
+              <Route path="*" element={<NotFound />} />
+            </>
+          ) : null}
+        </Routes>
       ) : (
         // Spinner
         <svg
@@ -210,8 +222,7 @@ function App() {
             strokeLinejoin="round"
           ></path>
         </svg>
-      )
-      }
+      )}
     </>
   );
 }

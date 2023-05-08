@@ -72,15 +72,18 @@ const ManageProduct = () => {
   };
 
   const handleFeaturedProduct = (e, id) => {
-    axios.patch(
-      `${API_URL}/product/admin/set-featured-product/${id}`,
-      { checked: e.target.checked },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    axios
+      .patch(
+        `${API_URL}/product/admin/set-featured-product/${id}`,
+        { checked: e.target.checked },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then(() => handleFetchProductList())
+      .catch((err) => console.log(err));
   };
 
   const handleFetchProductList = useCallback(() => {
@@ -102,6 +105,7 @@ const ManageProduct = () => {
       .catch((err) => {
         console.log(err);
         setProductList([]);
+        setCountResult(0);
       });
   }, [search, currentPage, token, sortBy, sortNameAsc, sortPriceAsc]);
 
@@ -265,8 +269,10 @@ const ManageProduct = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-center">
                     <input
                       type="checkbox"
-                      defaultChecked={item.is_featured}
-                      onChange={(e) => handleFeaturedProduct(e, item.id)}
+                      checked={item.is_featured}
+                      onChange={(e) => {
+                        handleFeaturedProduct(e, item.id);
+                      }}
                     />
                   </td>
                   <td className="text-right px-6 whitespace-nowrap relative">
