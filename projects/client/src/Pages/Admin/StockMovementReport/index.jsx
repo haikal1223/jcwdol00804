@@ -134,7 +134,7 @@ const StockMovementReport = () => {
         </div>
       )}
       <div>
-        <div className="items-start justify-between flex">
+        <div>
           <h3 className="text-gray-800 text-xl font-bold">
             <FcShop className="inline mb-1" size={25} /> {branch_name} Stock
             Movement Report

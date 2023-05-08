@@ -12,5 +12,10 @@ route.get(
   readToken,
   reportController.getStockMovementDetail
 );
+route.get(
+  "/get-stock-data-branch",
+  readToken,
+  reportController.getStockDataBranch
+);
 
 module.exports = route;
