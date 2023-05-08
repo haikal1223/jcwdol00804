@@ -85,7 +85,7 @@ const PageAdmin = ({ children }) => {
                 ) : (
                   <li className="rounded-sm">
                     <Link
-                      to="#"
+                      to="/admin/manage-branch"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BiGitBranch className="w-6 h-6 text-gray-100" />
@@ -95,7 +95,7 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      to="#"
+                      to="/admin/manage-category"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BiCategoryAlt className="w-6 h-6 text-gray-100" />
@@ -105,13 +105,22 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      to="#"
+                      to="/admin/manage-order"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BiReceipt className="w-6 h-6 text-gray-100" />
                     </Link>
                   </li>
-                ) : null}
+                ) : (
+                  <li className="rounded-sm">
+                    <Link
+                      to="/admin/order-report"
+                      className="flex items-center p-2 space-x-3 rounded-md"
+                    >
+                      <BiReceipt className="w-6 h-6 text-gray-100" />
+                    </Link>
+                  </li>
+                )}
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
@@ -205,7 +214,6 @@ const PageAdmin = ({ children }) => {
                 borderRadius="50%"
                 w="35px"
                 h="35px"
-                onClick={() => navigate("/profile-setting")}
               />
               <span className="text-gray-100 text-sm mt-2 font-bold">
                 {name}
@@ -268,7 +276,7 @@ const PageAdmin = ({ children }) => {
                 ) : (
                   <li className="rounded-sm">
                     <Link
-                      to="#"
+                      to="/admin/manage-branch"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BiGitBranch className="w-6 h-6 text-gray-100" />
@@ -279,7 +287,7 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      to="#"
+                      to="/admin/manage-category"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BiCategoryAlt className="w-6 h-6 text-gray-100" />
@@ -290,14 +298,24 @@ const PageAdmin = ({ children }) => {
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link
-                      to="#"
+                      to="/admin/manage-order"
                       className="flex items-center p-2 space-x-3 rounded-md"
                     >
                       <BiReceipt className="w-6 h-6 text-gray-100" />
                       <span className="text-gray-100">Manage Order</span>
                     </Link>
                   </li>
-                ) : null}
+                ) : (
+                  <li className="rounded-sm">
+                    <Link
+                      to="/admin/order-report"
+                      className="flex items-center p-2 space-x-3 rounded-md"
+                    >
+                      <BiReceipt className="w-6 h-6 text-gray-100" />
+                      <span className="text-gray-100">Order Report</span>
+                    </Link>
+                  </li>
+                )}
                 {role_id === 2 ? (
                   <li className="rounded-sm">
                     <Link

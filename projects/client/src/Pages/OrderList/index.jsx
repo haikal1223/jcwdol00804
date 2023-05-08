@@ -57,8 +57,7 @@ const OrderList = () => {
         )}&end_date=${format(
           dateRange[0].endDate,
           "yyyy-MM-dd"
-        )}&sort_by=${sortBy}&order=${
-          sortBy === "invoice_no" ? sortInvAsc : sortDateNewest
+        )}&sort_by=${sortBy}&order=${sortBy === "invoice_no" ? sortInvAsc : sortDateNewest
         }&page=${page}`,
         {
           headers: {
@@ -123,8 +122,8 @@ const OrderList = () => {
             </option>
             <option value="Diproses">Diproses</option>
             <option value="Dikirim">Dikirim</option>
-            <option value="Pesanan Dikonfirmasi">Pesanan Dikonfirmasi</option>
             <option value="Dibatalkan">Dibatalkan</option>
+            <option value="Selesai">Selesai</option>
           </select>
           <div
             className={
@@ -243,6 +242,9 @@ const OrderList = () => {
                 </div>
               </div>
               <div className="h-[1px] bg-slate-200 w-[95%] mt-1 ml-3"></div>
+              <div className="text-base font-bold px-3 pt-2">
+                {val.branch_name}
+              </div>
               <div className="flex flex-row px-3 items-center">
                 <img
                   src="https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-6.png"
