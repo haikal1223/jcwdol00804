@@ -74,28 +74,29 @@ const StockMovementReport = () => {
   };
 
   useEffect(() => {
-    axios
-      .get(
-        `${API_URL}/report/get-stock-movement-detail?product_id=${openId}&start_date=${format(
-          dateRange[0].startDate,
-          "yyyy-MM-dd"
-        )}&end_date=${format(
-          dateRange[0].endDate,
-          "yyyy-MM-dd"
-        )}&sort_date_asc=${sortByDateAsc}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((res) => {
-        setStockDetail(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-        setStockDetail([]);
-      });
+    openId &&
+      axios
+        .get(
+          `${API_URL}/report/get-stock-movement-detail?product_id=${openId}&start_date=${format(
+            dateRange[0].startDate,
+            "yyyy-MM-dd"
+          )}&end_date=${format(
+            dateRange[0].endDate,
+            "yyyy-MM-dd"
+          )}&sort_date_asc=${sortByDateAsc}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((res) => {
+          setStockDetail(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+          setStockDetail([]);
+        });
   }, [sortByDateAsc, dateRange, openId, token]);
 
   useEffect(() => {
@@ -162,7 +163,7 @@ const StockMovementReport = () => {
               placeholder="Search Product Name"
             />
           </div>
-          <div className="flex flex-col w-[22%]">
+          <div className="flex flex-col w-[24%]">
             <div
               className="border rounded-lg pl-2 py-1 text-center "
               onClick={() => setOpenDate(!openDate)}
@@ -259,7 +260,7 @@ const StockMovementReport = () => {
                     </td>
                   </tr>
                   {openDetail[idx] ? (
-                    <tr>
+                    <>
                       <table className="table-auto w-full ml-12 text-sm text-left border">
                         <thead className="bg-gray-100 text-gray-600 font-medium ">
                           <tr className="w-full">
@@ -321,7 +322,7 @@ const StockMovementReport = () => {
                           ))}
                         </tbody>
                       </table>
-                    </tr>
+                    </>
                   ) : null}
                 </>
               ))}

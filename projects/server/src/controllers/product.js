@@ -45,26 +45,38 @@ module.exports = {
             AND c.name LIKE '%${category}%'
             AND p.name LIKE '%${name}%'
             ORDER BY ${by === "name" ? "p.name" : "p.price"}
-            ${order === "asc" ? "ASC" : "DESC"} 
-            LIMIT ${limit} OFFSET ${offset};`;
-      db.query(query, (error, results) => {
-        if (error) {
-          return res.status(500).send({
-            success: false,
-            message: error,
+            ${order === "asc" ? "ASC" : "DESC"}`;
+      db.query(
+        query + " " + `LIMIT ${limit} OFFSET ${offset}`,
+        (error, results) => {
+          if (error) {
+            return res.status(500).send({
+              success: false,
+              message: error,
+            });
+          }
+          if (!results.length) {
+            return res.status(404).send({
+              success: false,
+              message: "Product not found",
+            });
+          }
+          db.query(query, (error2, results2) => {
+            if (error2) {
+              return res.status(500).send({
+                success: false,
+                message: error,
+              });
+            }
+            return res.status(200).send({
+              success: true,
+              data: results,
+              limit,
+              allResultLength: results2.length,
+            });
           });
         }
-        if (!results.length) {
-          return res.status(404).send({
-            success: false,
-            message: "Product not found",
-          });
-        }
-        return res.status(200).send({
-          success: true,
-          data: results, limit,
-        });
-      });
+      );
     } catch (error) {
       return res.status(500).send(error);
     }
@@ -152,7 +164,8 @@ module.exports = {
     });
   },
   getProductsAdmin: (req, res) => {
-    const { search, page, limit, sort_by, order } = req.query;
+    const { search, page, sort_by, order } = req.query;
+    const limit = 8;
     const offset = (page - 1) * limit;
     const query = `SELECT p.id, p.name, p.description, p.price, p.stock, p.weight, p.is_featured ,p.is_delete, p.product_img, c.name AS category_name FROM product p JOIN branch b ON p.branch_id = b.id JOIN category c ON p.category_id = c.id WHERE p.is_delete=0 AND b.name='${
       req.decript.branch_name
@@ -184,6 +197,7 @@ module.exports = {
         }
         return res.status(200).send({
           result: results,
+          limit,
           allResultLength: results2.length,
         });
       });
@@ -446,6 +460,21 @@ module.exports = {
             });
           }
         );
+      }
+    );
+  },
+  getClosestStore: (req, res) => {
+    const { lat, lng } = req.query;
+    db.query(
+      `SELECT name, (((acos(sin((${lat}*pi()/180)) * sin((lat*pi()/180)) + cos((${lat}*pi()/180)) * cos((lat*pi()/180)) * cos(((${lng}- lng) * pi()/180)))) * 180/pi()) * 60 * 1.1515 * 1.609344) as distance FROM branch ORDER BY distance ASC LIMIT 1`,
+      (err, results) => {
+        if (err) {
+          return res.status(500).send({
+            success: false,
+            message: err,
+          });
+        }
+        return res.status(200).send(results[0].name);
       }
     );
   },

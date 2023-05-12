@@ -17,7 +17,6 @@ import { Link } from "react-router-dom";
 import ModalDelete from "./ModalDelete";
 import ModalAddStock from "./ModalAddStock";
 import ModalStockAdjustment from "./ModalStockAdjustment";
-let pageSize = 8;
 
 const useClickOutside = (cbfn) => {
   let dom = useRef([]);
@@ -52,6 +51,7 @@ const ManageProduct = () => {
   const [productList, setProductList] = useState([]);
   const [openDot, setOpenDot] = useState([]);
   const [countResult, setCountResult] = useState(0);
+  const [limit, setLimit] = useState(1);
   const [modalDelete, setModalDelete] = useState(false);
   const [modalAddStock, setModalAddStock] = useState(false);
   const [modalStockAdjustment, setModalStockAdjustment] = useState(false);
@@ -89,7 +89,7 @@ const ManageProduct = () => {
   const handleFetchProductList = useCallback(() => {
     axios
       .get(
-        `${API_URL}/product/admin/product-list?search=${search}&page=${currentPage}&limit=${pageSize}&sort_by=${sortBy}&order=${
+        `${API_URL}/product/admin/product-list?search=${search}&page=${currentPage}&sort_by=${sortBy}&order=${
           sortBy === "name" ? sortNameAsc : sortPriceAsc
         }`,
         {
@@ -100,6 +100,7 @@ const ManageProduct = () => {
       )
       .then((res) => {
         setProductList(res.data.result);
+        setLimit(res.data.limit);
         setCountResult(res.data.allResultLength);
       })
       .catch((err) => {
@@ -189,13 +190,17 @@ const ManageProduct = () => {
                   <span className="relative">
                     <AiFillCaretUp
                       className={`absolute -top-[2px] ${
-                        sortNameAsc && sortBy === "name" && "text-indigo-500"
+                        sortNameAsc &&
+                        sortBy === "name" &&
+                        "text-indigo-500 shadow-inner shadow-indigo-200 rounded-md"
                       }`}
                       size={14}
                     />
                     <AiFillCaretDown
                       className={`absolute -bottom-[3px] ${
-                        !sortNameAsc && sortBy === "name" && "text-indigo-500"
+                        !sortNameAsc &&
+                        sortBy === "name" &&
+                        "text-indigo-500 shadow-inner shadow-indigo-200 rounded-md"
                       }`}
                       size={14}
                     />
@@ -217,13 +222,17 @@ const ManageProduct = () => {
                   <span className="relative">
                     <AiFillCaretUp
                       className={`absolute -top-[2px] ${
-                        sortPriceAsc && sortBy === "price" && "text-indigo-500"
+                        sortPriceAsc &&
+                        sortBy === "price" &&
+                        "text-indigo-500 shadow-inner shadow-indigo-200 rounded-md"
                       }`}
                       size={14}
                     />
                     <AiFillCaretDown
                       className={`absolute -bottom-[3px] ${
-                        !sortPriceAsc && sortBy === "price" && "text-indigo-500"
+                        !sortPriceAsc &&
+                        sortBy === "price" &&
+                        "text-indigo-500 shadow-inner shadow-indigo-200 rounded-md"
                       }`}
                       size={14}
                     />
@@ -341,7 +350,7 @@ const ManageProduct = () => {
         <Pagination
           currentPage={currentPage}
           totalCount={countResult}
-          pageSize={pageSize}
+          pageSize={limit}
           onPageChange={(page) => setCurrentPage(page)}
         />
       </div>

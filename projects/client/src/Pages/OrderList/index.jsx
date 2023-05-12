@@ -14,12 +14,7 @@ import {
   TbSortAscendingNumbers,
   TbSortDescendingNumbers,
 } from "react-icons/tb";
-import {
-  MdKeyboardArrowLeft,
-  MdKeyboardDoubleArrowLeft,
-  MdKeyboardArrowRight,
-  MdKeyboardDoubleArrowRight,
-} from "react-icons/md";
+import Pagination from "../../Components/Pagination";
 import { format } from "date-fns";
 import axios from "axios";
 import { API_URL } from "../../helper";
@@ -33,8 +28,8 @@ const OrderList = () => {
   const [invoiceNo, setInvoiceNo] = useState("");
   const [status, setStatus] = useState("");
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(0);
   const [countResult, setCountResult] = useState(0);
+  const [limit, setLimit] = useState(1);
   const [openDate, setOpenDate] = useState(false);
   const [orderList, setOrderList] = useState([]);
   const token = localStorage.getItem("xmart_login");
@@ -42,7 +37,7 @@ const OrderList = () => {
 
   const [dateRange, setDateRange] = useState([
     {
-      startDate: subDays(new Date(), 7),
+      startDate: subDays(new Date(), 30),
       endDate: new Date(),
       key: "selection",
     },
@@ -57,7 +52,8 @@ const OrderList = () => {
         )}&end_date=${format(
           dateRange[0].endDate,
           "yyyy-MM-dd"
-        )}&sort_by=${sortBy}&order=${sortBy === "invoice_no" ? sortInvAsc : sortDateNewest
+        )}&sort_by=${sortBy}&order=${
+          sortBy === "invoice_no" ? sortInvAsc : sortDateNewest
         }&page=${page}`,
         {
           headers: {
@@ -72,6 +68,8 @@ const OrderList = () => {
       })
       .catch((err) => {
         console.log(err);
+        setOrderList([]);
+        setCountResult(0);
       });
   }, [
     sortDateNewest,
@@ -117,7 +115,7 @@ const OrderList = () => {
           >
             <option value="">Semua Status</option>
             <option value="Menunggu Pembayaran">Menunggu Pembayaran</option>
-            <option value="Menunggu Konfirmasi Pembayaran">
+            <option value="Menunggu Konfirmasi">
               Menunggu Konfirmasi Pembayaran
             </option>
             <option value="Diproses">Diproses</option>
@@ -260,7 +258,7 @@ const OrderList = () => {
                   </span>
                 </div>
               </div>
-              {val.total_items === 0 ? null : (
+              {val.total_items === 1 ? null : (
                 <div className="px-3 text-slate-400 text-xs font-semibold mt-1">
                   +{val.total_items - 1} produk lainnya
                 </div>
@@ -274,33 +272,21 @@ const OrderList = () => {
             </div>
           );
         })}
-        <div className="self-center mt-8 mb-10 flex flex-row items-center">
-          <MdKeyboardDoubleArrowLeft
-            size={25}
-            className="mr-1 cursor-pointer"
-            onClick={() => setPage(1)}
-          />
-          <MdKeyboardArrowLeft
-            size={25}
-            className="mr-3 cursor-pointer"
-            onClick={() => page > 1 && setPage(page - 1)}
-          />
-          <span className="mb-[1px]">
-            Page {page} of {countResult && Math.ceil(countResult / limit)}
-          </span>
-          <MdKeyboardArrowRight
-            size={25}
-            className="ml-3 cursor-pointer"
-            onClick={() =>
-              page < Math.ceil(countResult / limit) && setPage(page + 1)
-            }
-          />
-          <MdKeyboardDoubleArrowRight
-            size={25}
-            className="ml-1 cursor-pointer"
-            onClick={() => setPage(Math.ceil(countResult / limit))}
+        {/* Pagination */}
+        <div className="self-center relative bottom-0 mt-8 mb-10 ">
+          <Pagination
+            currentPage={page}
+            totalCount={countResult}
+            pageSize={limit}
+            onPageChange={(page) => setPage(page)}
           />
         </div>
+        {/* If order not found */}
+        {!orderList.length && (
+          <div className="absolute top-[40%] left-[46%] text-red-500">
+            Order not found
+          </div>
+        )}
       </div>
     </Page>
   );

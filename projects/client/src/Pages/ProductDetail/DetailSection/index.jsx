@@ -10,9 +10,10 @@ import { useSelector } from "react-redux";
 
 const DetailSection = () => {
   const { id } = useParams();
-  const { isLogged } = useSelector((state) => {
+  const { isLogged, is_verified } = useSelector((state) => {
     return {
       isLogged: state.userReducer.id,
+      is_verified: state.userReducer.is_verified,
     };
   });
 
@@ -50,28 +51,32 @@ const DetailSection = () => {
 
   const handleAddToCart = () => {
     const token = localStorage.getItem("xmart_login");
-    axios
-      .post(
-        `${API_URL}/cart/add-to-cart`,
-        {
-          quantity,
-          product_id: id,
-          branch_name: detail.branch_id,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+    if (!is_verified) {
+      toast.error("Please verify your account first");
+    } else {
+      axios
+        .post(
+          `${API_URL}/cart/add-to-cart`,
+          {
+            quantity,
+            product_id: id,
+            branch_name: detail.branch_id,
           },
-        }
-      )
-      .then((res) => {
-        if (res.status === 202) {
-          setIsModal(!isModal);
-        } else {
-          toast.success(res.data.message);
-        }
-      })
-      .catch((err) => console.log(err));
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((res) => {
+          if (res.status === 202) {
+            setIsModal(!isModal);
+          } else {
+            toast.success(res.data.message);
+          }
+        })
+        .catch((err) => console.log(err));
+    }
   };
 
   const handleRemoveCartItem = () => {
@@ -191,8 +196,8 @@ const DetailSection = () => {
         <button
           className={
             isLogged
-              ? "flex justify-around items-center rounded-md bg-white w-44 h-8 text-[#86C649] text-[22px] font-[600] shadow-md px-2 hover:bg-[#82CD47] hover:text-white"
-              : "flex justify-around items-center rounded-md bg-[#82cd47] w-44 h-8 text-white text-[22px] font-[600] shadow-md px-2 cursor-not-allowed"
+              ? "flex justify-around items-center rounded-md bg-white w-44 h-8 text-[#86C649] text-[22px] font-[600] shadow-md px-2 hover:bg-[#82CD47] hover:text-white cursor-pointer"
+              : "flex justify-around items-center rounded-md bg-gray-200 w-44 h-8 text-gray-400 text-[22px] font-[600] shadow-md px-2 "
           }
           disabled={!isLogged}
           onClick={handleAddToCart}

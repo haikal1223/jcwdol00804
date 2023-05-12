@@ -14,6 +14,7 @@ route.patch(
   productController.adjustStockAfterOrder
 );
 route.get("/get-branch-list", productController.getBranchList);
+route.get("/get-closest-store", productController.getClosestStore);
 
 // Admin
 route.get("/admin/product-list", readToken, productController.getProductsAdmin);

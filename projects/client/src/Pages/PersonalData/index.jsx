@@ -13,7 +13,7 @@ import { API_URL } from "../../helper";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { updateProfile } from "../../Actions/user";
-import { format } from "date-fns";
+import { format, subYears } from "date-fns";
 import toast, { Toaster } from "react-hot-toast";
 
 const PersonalData = () => {
@@ -37,7 +37,7 @@ const PersonalData = () => {
       name,
       email,
       birthdate,
-      gender,
+      gender: gender === null && "",
       images: null,
     },
     validationSchema: Yup.object({
@@ -138,7 +138,6 @@ const PersonalData = () => {
       format(new Date(birthdate), "yyyy-MM-dd")
     );
     formik.setFieldValue("gender", gender);
-    formik.setFieldValue("images", null);
   };
 
   return (
@@ -158,9 +157,13 @@ const PersonalData = () => {
           // Untuk preview
           <Avatar
             src={
-              formik.values.images
+              profile_img
+                ? !formik.errors.images && formik.values.images
+                  ? URL.createObjectURL(formik.values.images)
+                  : `http://localhost:8000/${profile_img}`
+                : !formik.errors.images && formik.values.images
                 ? URL.createObjectURL(formik.values.images)
-                : formik.values.images && `http://localhost:8000/${profile_img}`
+                : ""
             }
             borderRadius="50%"
             w="100px"
@@ -266,7 +269,7 @@ const PersonalData = () => {
                   type="date"
                   id="birthdate"
                   name="birthdate"
-                  max={format(new Date(), "yyyy-MM-dd")}
+                  max={format(subYears(new Date(), 17), "yyyy-MM-dd")}
                   className="rounded-md px-[7px]"
                   {...formik.getFieldProps("birthdate")}
                 />
@@ -297,9 +300,8 @@ const PersonalData = () => {
                   name="gender"
                   className="px-[7px]"
                   {...formik.getFieldProps("gender")}
-                  defaultValue={gender ? gender : "select-gender"}
                 >
-                  <option value="select-gender" hidden>
+                  <option value="" hidden>
                     Select gender
                   </option>
                   <option value="male">Male</option>

@@ -26,7 +26,7 @@ module.exports = {
             return res.status(200).send({
               success: true,
               message: "Add order item success",
-              data: result.insertId
+              data: result.insertId,
             });
           }
         );
@@ -36,7 +36,7 @@ module.exports = {
   getOrderList: (req, response) => {
     const { inv, status, start_date, end_date, order, sort_by, page } =
       req.query;
-    let limit = 6;
+    const limit = 4;
     let offset = (page - 1) * limit;
     const result = () => {
       return new Promise(async (resolve, reject) => {
@@ -53,11 +53,12 @@ module.exports = {
             AND b.created_at >= '${start_date} 00:00:00' 
             AND b.created_at <= '${end_date} 23:59:59' 
             GROUP BY b.id HAVING total_items <> 0 
-            ORDER BY b.${sort_by} ${order === "true"
-              ? sort_by === "created_at"
-                ? "DESC"
-                : "ASC"
-              : sort_by === "created_at"
+            ORDER BY b.${sort_by} ${
+              order === "true"
+                ? sort_by === "created_at"
+                  ? "DESC"
+                  : "ASC"
+                : sort_by === "created_at"
                 ? "ASC"
                 : "DESC"
             } LIMIT ${limit} OFFSET ${offset}`
@@ -83,11 +84,12 @@ module.exports = {
             AND b.created_at >= '${start_date} 00:00:00' 
             AND b.created_at <= '${end_date} 23:59:59' 
             GROUP BY b.id HAVING total_items <> 0 
-            ORDER BY b.${sort_by} ${order === "true"
-              ? sort_by === "created_at"
-                ? "DESC"
-                : "ASC"
-              : sort_by === "created_at"
+            ORDER BY b.${sort_by} ${
+              order === "true"
+                ? sort_by === "created_at"
+                  ? "DESC"
+                  : "ASC"
+                : sort_by === "created_at"
                 ? "ASC"
                 : "DESC"
             }`
@@ -105,12 +107,11 @@ module.exports = {
           message: "Order list not found",
         });
       }
-      return response
-        .status(200)
-        .send({
-          result: res[0], limit,
-          allResult: res[1],
-        });
+      return response.status(200).send({
+        result: res[0],
+        limit,
+        allResult: res[1],
+      });
     });
   },
   getOrderDetail: (req, res) => {
@@ -182,7 +183,7 @@ module.exports = {
       WHERE id=${req.params.id}`,
       {
         payment_img: `/imgPayment/${req.files[0].filename}`,
-        status: "Menunggu Konfirmasi Pembayaran"
+        status: "Menunggu Konfirmasi Pembayaran",
       },
       (error, results) => {
         if (error) {
