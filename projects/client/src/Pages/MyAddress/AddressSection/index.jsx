@@ -83,7 +83,8 @@ const AddressSection = () => {
 
   return (
     <div className="flex flex-col justify-center mx-20 my-10">
-      <div className="text-xl font-bold">My Addresses</div>
+      <div className="text-xl font-bold mb-2">My addresses</div>
+      <div className="h-[2px] bg-slate-200 w-[100%]"></div>
       {address.length > 0 ? (
         // Conditions if address is not empty
         <div className="flex flex-col justify-center">
@@ -91,7 +92,7 @@ const AddressSection = () => {
           {address.map((address) => (
             <div
               key={address.id}
-              className="block border rounded-md w-full bg-gray-100 p-3 mt-5 shadow"
+              className="block border rounded-md w-full bg-gray-100 p-3 mt-2 shadow"
             >
               <div className="font-semibold">{address.address}</div>
               <div>
@@ -116,13 +117,22 @@ const AddressSection = () => {
                     Set Main Address
                   </button>
                 )}
-                {/* Delete Address Button */}
-                <button
-                  onClick={() => deleteAddress(address.id)}
-                  className="rounded-md bg-[#CC4158] w-[60px] h-7 px-2 text-xs text-white font-semibold shadow-md"
-                >
-                  Delete
-                </button>
+                <div className="flex justify-right">
+                  {/* Edit Address Button */}
+                  <Link
+                    to={`/edit-address/${address.id}`}
+                    className="text-center rounded-md bg-[#3285a8] h-7 w-16 px-2 pt-[6px] mr-2 text-xs text-white font-semibold shadow-md"
+                  >
+                    Edit
+                  </Link>
+                  {/* Delete Address Button */}
+                  <button
+                    className="rounded-md bg-[#CC4158] w-[60px] h-7 px-2 text-xs text-white font-semibold shadow-md"
+                    onClick={() => deleteAddress(address.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             </div>
           ))}

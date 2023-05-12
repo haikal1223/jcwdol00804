@@ -66,16 +66,15 @@ const FormSection = () => {
 
     return (
         <div className="flex flex-col justify-center mx-20 my-10">
-            <div className="text-xl font-bold">
-                Change Password
-            </div>
+            <div className="text-xl font-bold mb-2">Change password</div>
+            <div className="h-[2px] bg-slate-200 w-[100%]"></div>
             <div className="flex flex-col items-center">
-                <div className="w-full mt-5">
+                <div className="w-full mt-2">
                     <form
                         onSubmit={formik.handleSubmit}
                         className="flex flex-col"
                     >
-                        <div className="w-full/12 relative mb-4">
+                        <div className="w-full/12 relative mb-2">
                             <label htmlFor="oldpassword" className="text-base font-semibold mt-2">
                                 Old Password
                             </label>
@@ -110,7 +109,7 @@ const FormSection = () => {
                                 </div>
                             )}
                         </div>
-                        <div className="w-full/12 relative">
+                        <div className="w-full/12 relative mb-2">
                             <label htmlFor="password" className="text-base font-semibold mt-2">
                                 New Password
                             </label>
@@ -145,7 +144,7 @@ const FormSection = () => {
                                 </div>
                             )}
                         </div>
-                        <div className="w-full/12 relative">
+                        <div className="w-full/12 relative mb-2">
                             <label
                                 htmlFor="confirmpassword"
                                 className="text-base font-semibold mt-2"

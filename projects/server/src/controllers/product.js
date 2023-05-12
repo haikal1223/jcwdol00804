@@ -54,12 +54,6 @@ module.exports = {
             message: error,
           });
         }
-        if (!results.length) {
-          return res.status(404).send({
-            success: false,
-            message: "Product not found",
-          });
-        }
         return res.status(200).send({
           success: true,
           data: results, limit,
@@ -154,13 +148,11 @@ module.exports = {
   getProductsAdmin: (req, res) => {
     const { search, page, limit, sort_by, order } = req.query;
     const offset = (page - 1) * limit;
-    const query = `SELECT p.id, p.name, p.description, p.price, p.stock, p.weight, p.is_featured ,p.is_delete, p.product_img, c.name AS category_name FROM product p JOIN branch b ON p.branch_id = b.id JOIN category c ON p.category_id = c.id WHERE p.is_delete=0 AND b.name='${
-      req.decript.branch_name
-    }' AND (c.name LIKE '%${search}%' OR p.name LIKE '%${search}%') ${
-      sort_by === ""
+    const query = `SELECT p.id, p.name, p.description, p.price, p.stock, p.weight, p.is_featured ,p.is_delete, p.product_img, c.name AS category_name FROM product p JOIN branch b ON p.branch_id = b.id JOIN category c ON p.category_id = c.id WHERE p.is_delete=0 AND b.name='${req.decript.branch_name
+      }' AND (c.name LIKE '%${search}%' OR p.name LIKE '%${search}%') ${sort_by === ""
         ? ""
         : `ORDER BY p.${sort_by} ${order === "true" ? "ASC" : "DESC"}`
-    } `;
+      } `;
     const pagination = `LIMIT ${limit} OFFSET ${offset}`;
     db.query(query + " " + pagination, (error, results) => {
       if (error) {

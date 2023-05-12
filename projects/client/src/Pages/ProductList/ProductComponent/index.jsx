@@ -18,6 +18,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { changeStoreAction } from "../../../Actions/store";
 import toast, { Toaster } from "react-hot-toast";
+import notFound from "../../../Assets/not-found.png";
 
 const ProductComponent = () => {
   const location = useLocation();
@@ -273,10 +274,10 @@ const ProductComponent = () => {
           >
             Sort by name
             {by === "name" && order === "asc" && (
-              <TbSortAscendingLetters size={16} className="mt-1 ml-1"/>
+              <TbSortAscendingLetters size={16} className="mt-1 ml-1" />
             )}
             {by === "name" && order === "desc" && (
-              <TbSortDescendingLetters size={16} className="mt-1 ml-1"/>
+              <TbSortDescendingLetters size={16} className="mt-1 ml-1" />
             )}
           </button>
           {/* Button ASC/DESC by price */}
@@ -286,54 +287,60 @@ const ProductComponent = () => {
           >
             Sort by price
             {by === "price" && order === "asc" && (
-              <TbSortAscendingNumbers size={16} className="mt-1 ml-1"/>
+              <TbSortAscendingNumbers size={16} className="mt-1 ml-1" />
             )}
             {by === "price" && order === "desc" && (
-              <TbSortDescendingNumbers size={16} className="mt-1 ml-1"/>
+              <TbSortDescendingNumbers size={16} className="mt-1 ml-1" />
             )}
           </button>
         </div>
       </div>
       {/* Products Result */}
-      <div className="flex flex-row flex-wrap justify-center">
-        {products.map((product) => (
-          <div key={product.id}>
-            <div
-              className="flex-col justify-center box-content 
+      {products.length === 0 ? (
+        <div className="flex flex-row flex-wrap justify-center">
+          <img className="w-40 h-40" src={notFound} alt="not-found" />
+        </div>
+      ) : (
+        <div className="flex flex-row flex-wrap justify-center">
+          {products.map((product) => (
+            <div key={product.id}>
+              <div
+                className="flex-col justify-center box-content 
                             rounded-lg drop-shadow-md h-42 w-32 bg-white
                             text-xs mx-5 my-2 pt-2
                             hover:border border-[#86C649]"
-            >
-              <Link to={`/product-detail/${product.id}`}>
-                <img className="h-20 w-20 mx-auto mt-1" src={img} alt="img" />
-                <div className="text-center text-sm font-medium product-name h-10">
-                  {product.name}
-                </div>
-                <div
-                  className="text-center text-sm text-[#86C649] 
+              >
+                <Link to={`/product-detail/${product.id}`}>
+                  <img className="h-20 w-20 mx-auto mt-1" src={img} alt="img" />
+                  <div className="text-center text-sm font-medium product-name h-10">
+                    {product.name}
+                  </div>
+                  <div
+                    className="text-center text-sm text-[#86C649] 
                             font-semibold my-1"
-                >
-                  Rp. {product.price.toLocaleString()},-
+                  >
+                    Rp. {product.price.toLocaleString()},-
+                  </div>
+                </Link>
+                {/* Button Add to cart */}
+                <div className="flex justify-end">
+                  <button
+                    className={
+                      isLogged
+                        ? "text-[#82CD47] hover:text-[#BFF099]"
+                        : "text-[#82cd47] cursor-not-allowed"
+                    }
+                    onClick={() => handleAddToCart(product.id, product.branch_id)}
+                    disabled={!isLogged}
+                  >
+                    <AiFillPlusCircle size={30} />
+                  </button>
                 </div>
-              </Link>
-              {/* Button Add to cart */}
-              <div className="flex justify-end">
-                <button
-                  className={
-                    isLogged
-                      ? "text-[#82CD47] hover:text-[#BFF099]"
-                      : "text-[#82cd47] cursor-not-allowed"
-                  }
-                  onClick={() => handleAddToCart(product.id, product.branch_id)}
-                  disabled={!isLogged}
-                >
-                  <AiFillPlusCircle size={30} />
-                </button>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
       {/* Pagination */}
       <div className="flex justify-center my-5 font-semibold">
         <button

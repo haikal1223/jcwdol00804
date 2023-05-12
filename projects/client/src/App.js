@@ -13,6 +13,7 @@ import ProfileSetting from "./Pages/ProfileSetting";
 import ChangePassword from "./Pages/ChangePassword";
 import MyAddress from "./Pages/MyAddress";
 import AddAddress from "./Pages/AddAddress";
+import EditAddress from "./Pages/EditAddress";
 import ProductList from "./Pages/ProductList";
 import ProductDetail from "./Pages/ProductDetail";
 import NotFound from "./Pages/NotFound";
@@ -28,6 +29,7 @@ import OrderList from "./Pages/OrderList";
 import OrderDetail from "./Pages/OrderDetail";
 import AdminHome from "./Pages/Admin/Home";
 import ManageBranch from "./Pages/Admin/ManageBranch";
+import AddBranchAdmin from "./Pages/Admin/ManageBranch/AddBranchAdmin";
 import ManageCategory from "./Pages/Admin/ManageCategory";
 import CustomizeCategory from "./Pages/Admin/ManageCategory/CustomizeCategory";
 import OrderReport from "./Pages/Admin/OrderReport";
@@ -37,7 +39,7 @@ import ManageOrderDetail from "./Pages/Admin/ManageOrder/ManageOrderDetail";
 import ManageProduct from "./Pages/Admin/ManageProduct";
 import AddProduct from "./Pages/Admin/AddProduct";
 import EditProduct from "./Pages/Admin/EditProduct";
-import StockMovementReport from "./Pages/Admin/StockMovementReport";
+// import StockMovementReport from "./Pages/Admin/StockMovementReport";
 
 function App() {
   const dispatch = useDispatch();
@@ -111,6 +113,7 @@ function App() {
                 <Route path="/profile-setting" element={<ProfileSetting />} />
                 <Route path="/my-address" element={<MyAddress />} />
                 <Route path="/add-address" element={<AddAddress />} />
+                <Route path="/edit-address/:id" element={<EditAddress />} />
                 <Route path="/payment/:id" element={<Payment />} />
                 <Route path="/order-list" element={<OrderList />} />
                 <Route path="/order-detail/:id" element={<OrderDetail />} />
@@ -148,6 +151,7 @@ function App() {
             <>
               <Route path="/admin" element={<AdminHome />} />
               <Route path="/admin/manage-branch" element={<ManageBranch />} />
+              <Route path="/admin/add-branch-admin" element={<AddBranchAdmin />} />
               <Route path="/admin/order-report" element={<OrderReport />} />
               <Route
                 path="/admin/order-report/:id"

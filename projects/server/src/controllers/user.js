@@ -385,7 +385,7 @@ module.exports = {
   getBranchAdmin: async (req, res) => {
     try {
       const { order_by, page, name, branch } = req.query;
-      const limit = 20;
+      const limit = 10;
       const offset = (page - 1) * limit
       db.query(
         `SELECT u.id, u.name, u.phone, u.email, r.role_name AS role_id, b.name AS branch_id  

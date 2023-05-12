@@ -6,7 +6,7 @@ const { categoryController } = require("../controllers");
 route.get("/categories", categoryController.fetchCategories);
 route.get("/get-categories", readToken, categoryController.getCategories);
 route.post("/add-category", readToken, categoryController.addCategory);
-route.patch("/edit-category/:id", categoryController.editCategory);
+route.patch("/edit-category/:id", readToken, categoryController.editCategory);
 route.patch("/delete-category/:id", categoryController.deleteCategory);
 route.patch("/restore-category/:id", categoryController.restoreCategory);
 route.get("/category-detail/:id", categoryController.getCategoryDetail);
