@@ -7,21 +7,19 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { API_URL } from "../../../helper";
-import { useSelector } from "react-redux";
 import toast, { Toaster } from "react-hot-toast";
 
 const AddProduct = () => {
+  const token = localStorage.getItem("xmart_login");
   const [categoryList, setCategoryList] = useState([]);
-
-  const { branch_name } = useSelector((state) => {
-    return {
-      branch_name: state.userReducer.branch_name,
-    };
-  });
 
   useEffect(() => {
     axios
-      .get(`${API_URL}/product/categories?branch_name=${branch_name}`)
+      .get(`${API_URL}/category/get-categories`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => {
         setCategoryList(res.data.data);
       })
@@ -29,7 +27,7 @@ const AddProduct = () => {
         console.log(err);
         setCategoryList([]);
       });
-  }, [branch_name]);
+  }, [token]);
 
   const formik = useFormik({
     initialValues: {
@@ -59,7 +57,7 @@ const AddProduct = () => {
         )
         .nullable(),
       category: Yup.mixed()
-        .oneOf([...categoryList.map((val) => val.category_id)])
+        .oneOf([...categoryList.map((val) => val.name)])
         .required(),
       product_name: Yup.string().required(),
       description: Yup.string().max(255, "Max character 255").nullable(),
@@ -156,8 +154,8 @@ const AddProduct = () => {
                 Select Category
               </option>
               {categoryList.map((val, idx) => (
-                <option key={idx} value={val.category_id}>
-                  {val.category_id}
+                <option key={idx} value={val.name}>
+                  {val.name}
                 </option>
               ))}
             </select>

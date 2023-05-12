@@ -29,72 +29,82 @@ const ManageOrderDetail = () => {
         return arr.map((val) => val.price * val.quantity).reduce((p, c) => p + c);
     };
 
-    const handleModalOpen = (imageUrl) => {
-        setShowModalImage(true);
-        setModalImage(imageUrl);
-    };
+  const handleModalOpen = (imageUrl) => {
+    setShowModalImage(true);
+    setModalImage(imageUrl);
+  };
 
-    const handleModalClose = () => {
-        setShowModalImage(false);
-        setModalImage(null);
-    };
+  const handleModalClose = () => {
+    setShowModalImage(false);
+    setModalImage(null);
+  };
 
-    const getDetail = async () => {
-        let promise1 = axios.get(`${API_URL}/transaction/order-list-super-admin/${id}`);
-        let promise2 = axios.get(`${API_URL}/transaction/get-product-info/${id}`);
+  const getDetail = async () => {
+    let promise1 = axios.get(
+      `${API_URL}/transaction/order-list-super-admin/${id}`
+    );
+    let promise2 = axios.get(`${API_URL}/transaction/get-product-info/${id}`);
 
-        Promise.all([promise1, promise2])
-            .then((res) => {
-                setOrderDetail(res[0].data[0]);
-                setProductInfo(res[1].data);
-            })
-            .catch((err) => console.log(err));
-    };
+    Promise.all([promise1, promise2])
+      .then((res) => {
+        setOrderDetail(res[0].data[0]);
+        setProductInfo(res[1].data);
+      })
+      .catch((err) => console.log(err));
+  };
 
-    useEffect(() => {
-        getDetail();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [id]);
+  useEffect(() => {
+    getDetail();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
-    const handleAccept = async () => {
-        try {
-            const result = await axios.patch(`${API_URL}/transaction/accept-payment/${id}`);
-            alert(result.data.message);
-            getDetail();
-        } catch (error) {
-            alert(error.response.data.message);
-        };
-    };
+  const handleAccept = async () => {
+    try {
+      const result = await axios.patch(
+        `${API_URL}/transaction/accept-payment/${id}`
+      );
+      alert(result.data.message);
+      getDetail();
+    } catch (error) {
+      alert(error.response.data.message);
+    }
+  };
 
-    const handleRefuse = async () => {
-        try {
-            const result = await axios.patch(`${API_URL}/transaction/refuse-payment/${id}`);
-            alert(result.data.message);
-            getDetail();
-        } catch (error) {
-            alert(error.response.data.message);
-        };
-    };
+  const handleRefuse = async () => {
+    try {
+      const result = await axios.patch(
+        `${API_URL}/transaction/refuse-payment/${id}`
+      );
+      alert(result.data.message);
+      getDetail();
+    } catch (error) {
+      alert(error.response.data.message);
+    }
+  };
 
-    const handleSendOrder = async () => {
-        try {
-            const result = await axios.patch(`${API_URL}/transaction/send-order/${id}`);
-            alert(result.data.message);
-            getDetail();
-        } catch (error) {
-            alert(error.response.data.message);
-        };
-    };
+  const handleSendOrder = async () => {
+    try {
+      const result = await axios.patch(
+        `${API_URL}/transaction/send-order/${id}`
+      );
+      alert(result.data.message);
+      getDetail();
+    } catch (error) {
+      alert(error.response.data.message);
+    }
+  };
 
-    const handleCancelOrder = async () => {
-        try {
-            const result = await axios.patch(`${API_URL}/transaction/cancel-order/${id}`);
-            alert(result.data.message);
-            getDetail();
-        } catch (error) {
-            alert(error.response.data.message);
-        };
-    };
+  const handleCancelOrder = async () => {
+    try {
+      const result = await axios.patch(
+        `${API_URL}/transaction/cancel-order/${id}`
+      );
+      alert(result.data.message);
+      getDetail();
+    } catch (error) {
+      alert(error.response.data.message);
+    }
+  };
 
     return (
         <PageAdmin>

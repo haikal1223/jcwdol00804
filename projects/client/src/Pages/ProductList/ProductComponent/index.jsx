@@ -9,16 +9,13 @@ import {
   TbSortDescendingNumbers,
   TbSortAscendingNumbers,
 } from "react-icons/tb";
-import {
-  MdKeyboardArrowLeft,
-  MdKeyboardArrowRight
-} from "react-icons/md";
 import img from "../../../Assets/default.png";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { changeStoreAction } from "../../../Actions/store";
 import toast, { Toaster } from "react-hot-toast";
 import notFound from "../../../Assets/not-found.png";
+import Pagination from "../../../Components/Pagination";
 
 const ProductComponent = () => {
   const location = useLocation();
@@ -29,16 +26,18 @@ const ProductComponent = () => {
     location.state ? location.state.from : ""
   );
   const [name, setName] = useState("");
-  const { branchName, isLogged } = useSelector((state) => {
+  const { branchName, isLogged, is_verified } = useSelector((state) => {
     return {
       branchName: state.storeReducer.defaultStore,
       isLogged: state.userReducer.id,
+      is_verified: state.userReducer.is_verified,
     };
   });
   const [by, setBy] = useState("name");
   const [order, setOrder] = useState("asc");
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(0);
+  const [limit, setLimit] = useState(1);
+  const [countResult, setCountResult] = useState(0);
   const [isModal, setIsModal] = useState(false);
   const [modalProductId, setModalProductId] = useState();
   const [branchList, setBranchList] = useState([]);
@@ -46,12 +45,14 @@ const ProductComponent = () => {
   const getProducts = async () => {
     try {
       const { data } = await axios.get(
-        `${API_URL}/product/product-list?category=${category}&name=${name}&by=${by}&order=${order}&limit=${limit}&page=${page}&branch_name=${branchName}`
+        `${API_URL}/product/product-list?category=${category}&name=${name}&by=${by}&order=${order}&page=${page}&branch_name=${branchName}`
       );
       setProducts(data.data);
+      setCountResult(data.allResultLength);
       setLimit(data.limit);
     } catch (error) {
-      alert(error.response.data.message);
+      setProducts([]);
+      setCountResult(0);
     }
   };
 
@@ -62,7 +63,7 @@ const ProductComponent = () => {
       );
       setCategoryList(data.data);
     } catch (error) {
-      alert(error.response.data.message);
+      setCategoryList([]);
     }
   };
 
@@ -107,41 +108,36 @@ const ProductComponent = () => {
     setPage(1);
   };
 
-  // Pagination
-  const handleNextPage = () => {
-    setPage(page + 1);
-  };
-
-  const handlePrevPage = () => {
-    setPage(page - 1);
-  };
-
   // Add to cart
   const handleAddToCart = (product_id, branch_name) => {
     const token = localStorage.getItem("xmart_login");
-    axios
-      .post(
-        `${API_URL}/cart/add-to-cart`,
-        {
-          quantity: 1,
-          product_id,
-          branch_name,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+    if (!is_verified) {
+      toast.error("Please verify your account first");
+    } else {
+      axios
+        .post(
+          `${API_URL}/cart/add-to-cart`,
+          {
+            quantity: 1,
+            product_id,
+            branch_name,
           },
-        }
-      )
-      .then((res) => {
-        if (res.status === 202) {
-          setIsModal(!isModal);
-          setModalProductId(product_id);
-        } else {
-          toast.success(res.data.message);
-        }
-      })
-      .catch((err) => console.log(err));
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((res) => {
+          if (res.status === 202) {
+            setIsModal(!isModal);
+            setModalProductId(product_id);
+          } else {
+            toast.success(res.data.message);
+          }
+        })
+        .catch((err) => console.log(err));
+    }
   };
 
   const handleRemoveCartItem = (product_id) => {
@@ -225,7 +221,7 @@ const ProductComponent = () => {
         <FcShop size={20} />
         <select
           className="bg-[#6CC51D] font-semibold text-white rounded-full px-3 ml-1"
-          defaultValue={branchName}
+          value={branchName}
           onChange={(e) =>
             dispatch(changeStoreAction({ defaultStore: e.target.value }))
           }
@@ -328,7 +324,7 @@ const ProductComponent = () => {
                     className={
                       isLogged
                         ? "text-[#82CD47] hover:text-[#BFF099]"
-                        : "text-[#82cd47] cursor-not-allowed"
+                        : "text-gray-200"
                     }
                     onClick={() => handleAddToCart(product.id, product.branch_id)}
                     disabled={!isLogged}
@@ -342,24 +338,13 @@ const ProductComponent = () => {
         </div>
       )}
       {/* Pagination */}
-      <div className="flex justify-center my-5 font-semibold">
-        <button
-          className="mx-10"
-          onClick={handlePrevPage}
-          disabled={page <= 1}
-        >
-          <MdKeyboardArrowLeft size={25} />
-        </button>
-        <div className="mx-2">
-          Page {page}
-        </div>
-        <button
-          className="mx-10"
-          onClick={handleNextPage}
-          disabled={products.length < limit}
-        >
-          <MdKeyboardArrowRight size={25} />
-        </button>
+      <div className="flex justify-center my-10 font-semibold">
+        <Pagination
+          currentPage={page}
+          totalCount={countResult}
+          pageSize={limit}
+          onPageChange={(page) => setPage(page)}
+        />
       </div>
     </div>
   );

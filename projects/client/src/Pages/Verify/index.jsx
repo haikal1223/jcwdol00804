@@ -12,17 +12,21 @@ const Verify = () => {
   const onClick = async () => {
     try {
       const token = location.search.split("=")[1];
-      const result = await axios.patch(`${API_URL}/user/verify`, {}, {
-        headers: {
-          Authorization: `Bearer ${token}`
+      const result = await axios.patch(
+        `${API_URL}/user/verify`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
+      );
       alert(result.data.message);
       navigate("/sign-in");
     } catch (error) {
       alert(error.response.data.message);
     }
-  }
+  };
   return (
     <Page isNavbar={false} isFooter={false}>
       <div className="font-sans grid justify-items-center items-center container mx-auto text-center p-10 min-h-screen">
@@ -43,6 +47,6 @@ const Verify = () => {
       </div>
     </Page>
   );
-}
+};
 
 export default Verify;

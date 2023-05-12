@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../../../Assets/logo-xmart.png";
 import slogan from "../../../Assets/xmart.png";
+import { useNavigate } from "react-router-dom";
 
 const LogoSection = () => {
   const navigate = useNavigate();

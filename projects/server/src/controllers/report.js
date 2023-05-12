@@ -59,9 +59,9 @@ module.exports = {
       }
     );
   },
-  getStockDataBranch: (req, res) => {
+  getCategoryDataBranch: (req, res) => {
     db.query(
-      `SELECT name, stock FROM product WHERE branch_id=${req.query.branch_id} ORDER BY stock DESC LIMIT 4`,
+      `SELECT c.name, COUNT(p.name) as total_product FROM category c JOIN product p ON c.id = p.category_id WHERE p.branch_id=${req.query.branch_id} AND p.is_delete = 0 AND c.is_delete = 0 GROUP BY c.name LIMIT 4`,
       (err, results) => {
         if (err) {
           return res.status(500).send({
@@ -70,8 +70,8 @@ module.exports = {
           });
         }
         db.query(
-          `SELECT ((SELECT SUM(stock) as total_items) - (SELECT SUM(stock) FROM (SELECT stock FROM product WHERE branch_id=${req.query.branch_id} ORDER BY stock DESC LIMIT 4) AS selected_items)) 
-      as other_items FROM product WHERE branch_id=${req.query.branch_id}`,
+          `SELECT ((SELECT COUNT(stock) as total_product) - (SELECT SUM(total_product) FROM (SELECT c.name, COUNT(p.name) as total_product FROM category c JOIN product p ON c.id = p.category_id WHERE p.branch_id=${req.query.branch_id} AND p.is_delete = 0 AND c.is_delete = 0 GROUP BY c.name LIMIT 4) as most_product)) 
+          as other_product from product WHERE branch_id=${req.query.branch_id} AND is_delete = 0`,
           (err2, results2) => {
             if (err2) {
               return res.status(500).send({
@@ -81,10 +81,17 @@ module.exports = {
             }
             return res
               .status(200)
-              .send([
-                ...results,
-                { name: "Other", stock: results2[0].other_items },
-              ]);
+              .send(
+                results2[0].other_product
+                  ? [
+                      ...results,
+                      {
+                        name: "Other",
+                        total_product: results2[0].other_product,
+                      },
+                    ]
+                  : [...results]
+              );
           }
         );
       }

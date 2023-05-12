@@ -3,8 +3,7 @@ import PageAdmin from "../../../Components/PageAdmin";
 import { FcShop } from "react-icons/fc";
 import { GiQueenCrown } from "react-icons/gi";
 import { useSelector } from "react-redux";
-
-import StockPieChart from "./StockPieChart";
+import CategoryPieChart from "./CategoryPieChart";
 
 const AdminHome = () => {
   const { role_id, branch_name } = useSelector((state) => {
@@ -30,7 +29,7 @@ const AdminHome = () => {
             </>
           )}
         </div>
-        <StockPieChart />
+        <CategoryPieChart />
       </div>
     </PageAdmin>
   );
