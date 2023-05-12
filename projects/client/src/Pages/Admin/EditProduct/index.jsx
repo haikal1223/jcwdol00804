@@ -2,12 +2,11 @@ import React, { useEffect, useState } from "react";
 import PageAdmin from "../../../Components/PageAdmin";
 import BackButtonAdmin from "../../../Components/BackButtonAdmin";
 import { BiSave } from "react-icons/bi";
-import addImage from "../../../Assets/add-photo.png";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import addImage from "../../../Assets/add-photo.png";
 import axios from "axios";
 import { API_URL } from "../../../helper";
-import { useSelector } from "react-redux";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -16,15 +15,9 @@ const EditProduct = () => {
   const [categoryList, setCategoryList] = useState([]);
   const [productImg, setProductImg] = useState("");
   const { id } = useParams();
-
-  const { branch_name } = useSelector((state) => {
-    return {
-      branch_name: state.userReducer.branch_name,
-    };
-  });
+  let token = localStorage.getItem("xmart_login");
 
   useEffect(() => {
-    let token = localStorage.getItem("xmart_login");
     axios
       .get(`${API_URL}/product/admin/product-detail/${id}`, {
         headers: {
@@ -47,7 +40,11 @@ const EditProduct = () => {
 
   useEffect(() => {
     axios
-      .get(`${API_URL}/product/categories?branch_name=${branch_name}`)
+      .get(`${API_URL}/category/get-categories`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => {
         setCategoryList(res.data.data);
       })
@@ -55,7 +52,7 @@ const EditProduct = () => {
         console.log(err);
         setCategoryList([]);
       });
-  }, [branch_name]);
+  }, [token]);
 
   const formik = useFormik({
     initialValues: {
@@ -85,7 +82,7 @@ const EditProduct = () => {
         )
         .nullable(),
       category: Yup.mixed()
-        .oneOf([...categoryList.map((val) => val.category_id)])
+        .oneOf([...categoryList.map((val) => val.name)])
         .required(),
       product_name: Yup.string().required(),
       description: Yup.string().max(255, "Max character 255").nullable(),
@@ -103,7 +100,7 @@ const EditProduct = () => {
               Authorization: `Bearer ${token}`,
             },
           })
-          .then((res) => {
+          .then(() => {
             axios
               .patch(
                 `${API_URL}/product/admin/edit-product-img/${id}`,
@@ -125,7 +122,7 @@ const EditProduct = () => {
               Authorization: `Bearer ${token}`,
             },
           })
-          .then((res) => {
+          .then(() => {
             navigate("/admin/manage-product");
           })
           .catch((err) => toast.error(err.response.data.message));
@@ -149,7 +146,6 @@ const EditProduct = () => {
             className="hidden"
             onChange={(e) => {
               formik.setFieldValue("product_img", e.target.files[0]);
-              setProductImg(e.target.files[0].name);
             }}
           />
           <label htmlFor="product_img">
@@ -159,6 +155,8 @@ const EditProduct = () => {
                   ? !formik.errors.product_img && formik.values.product_img
                     ? URL.createObjectURL(formik.values.product_img)
                     : `http://localhost:8000/${productImg}`
+                  : !formik.errors.product_img && formik.values.product_img
+                  ? URL.createObjectURL(formik.values.product_img)
                   : addImage
               }
               alt="thumb"
@@ -185,8 +183,8 @@ const EditProduct = () => {
                 Select Category
               </option>
               {categoryList.map((val, idx) => (
-                <option key={idx} value={val.category_id}>
-                  {val.category_id}
+                <option key={idx} value={val.name}>
+                  {val.name}
                 </option>
               ))}
             </select>

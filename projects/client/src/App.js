@@ -141,6 +141,10 @@ function App() {
               <Route path="/admin/manage-product" element={<ManageProduct />} />
               <Route path="/admin/add-product" element={<AddProduct />} />
               <Route path="/admin/edit-product/:id" element={<EditProduct />} />
+              <Route
+                path="/admin/stock-movement-report"
+                element={<StockMovementReport />}
+              />
               <Route path="*" element={<NotFound />} />
             </>
           ) : null}
