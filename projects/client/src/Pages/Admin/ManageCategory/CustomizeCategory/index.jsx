@@ -1,16 +1,22 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import PageAdmin from "../../../../Components/PageAdmin";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { API_URL } from "../../../../helper";
-import img from "../../../../Assets/default.png";
+import { useSelector } from "react-redux";
+import { FcShop } from "react-icons/fc";
+import BackButtonAdmin from "../../../../Components/BackButtonAdmin";
 
 const CustomizeCategory = () => {
+    const { branch_name } = useSelector((state) => {
+        return {
+            branch_name: state.userReducer.branch_name,
+        };
+    });
     const { id } = useParams();
     const [name, setName] = useState("");
     const [detail, setDetail] = useState([]);
     const [image, setImage] = useState(null);
-    const navigate = useNavigate();
 
     const getDetail = async () => {
         try {
@@ -43,9 +49,11 @@ const CustomizeCategory = () => {
 
     const handleEdit = async () => {
         try {
+            const token = localStorage.getItem("xmart_login");
             const result = await axios.patch(
                 `${API_URL}/category/edit-category/${id}`,
-                { name }
+                { name },
+                { headers: { Authorization: `Bearer ${token}` } }
             );
             alert(result.data.message)
             getDetail();
@@ -56,37 +64,36 @@ const CustomizeCategory = () => {
 
     return (
         <PageAdmin>
-            <div className="container">
-                <div className="text-2xl font-bold">Manage Category</div>
-                <div className="container-content">
-                    <div className="flex flex-col py-5 ml-5">
-                        <div className="flex text-xl font-semibold mb-5">
-                            Edit Category
-                        </div>
-                        <div className="flex justify-center">
-                            {detail.category_img == null ? (
-                                <img
-                                    src={img}
-                                    className="w-[200px] h-[200px]"
-                                    alt="default_img" />
-                            ) : (
-                                <img
-                                    src={detail.category_img && `http://localhost:8000/${detail.category_img}`}
-                                    className="w-[200px] h-[200px]"
-                                    alt="category_img"
-                                />
-                            )}
-                        </div>
-                        <div className="flex justify-center text-xl font-bold my-2">
-                            {detail.name}
-                        </div>
-                        <div className="block border-white rounded-md px-5 shadow-md">
-                            <div className="flex justify-start my-2">
-                                <label htmlFor="images" className="mr-12 pt-1">
+            <div className="items-start justify-between flex">
+                <h3 className="text-gray-800 text-xl font-bold">
+                    <FcShop className="inline mb-1" size={25} /> {branch_name} Category List
+                </h3>
+                <BackButtonAdmin />
+            </div>
+            <div className="flex justify-center w-full pt-10">
+                <div className="flex flex-col w-[50%] items-center">
+                    <div className="flex flex-col items-center">
+                        <img
+                            src={
+                                detail.category_img
+                                    ? `http://localhost:8000/${detail.category_img}`
+                                    : "https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-6.png"
+                            }
+                            alt={detail.name}
+                            className={`w-40 h-40 rounded-md ${detail.category_img}`}
+                        />
+                    </div>
+                    <div className="flex justify-center text-xl font-bold my-2">
+                        {detail.name}
+                    </div>
+                    <div className="flex flex-col items-center border shadow-md rounded-lg mx-2 my-5 px-2 py-2">
+                        <div className="my-2">
+                            <p className="flex justify-center my-2">
+                                <label htmlFor="images" className="my-auto mr-5">
                                     Image
                                 </label>
                                 <input
-                                    className="block border w-[220px] h-[32px] pl-2"
+                                    className="block border w-full cursor-pointer"
                                     id="images"
                                     name="images"
                                     type="file"
@@ -96,24 +103,22 @@ const CustomizeCategory = () => {
                                 />
                                 <button
                                     type="submit"
-                                    className="rounded-md bg-blue-400 w-[100px] h-[32px]
+                                    className="rounded-md bg-blue-400 w-40
                                     text-white font-[500]
                                     leading-6 shadow-md
                                     hover:opacity-50
-                                    ml-6"
+                                    ml-5"
                                     onClick={handleSave}
                                 >
                                     Save
                                 </button>
-                            </div>
-                        </div>
-                        <div className="block border-white rounded-md px-5 shadow-md">
-                            <div className="flex justify-start mb-2 pt-2">
-                                <label htmlFor="name" className="mr-12 pt-1">
+                            </p>
+                            <p className="flex justify-center my-2">
+                                <label htmlFor="name" className="my-auto mr-[22px]">
                                     Name
                                 </label>
                                 <input
-                                    className="block border w-[220px] h-[32px] pl-2"
+                                    className="block border w-full h-[30px] pl-2"
                                     id="name"
                                     name="name"
                                     type="text"
@@ -124,33 +129,21 @@ const CustomizeCategory = () => {
                                 />
                                 <button
                                     type="submit"
-                                    className="rounded-md bg-blue-400 w-[100px] h-[32px]
-                                    text-white font-[500]
-                                    leading-6 shadow-md
-                                    hover:opacity-50
-                                    ml-6"
+                                    className="rounded-md bg-blue-400 w-40
+                                text-white font-[500]
+                                leading-6 shadow-md
+                                hover:opacity-50
+                                ml-5"
                                     onClick={handleEdit}
                                 >
                                     Edit
                                 </button>
-                            </div>
-                        </div>
-                        <div className="flex justify-center my-10">
-                            <button
-                                type="submit"
-                                className="rounded-md bg-[#82CD47] w-[150px] h-[32px]
-                                    text-white text-xl font-[500]
-                                    leading-6 shadow-md
-                                    hover:opacity-50"
-                                onClick={() => navigate("/manage-category")}
-                            >
-                                Back
-                            </button>
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
-        </PageAdmin>
+        </PageAdmin >
     )
 }
 

@@ -68,7 +68,11 @@ module.exports = {
         try {
             const { name } = req.body;
             const { id } = req.params;
-            const checkName = await dbQuery(`Select name from category WHERE name=${db.escape(name)};`);
+            const { branch_id } = req.decript;
+            const checkName = await dbQuery(
+                `Select name from category WHERE name=${db.escape(name)} 
+                AND branch_id=${db.escape(branch_id)};`
+            );
             if (name === "") {
                 return res.status(500).send({
                     success: false,

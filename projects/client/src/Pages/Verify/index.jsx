@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../../helper";
 import verify from "../../Assets/Verify.png";
@@ -7,6 +7,7 @@ import Page from "../../Components/Page";
 
 const Verify = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const onClick = async () => {
     try {
@@ -21,6 +22,7 @@ const Verify = () => {
         }
       );
       alert(result.data.message);
+      navigate("/sign-in");
     } catch (error) {
       alert(error.response.data.message);
     }

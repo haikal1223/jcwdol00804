@@ -66,8 +66,9 @@ const FormSection = () => {
 
   return (
     <div className="flex flex-col justify-center mx-20 my-10">
-      <div className="text-xl font-bold">Add Address</div>
-      <div className="w-full mt-5">
+      <div className="text-xl font-bold mb-2">Add address</div>
+      <div className="h-[2px] bg-slate-200 w-[100%]"></div>
+      <div className="w-full mt-2">
         {/* Province */}
         <div className="">
           <label htmlFor="province" className="text-base font-semibold">

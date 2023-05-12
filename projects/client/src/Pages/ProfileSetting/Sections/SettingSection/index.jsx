@@ -17,8 +17,9 @@ const SettingSection = () => {
 
   return (
     <div className="flex flex-col justify-center mx-20 my-10">
-      <div className="text-xl font-bold">Settings</div>
-      <div className="flex justify-between text-base font-semibold mt-10 mb-3">
+      <div className="text-xl font-bold mb-2">Settings</div>
+      <div className="h-[2px] bg-slate-200 w-[100%] mb-2"></div>
+      <div className="flex justify-between text-base font-semibold my-2">
         <BiUser className="my-auto" size={25} />
         <div className="my-auto pl-2 pr-32">Personal Data</div>
         <Link to="/personal-data">

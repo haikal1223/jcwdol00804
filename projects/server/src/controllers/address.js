@@ -90,27 +90,31 @@ module.exports = {
     }
   },
   // Set Main Address
-  setMain: async (req, res) => {
-    const addressId = req.params.id;
-    const userId = req.decript.id;
-    db.query(
-      `UPDATE address SET is_main = CASE
-            WHEN id = ${addressId} 
-            THEN 1
-            ELSE 0
-            END
-            WHERE user_id = ${userId}`,
-      (error, results) => {
-        if (error) {
-          res.status(500).send(error);
+  setMain: (req, res) => {
+    try {
+      const addressId = req.params.id;
+      const userId = req.decript.id;
+      db.query(
+        `UPDATE address SET is_main = CASE
+              WHEN id = ${addressId} 
+              THEN 1
+              ELSE 0
+              END
+              WHERE user_id = ${userId}`,
+        (error, results) => {
+          if (error) {
+            res.status(500).send(error);
+          }
+          return res.status(200).send({
+            success: true,
+            message: "This address is set to your Main Address",
+            data: results,
+          });
         }
-        return res.status(200).send({
-          success: true,
-          message: "This address is set to your Main Address",
-          data: results,
-        });
-      }
-    );
+      );
+    } catch (error) {
+      return res.status(500).send(error);
+    }
   },
   getAvailableCourier: async (req, res) => {
     try {
@@ -158,4 +162,40 @@ module.exports = {
       return res.status(500).send(error);
     }
   },
+  getDetailAddress: (req, res) => {
+    try {
+      const { id } = req.params;
+      db.query(`SELECT * FROM address WHERE id=${db.escape(id)}`,
+        (error, results) => {
+          if (error) {
+            res.status(500).send(error);
+          };
+          return res.status(200).send(results);
+        });
+    } catch (error) {
+      return res.status(500).send(error);
+    };
+  },
+  editDetailAddress: (req, res) => {
+    try {
+      const { id } = req.params;
+      const { address, province, city, zipcode } = req.body;
+      db.query(`UPDATE address SET ? WHERE id=${db.escape(id)}`,
+        { address, province, city, zipcode },
+        (error, results) => {
+          if (error) {
+            return res.status(500).send({
+              success: false,
+              message: error,
+            });
+          }
+          return res.status(200).send({
+            success: true,
+            message: "Successfully updated address",
+          });
+        });
+    } catch (error) {
+
+    }
+  }
 };

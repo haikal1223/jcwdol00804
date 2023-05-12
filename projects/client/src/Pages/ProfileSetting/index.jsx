@@ -5,7 +5,7 @@ import SettingSection from "./Sections/SettingSection";
 
 const ChangePassword = () => {
     return (
-        <Page isNavbar={true} isFooter={false}>
+        <Page isNavbar={true} isFooter={false} navTitle={"Profile Settings"}>
             <AvatarSection />
             <SettingSection />
         </Page>
