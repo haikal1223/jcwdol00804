@@ -9,10 +9,12 @@ const CategoryComponent = ({ branchName }) => {
 
   const fetchCategories = async () => {
     try {
-      const { data } = await axios.get(
-        `${API_URL}/category/categories?branch_name=${branchName}`
-      );
-      setCategoryList(data.data);
+      if (branchName) {
+        const { data } = await axios.get(
+          `${API_URL}/category/categories?branch_name=${branchName}`
+        );
+        setCategoryList(data.data);
+      }
     } catch (error) {
       alert(error.response.data.message);
     }

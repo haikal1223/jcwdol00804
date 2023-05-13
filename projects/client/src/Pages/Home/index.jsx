@@ -14,16 +14,18 @@ import { Toaster, toast } from "react-hot-toast";
 const Home = () => {
   const dispatch = useDispatch();
   const [branchList, setBranchList] = useState([]);
-  const [yourLocation, setYourLocation] = useState("");
 
-  const { branchName } = useSelector((state) => {
+  const { userLocation, branchName } = useSelector((state) => {
     return {
+      userLocation: state.storeReducer.userLocation,
       branchName: state.storeReducer.defaultStore,
     };
   });
 
   useEffect(() => {
-    dispatch(setDefaultStore());
+    if (!userLocation) {
+      dispatch(setDefaultStore());
+    }
     axios.get(`${API_URL}/product/get-branch-list`).then((res) => {
       setBranchList(res.data);
     });
@@ -38,20 +40,18 @@ const Home = () => {
 
     const success = (pos) => {
       let crd = pos.coords;
-      // axios
-      //   .get(
-      //     `https://api.opencagedata.com/geocode/v1/json?q=${crd.latitude}+${crd.longitude}&key=49442a5440874bcb9ad684742dcf1ecb`
-      //   )
-      //   .then((res) => {
-      //     setYourLocation(res.data.results[0].components.city_district);
-      //   })
-      //   .catch((err) => console.log(err));
       axios
         .get(
           `${API_URL}/product/get-closest-store?lat=${crd.latitude}&lng=${crd.longitude}`
         )
         .then((res) => {
-          dispatch(changeStoreAction({ defaultStore: res.data }));
+          console.log(res.data);
+          dispatch(
+            changeStoreAction({
+              defaultStore: res.data.closestStore,
+              userLocation: res.data.userLocation,
+            })
+          );
         })
         .catch((err) => {
           console.log(err);
@@ -103,10 +103,10 @@ const Home = () => {
               })}
             </select>
           </div>
-          {yourLocation ? (
+          {userLocation ? (
             <div className="flex flex-row items-center text-[#6CC51D] bg-[#6CC51D]/20 rounded-full px-2 py-1">
               <RiUserLocationFill className="mr-1" size={20} />
-              <span className="font-bold text-xs ">{yourLocation}</span>
+              <span className="font-bold text-xs ">{userLocation}</span>
             </div>
           ) : (
             <div

@@ -1,3 +1,4 @@
+const { geocode } = require("opencage-api-client");
 const { db, dbQuery } = require("../config/db");
 
 module.exports = {
@@ -167,11 +168,13 @@ module.exports = {
     const { search, page, sort_by, order } = req.query;
     const limit = 8;
     const offset = (page - 1) * limit;
-    const query = `SELECT p.id, p.name, p.description, p.price, p.stock, p.weight, p.is_featured ,p.is_delete, p.product_img, c.name AS category_name FROM product p JOIN branch b ON p.branch_id = b.id JOIN category c ON p.category_id = c.id WHERE p.is_delete=0 AND b.name='${req.decript.branch_name
-      }' AND (c.name LIKE '%${search}%' OR p.name LIKE '%${search}%') ${sort_by === ""
+    const query = `SELECT p.id, p.name, p.description, p.price, p.stock, p.weight, p.is_featured ,p.is_delete, p.product_img, c.name AS category_name FROM product p JOIN branch b ON p.branch_id = b.id JOIN category c ON p.category_id = c.id WHERE p.is_delete=0 AND b.name='${
+      req.decript.branch_name
+    }' AND (c.name LIKE '%${search}%' OR p.name LIKE '%${search}%') ${
+      sort_by === ""
         ? ""
         : `ORDER BY p.${sort_by} ${order === "true" ? "ASC" : "DESC"}`
-      } `;
+    } `;
     const pagination = `LIMIT ${limit} OFFSET ${offset}`;
     db.query(query + " " + pagination, (error, results) => {
       if (error) {
@@ -461,19 +464,31 @@ module.exports = {
       }
     );
   },
-  getClosestStore: (req, res) => {
-    const { lat, lng } = req.query;
-    db.query(
-      `SELECT name, (((acos(sin((${lat}*pi()/180)) * sin((lat*pi()/180)) + cos((${lat}*pi()/180)) * cos((lat*pi()/180)) * cos(((${lng}- lng) * pi()/180)))) * 180/pi()) * 60 * 1.1515 * 1.609344) as distance FROM branch ORDER BY distance ASC LIMIT 1`,
-      (err, results) => {
-        if (err) {
-          return res.status(500).send({
-            success: false,
-            message: err,
+  getClosestStore: async (req, res) => {
+    try {
+      const { lat, lng } = req.query;
+      const geoResults = await geocode({
+        q: `${lat}+${lng}`,
+        countrycode: "id",
+        key: process.env.OPENCAGE_KEY,
+      });
+      db.query(
+        `SELECT name, (((acos(sin((${lat}*pi()/180)) * sin((lat*pi()/180)) + cos((${lat}*pi()/180)) * cos((lat*pi()/180)) * cos(((${lng}- lng) * pi()/180)))) * 180/pi()) * 60 * 1.1515 * 1.609344) as distance FROM branch ORDER BY distance ASC LIMIT 1`,
+        (err, results) => {
+          if (err) {
+            return res.status(500).send({
+              success: false,
+              message: err,
+            });
+          }
+          return res.status(200).send({
+            closestStore: results[0].name,
+            userLocation: geoResults.results[0].components.city_district,
           });
         }
-        return res.status(200).send(results[0].name);
-      }
-    );
+      );
+    } catch (error) {
+      return res.status(500).send(error);
+    }
   },
 };
