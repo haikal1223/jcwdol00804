@@ -27,7 +27,7 @@ const SalesPieChart = ({ salesData, salesDataType, setSalesDataType }) => {
       <div className="relative">
         {salesData.length ? (
           <LineChart
-            width={650}
+            width={700}
             height={400}
             data={salesData}
             margin={{
@@ -38,13 +38,15 @@ const SalesPieChart = ({ salesData, salesDataType, setSalesDataType }) => {
             }}
           >
             <CartesianGrid strokeDasharray="3 3" fill="blue" fillOpacity="3%" />
-            <XAxis dataKey="date" />
+            <XAxis dataKey="date" fontSize={14} />
             <YAxis
               dataKey="total_sales"
-              width={80}
+              width={120}
               tickFormatter={(num) =>
                 num ? `Rp ${num.toLocaleString("id")}` : ""
               }
+              tickMargin={10}
+              fontSize={14}
             />
             <Tooltip
               content={<SalesCustomTooltip />}
@@ -64,7 +66,7 @@ const SalesPieChart = ({ salesData, salesDataType, setSalesDataType }) => {
             No Sales Recorded
           </div>
         )}
-        <div className="absolute top-0 right-10">
+        <div className="absolute top-0 right-5">
           <select
             className="border px-2 py-1 rounded-lg shadow-md"
             value={salesDataType}
