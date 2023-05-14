@@ -37,7 +37,7 @@ const ManageOrder = () => {
   const [nameValue, setNameValue] = useState("");
   const [status, setStatus] = useState("");
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(0);
+  const [limit, setLimit] = useState(1);
   const [countResult, setCountResult] = useState(0);
   const [openDate, setOpenDate] = useState(false);
   const [orderList, setOrderList] = useState([]);

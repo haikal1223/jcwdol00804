@@ -8,6 +8,7 @@ import { FcShop } from "react-icons/fc";
 import img from "../../../../Assets/default.png";
 import { useSelector } from "react-redux";
 import BackButtonAdmin from "../../../../Components/BackButtonAdmin";
+import toast, { Toaster } from "react-hot-toast";
 
 const ManageOrderDetail = () => {
     const { branch_name } = useSelector((state) => {
@@ -29,86 +30,87 @@ const ManageOrderDetail = () => {
         return arr.map((val) => val.price * val.quantity).reduce((p, c) => p + c);
     };
 
-  const handleModalOpen = (imageUrl) => {
-    setShowModalImage(true);
-    setModalImage(imageUrl);
-  };
+    const handleModalOpen = (imageUrl) => {
+        setShowModalImage(true);
+        setModalImage(imageUrl);
+    };
 
-  const handleModalClose = () => {
-    setShowModalImage(false);
-    setModalImage(null);
-  };
+    const handleModalClose = () => {
+        setShowModalImage(false);
+        setModalImage(null);
+    };
 
-  const getDetail = async () => {
-    let promise1 = axios.get(
-      `${API_URL}/transaction/order-list-super-admin/${id}`
-    );
-    let promise2 = axios.get(`${API_URL}/transaction/get-product-info/${id}`);
+    const getDetail = async () => {
+        let promise1 = axios.get(
+            `${API_URL}/transaction/order-list-super-admin/${id}`
+        );
+        let promise2 = axios.get(`${API_URL}/transaction/get-product-info/${id}`);
 
-    Promise.all([promise1, promise2])
-      .then((res) => {
-        setOrderDetail(res[0].data[0]);
-        setProductInfo(res[1].data);
-      })
-      .catch((err) => console.log(err));
-  };
+        Promise.all([promise1, promise2])
+            .then((res) => {
+                setOrderDetail(res[0].data[0]);
+                setProductInfo(res[1].data);
+            })
+            .catch((err) => console.log(err));
+    };
 
-  useEffect(() => {
-    getDetail();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+    useEffect(() => {
+        getDetail();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [id]);
 
-  const handleAccept = async () => {
-    try {
-      const result = await axios.patch(
-        `${API_URL}/transaction/accept-payment/${id}`
-      );
-      alert(result.data.message);
-      getDetail();
-    } catch (error) {
-      alert(error.response.data.message);
-    }
-  };
+    const handleAccept = async () => {
+        try {
+            const result = await axios.patch(
+                `${API_URL}/transaction/accept-payment/${id}`
+            );
+            toast.success(result.data.message);
+            getDetail();
+        } catch (error) {
+            toast.error(error.response.data.message);
+        }
+    };
 
-  const handleRefuse = async () => {
-    try {
-      const result = await axios.patch(
-        `${API_URL}/transaction/refuse-payment/${id}`
-      );
-      alert(result.data.message);
-      getDetail();
-    } catch (error) {
-      alert(error.response.data.message);
-    }
-  };
+    const handleRefuse = async () => {
+        try {
+            const result = await axios.patch(
+                `${API_URL}/transaction/refuse-payment/${id}`
+            );
+            toast.error(result.data.message);
+            getDetail();
+        } catch (error) {
+            toast.error(error.response.data.message);
+        }
+    };
 
-  const handleSendOrder = async () => {
-    try {
-      const result = await axios.patch(
-        `${API_URL}/transaction/send-order/${id}`
-      );
-      alert(result.data.message);
-      getDetail();
-    } catch (error) {
-      alert(error.response.data.message);
-    }
-  };
+    const handleSendOrder = async () => {
+        try {
+            const result = await axios.patch(
+                `${API_URL}/transaction/send-order/${id}`
+            );
+            toast.success(result.data.message);
+            getDetail();
+        } catch (error) {
+            toast.error(error.response.data.message);
+        }
+    };
 
-  const handleCancelOrder = async () => {
-    try {
-      const result = await axios.patch(
-        `${API_URL}/transaction/cancel-order/${id}`
-      );
-      alert(result.data.message);
-      getDetail();
-    } catch (error) {
-      alert(error.response.data.message);
-    }
-  };
+    const handleCancelOrder = async () => {
+        try {
+            const result = await axios.patch(
+                `${API_URL}/transaction/cancel-order/${id}`
+            );
+            toast.error(result.data.message);
+            getDetail();
+        } catch (error) {
+            toast.error(error.response.data.message);
+        }
+    };
 
     return (
         <PageAdmin>
             <div className="items-start justify-between flex">
+                <Toaster />
                 <h3 className="text-gray-800 text-xl font-bold">
                     <FcShop className="inline mb-1" size={25} /> {branch_name} Order Details
                 </h3>
@@ -313,7 +315,6 @@ const ManageOrderDetail = () => {
                                         text-white text-xl font-[500]
                                         leading-6 shadow-md
                                         hover:opacity-50 mx-2"
-                                // onClick={handleAccept}
                                 onClick={() => setModalPaymentAccept(!modalPaymentAccept)}
                             >
                                 Accept
@@ -324,7 +325,6 @@ const ManageOrderDetail = () => {
                                         text-white text-xl font-[500]
                                         leading-6 shadow-md
                                         hover:opacity-50 mx-2"
-                                // onClick={handleRefuse}
                                 onClick={() => setModalPaymentRefuse(!modalPaymentRefuse)}
                             >
                                 Refuse

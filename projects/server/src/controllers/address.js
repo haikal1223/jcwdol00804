@@ -1,6 +1,7 @@
 const request = require("request");
 const { db, dbQuery } = require("../config/db");
 const { geocode } = require("opencage-api-client");
+const e = require("express");
 
 module.exports = {
   // Get Address
@@ -30,6 +31,24 @@ module.exports = {
   addAddress: async (req, res) => {
     try {
       const { address, city, province, zipcode } = req.body;
+      if (province === "") {
+        return res.status(406).send({
+          success: false,
+          message: "Please select province"
+        });
+      };
+      if (city === "" || city === "Select City") {
+        return res.status(406).send({
+          success: false,
+          message: "Please select city"
+        });
+      };
+      if (address === "" || zipcode === "") {
+        return res.status(406).send({
+          success: false,
+          message: "Please fill the empty field"
+        });
+      };
       const geoResults = await geocode({
         q: `${address}, ${city}, ${province}`,
         countrycode: "id",
@@ -56,7 +75,7 @@ module.exports = {
           }
           return res.status(200).send({
             success: true,
-            message: "Add Address success",
+            message: "Success add address",
           });
         }
       );
@@ -75,12 +94,13 @@ module.exports = {
           if (error) {
             res.status(500).send({
               success: false,
-              message: "Failed to Delete Address",
+              message: `Delete address failed,
+              please contact administrator`,
             });
           }
           return res.status(200).send({
             success: true,
-            message: "Delete Address success",
+            message: "Success delete address",
             data: results,
           });
         }
@@ -107,7 +127,7 @@ module.exports = {
           }
           return res.status(200).send({
             success: true,
-            message: "This address is set to your Main Address",
+            message: "Success updated your main address",
             data: results,
           });
         }
@@ -180,6 +200,24 @@ module.exports = {
     try {
       const { id } = req.params;
       const { address, province, city, zipcode } = req.body;
+      if (province === "") {
+        return res.status(406).send({
+          success: false,
+          message: "Please select province"
+        });
+      };
+      if (city === "" || city === "Select City") {
+        return res.status(406).send({
+          success: false,
+          message: "Please select city"
+        });
+      };
+      if (address === "" || zipcode === "") {
+        return res.status(406).send({
+          success: false,
+          message: "Please fill the empty field"
+        });
+      };
       db.query(`UPDATE address SET ? WHERE id=${db.escape(id)}`,
         { address, province, city, zipcode },
         (error, results) => {
@@ -191,11 +229,11 @@ module.exports = {
           }
           return res.status(200).send({
             success: true,
-            message: "Successfully updated address",
+            message: "Success updated your address",
           });
         });
     } catch (error) {
-
+      return res.status(500).send(error);
     }
   }
 };

@@ -76,9 +76,10 @@ module.exports = {
             });
           } else if (results[0].is_verified === 1) {
             return res.status(402).send({
-              message: `User with email ${db.escape(
+              message: `'${db.escape(
                 req.decript.email
-              )} is already verified`,
+              )}'
+              is already verified`,
             });
           } else {
             db.query(
@@ -93,9 +94,10 @@ module.exports = {
                   });
                 }
                 return res.status(201).send({
-                  message: `User with email ${db.escape(
+                  message: `'${db.escape(
                     req.decript.email
-                  )} has been successfully verified!`,
+                  )}'
+                  has been successfully verified!`,
                 });
               }
             );
@@ -274,19 +276,45 @@ module.exports = {
             });
           }
           db.query(
-            `UPDATE user SET ? WHERE id=${req.decript.id}`,
-            { name, birthdate, gender },
+            'UPDATE user SET name=?, email=?, birthdate=?, gender=?, is_verified=? WHERE id=?',
+            [name, email, birthdate, gender, is_verified = 0, req.decript.id],
             (error, results) => {
-              if (error) {
-                return res.status(500).send({
-                  success: false,
-                  message: error,
-                });
-              }
-              return res.status(200).send({
-                success: true,
-                message: "Successfully updated personal data",
-              });
+              db.query(
+                `SELECT * from user WHERE email=${db.escape(email)}`,
+                (error, results) => {
+                  const token = createToken({ ...results[0] });
+                  transporter.sendMail(
+                    {
+                      from: "XMART ADMIN",
+                      to: email,
+                      subject: "Verify Account",
+                      html: `<div>
+                  <h3>
+                  Click link below to Verify your account
+                  </h3>
+                  <a href="http://localhost:3000/verify-email?t=${token}">
+                  Verify now
+                  </a>
+                  </div>`,
+                    },
+                    (error, info) => {
+                      if (error) {
+                        return res.status(500).send({
+                          success: false,
+                          message: error,
+                        });
+                      }
+                      return res.status(200).send({
+                        success: true,
+                        message: `Successfully updated personal data
+                        Please check your email
+                        to verify your new email`,
+                        info,
+                      });
+                    }
+                  );
+                }
+              );
             }
           );
         }
@@ -354,6 +382,13 @@ module.exports = {
     try {
       const { oldpassword, password } = req.body;
       const passCheck = bcrypt.compareSync(oldpassword, req.decript.password);
+      if (oldpassword === password) {
+        return res.status(406).send({
+          success: false,
+          message: `Your new password
+          must be different from old`,
+        })
+      }
       if (!passCheck) {
         return res.status(406).send({
           success: false,

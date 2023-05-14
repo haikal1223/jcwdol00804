@@ -8,6 +8,7 @@ import { FaTrashRestore } from "react-icons/fa";
 import { FcShop } from "react-icons/fc";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import toast, { Toaster } from "react-hot-toast";
 
 const ManageCategory = () => {
     const { branch_name } = useSelector((state) => {
@@ -52,37 +53,38 @@ const ManageCategory = () => {
                     },
                 }
             );
-            alert(result.data.message);
+            toast.success(result.data.message);
             getCategories();
             setName("");
         } catch (error) {
-            alert(error.response.data.message);
+            toast.error(error.response.data.message);
         };
     };
 
     const handleDelete = async (id) => {
         try {
             const result = await axios.patch(`${API_URL}/category/delete-category/${id}`);
-            alert(result.data.message);
+            toast.error(result.data.message);
             getCategories();
         } catch (error) {
-            alert(error.response.data.message);
+            toast.error(error.response.data.message);
         };
     };
 
     const handleRestore = async (id) => {
         try {
             const result = await axios.patch(`${API_URL}/category/restore-category/${id}`);
-            alert(result.data.message);
+            toast.success(result.data.message);
             getCategories();
         } catch (error) {
-            alert(error.response.data.message);
+            toast.error(error.response.data.message);
         };
     };
 
     return (
         <PageAdmin>
             <div className="items-start justify-between flex">
+                <Toaster />
                 <h3 className="text-gray-800 text-xl font-bold">
                     <FcShop className="inline mb-1" size={25} /> {branch_name} Category List
                 </h3>

@@ -9,10 +9,12 @@ const FeaturedComponent = ({ branchName }) => {
 
   const getFeaturedProducts = async () => {
     try {
-      const { data } = await axios.get(
-        `${API_URL}/product/featured-products?branch_name=${branchName}`
-      );
-      setProducts(data.data);
+      if (branchName) {
+        const { data } = await axios.get(
+          `${API_URL}/product/featured-products?branch_name=${branchName}`
+        );
+        setProducts(data.data);
+      }
     } catch (error) {
       alert(error.response.data.message);
     }

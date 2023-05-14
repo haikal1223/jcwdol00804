@@ -8,6 +8,7 @@ import { format, differenceInSeconds } from "date-fns";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import success from "../../Assets/Verify.png"
+import toast, { Toaster } from "react-hot-toast";
 
 const Payment = () => {
   const [paymentDetail, setPaymentDetail] = useState({});
@@ -70,14 +71,14 @@ const Payment = () => {
       const formData = new FormData();
       formData.append("images", values.images);
       try {
-        await axios.patch(
+        const result = await axios.patch(
           `${API_URL}/order/upload-payment/${id}`,
           formData
         );
-        alert("Receipt uploaded successfully");
+        toast.success(result.data.message);
         getPayment();
       } catch (error) {
-        alert(error.response.data.message);
+        toast.error(error.response.data.message);
       }
     },
   });
@@ -86,6 +87,7 @@ const Payment = () => {
     <Page isFooter={false} isNavbar={false}>
       <div className="relative">
         <BackButton />
+        <Toaster />
         <div className="text-center text-xl py-5 font-bold z-10 relative">
           Payment
         </div>

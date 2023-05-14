@@ -12,7 +12,7 @@ import {
 import img from "../../../Assets/default.png";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { changeStoreAction } from "../../../Actions/store";
+import { changeStoreAction, setDefaultStore } from "../../../Actions/store";
 import toast, { Toaster } from "react-hot-toast";
 import notFound from "../../../Assets/not-found.png";
 import Pagination from "../../../Components/Pagination";
@@ -20,12 +20,6 @@ import Pagination from "../../../Components/Pagination";
 const ProductComponent = () => {
   const location = useLocation();
   const dispatch = useDispatch();
-  const [products, setProducts] = useState([]);
-  const [categoryList, setCategoryList] = useState([]);
-  const [category, setCategory] = useState(
-    location.state ? location.state.from : ""
-  );
-  const [name, setName] = useState("");
   const { branchName, isLogged, is_verified } = useSelector((state) => {
     return {
       branchName: state.storeReducer.defaultStore,
@@ -33,6 +27,12 @@ const ProductComponent = () => {
       is_verified: state.userReducer.is_verified,
     };
   });
+  const [products, setProducts] = useState([]);
+  const [categoryList, setCategoryList] = useState([]);
+  const [category, setCategory] = useState(
+    location.state ? location.state.from : ""
+  );
+  const [name, setName] = useState("");
   const [by, setBy] = useState("name");
   const [order, setOrder] = useState("asc");
   const [page, setPage] = useState(1);
@@ -44,12 +44,22 @@ const ProductComponent = () => {
 
   const getProducts = async () => {
     try {
-      const { data } = await axios.get(
-        `${API_URL}/product/product-list?category=${category}&name=${name}&by=${by}&order=${order}&page=${page}&branch_name=${branchName}`
-      );
-      setProducts(data.data);
-      setCountResult(data.allResultLength);
-      setLimit(data.limit);
+      if (!branchName) {
+        const selectedBranch = sessionStorage.getItem("branchName");
+        const { data } = await axios.get(
+          `${API_URL}/product/product-list?category=${category}&name=${name}&by=${by}&order=${order}&page=${page}&branch_name=${selectedBranch}`
+        );
+        setProducts(data.data);
+        setCountResult(data.allResultLength);
+        setLimit(data.limit);
+      } else {
+        const { data } = await axios.get(
+          `${API_URL}/product/product-list?category=${category}&name=${name}&by=${by}&order=${order}&page=${page}&branch_name=${branchName}`
+        );
+        setProducts(data.data);
+        setCountResult(data.allResultLength);
+        setLimit(data.limit);
+      }
     } catch (error) {
       setProducts([]);
       setCountResult(0);
@@ -68,17 +78,25 @@ const ProductComponent = () => {
   };
 
   useEffect(() => {
-    getProducts();
     axios.get(`${API_URL}/product/get-branch-list`).then((res) => {
       setBranchList(res.data);
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, name, by, order, limit, page, branchName]);
-
-  useEffect(() => {
     fetchCategories();
+    getProducts();
+    if (!branchName) {
+      const selectedBranch = sessionStorage.getItem("branchName");
+      if (selectedBranch) {
+        dispatch(changeStoreAction({ defaultStore: selectedBranch }));
+      } else {
+        // If no branchName is selected, set the default store
+        dispatch(setDefaultStore());
+      }
+    } else {
+      // If branchName is set in the state, store it in session storage
+      sessionStorage.setItem("branchName", branchName);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [category, name, by, order, limit, page, branchName, dispatch]);
 
   const handleSortByName = () => {
     if (by === "name") {
@@ -220,7 +238,7 @@ const ProductComponent = () => {
       <div className="px-5 flex flex-row items-center mb-3">
         <FcShop size={20} />
         <select
-          className="bg-[#6CC51D] font-semibold text-white rounded-full px-3 ml-1"
+          className="bg-[#6CC51D] font-semibold text-white rounded-full px-3 ml-1 cursor-pointer"
           value={branchName}
           onChange={(e) =>
             dispatch(changeStoreAction({ defaultStore: e.target.value }))
