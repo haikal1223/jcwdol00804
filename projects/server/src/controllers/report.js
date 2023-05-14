@@ -1,4 +1,5 @@
 const { db, dbQuery } = require("../config/db");
+const { format, subMonths, subYears } = require("date-fns");
 
 module.exports = {
   getStockMovementReport: (req, res) => {
@@ -79,22 +80,74 @@ module.exports = {
                 message: err2,
               });
             }
-            return res
-              .status(200)
-              .send(
-                results2[0].other_product
-                  ? [
-                      ...results,
-                      {
-                        name: "Other",
-                        total_product: results2[0].other_product,
-                      },
-                    ]
-                  : [...results]
-              );
+            return res.status(200).send(
+              results2[0].other_product
+                ? [
+                    ...results,
+                    {
+                      name: "Other",
+                      total_product: results2[0].other_product,
+                    },
+                  ]
+                : [...results]
+            );
           }
         );
       }
     );
+  },
+  getSalesDataBranch: (req, res) => {
+    let { branch_id, type } = req.query;
+    if (type === "monthly") {
+      let sixMonths = (arr) => {
+        let result = [...arr];
+        if (arr.length < 12 && arr.length > 0) {
+          for (let i = 1; i <= 12 - arr.length; i++) {
+            result.unshift({
+              date: format(subMonths(new Date(arr[0].date), i), "MMM yyyy"),
+              total_sales: 0,
+            });
+          }
+        }
+        return result;
+      };
+      db.query(
+        `SELECT DATE_FORMAT(b.updated_at, '%b %Y') AS date, SUM((c.price*a.quantity)) as total_sales FROM order_item a JOIN xmart.order b ON a.order_id = b.id JOIN product c ON a.product_id = c.id WHERE c.branch_id = ${branch_id} AND b.status IN ('Menunggu Pembayaran', 'Menunggu Konfirmasi', 'Dibatalkan') AND b.updated_at > DATE_SUB(now(),INTERVAL 12 MONTH) GROUP by date`,
+        (err, results) => {
+          if (err) {
+            return res.status(500).send({
+              success: false,
+              message: err,
+            });
+          }
+          return res.status(200).send(sixMonths(results));
+        }
+      );
+    } else if (type === "yearly") {
+      let sixYears = (arr) => {
+        let result = [...arr];
+        if (arr.length < 10 && arr.length > 0) {
+          for (let i = 1; i <= 10 - arr.length; i++) {
+            result.unshift({
+              date: format(subYears(new Date(arr[0].date), i), "yyyy"),
+              total_sales: 0,
+            });
+          }
+        }
+        return result;
+      };
+      db.query(
+        `SELECT DATE_FORMAT(b.updated_at, '%Y') AS date, SUM((c.price*a.quantity)) as total_sales FROM order_item a JOIN xmart.order b ON a.order_id = b.id JOIN product c ON a.product_id = c.id WHERE c.branch_id = ${branch_id} AND b.status IN ('Menunggu Pembayaran', 'Menunggu Konfirmasi', 'Dibatalkan') AND b.updated_at > DATE_SUB(now(),INTERVAL 10 YEAR) GROUP by date`,
+        (err, results) => {
+          if (err) {
+            return res.status(500).send({
+              success: false,
+              message: err,
+            });
+          }
+          return res.status(200).send(sixYears(results));
+        }
+      );
+    }
   },
 };

@@ -4,7 +4,7 @@ module.exports = {
   getCartList: (req, res) => {
     db.query(
       `SELECT y.*, z.name, z.description, z.price, z.stock, z.weight, z.category_id, z.product_img, z.is_delete, b.name as branch_name, b.city as branch_cityname 
-      from cart x
+      FROM cart x
       JOIN cart_item y ON x.user_id = y.cart_id 
       JOIN product z ON y.product_id = z.id 
       JOIN branch b ON z.branch_id = b.id 

@@ -62,7 +62,8 @@ const ManageOrder = () => {
         )}&end_date=${format(
           dateRange[0].endDate,
           "yyyy-MM-dd"
-        )}&sort_by=${sortBy}&order=${sortBy === "invoice_no" ? sortInvAsc : sortDateNewest
+        )}&sort_by=${sortBy}&order=${
+          sortBy === "invoice_no" ? sortInvAsc : sortDateNewest
         }&page=${page}`,
         {
           headers: {
@@ -101,7 +102,8 @@ const ManageOrder = () => {
         )}&end_date=${format(
           dateRange[0].endDate,
           "yyyy-MM-dd"
-        )}&sort_by=${sortBy}&order=${sortBy === "invoice_no" ? sortInvAsc : sortDateNewest
+        )}&sort_by=${sortBy}&order=${
+          sortBy === "invoice_no" ? sortInvAsc : sortDateNewest
         }&page=${page}`,
         {
           headers: {
@@ -266,7 +268,10 @@ const ManageOrder = () => {
             >
               <span className="relative">
                 {openDate ? (
-                  <RiArrowDropUpLine size={28} className="absolute -right-10 -bottom-1" />
+                  <RiArrowDropUpLine
+                    size={28}
+                    className="absolute -right-10 -bottom-1"
+                  />
                 ) : (
                   <RiArrowDropDownLine
                     size={28}
@@ -326,7 +331,9 @@ const ManageOrder = () => {
                       </div>
                       <div
                         className={
-                          ["Menunggu Pembayaran", "Dibatalkan"].includes(val.status)
+                          ["Menunggu Pembayaran", "Dibatalkan"].includes(
+                            val.status
+                          )
                             ? "text-xs bg-red-300 bg-opacity-40 text-red-500 p-1 rounded-lg font-semibold"
                             : "text-xs bg-lime-300 bg-opacity-40 text-[#6CC51D] p-1 rounded-lg font-semibold"
                         }
@@ -356,7 +363,8 @@ const ManageOrder = () => {
                               {val.name}
                             </div>
                             <span className="text-slate-400 text-xs font-semibold">
-                              {val.quantity} {val.quantity > 1 ? "items" : "item"}
+                              {val.quantity}{" "}
+                              {val.quantity > 1 ? "items" : "item"}
                             </span>
                           </div>
                         </div>
@@ -389,7 +397,7 @@ const ManageOrder = () => {
           onPageChange={(page) => setPage(page)}
         />
       </div>
-    </PageAdmin >
+    </PageAdmin>
   );
 };
 

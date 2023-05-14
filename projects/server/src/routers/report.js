@@ -17,5 +17,10 @@ route.get(
   readToken,
   reportController.getCategoryDataBranch
 );
+route.get(
+  "/get-sales-data-branch",
+  readToken,
+  reportController.getSalesDataBranch
+);
 
 module.exports = route;

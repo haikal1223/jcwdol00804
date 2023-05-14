@@ -155,7 +155,10 @@ function App() {
             <>
               <Route path="/admin" element={<AdminHome />} />
               <Route path="/admin/manage-branch" element={<ManageBranch />} />
-              <Route path="/admin/add-branch-admin" element={<AddBranchAdmin />} />
+              <Route
+                path="/admin/add-branch-admin"
+                element={<AddBranchAdmin />}
+              />
               <Route path="/admin/order-report" element={<OrderReport />} />
               <Route
                 path="/admin/order-report/:id"

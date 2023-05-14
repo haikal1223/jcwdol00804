@@ -37,7 +37,7 @@ const OrderList = () => {
 
   const [dateRange, setDateRange] = useState([
     {
-      startDate: subDays(new Date(), 30),
+      startDate: subDays(new Date(), 31),
       endDate: new Date(),
       key: "selection",
     },
@@ -62,6 +62,7 @@ const OrderList = () => {
         }
       )
       .then((res) => {
+        console.log(res.data);
         setOrderList(res.data.result);
         setLimit(res.data.limit);
         setCountResult(res.data.allResult.length);
@@ -200,7 +201,7 @@ const OrderList = () => {
                 ranges={dateRange}
                 months={2}
                 direction="horizontal"
-                className="absolute w-[100%] border shadow-md"
+                className="absolute w-[100%] border shadow-md z-10"
                 maxDate={new Date()}
               />
             )}
