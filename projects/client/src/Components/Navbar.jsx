@@ -155,12 +155,8 @@ const Navbar = ({ navTitle }) => {
             w="35px"
             h="35px"
             onClick={() => {
-              if (!is_verified) {
-                toast.error("Please verify your account first");
-              } else {
-                navigate("/profile-setting");
-                toast.remove();
-              }
+              navigate("/profile-setting");
+              toast.remove();
             }}
           />
         ) : (

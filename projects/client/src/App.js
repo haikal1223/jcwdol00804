@@ -33,7 +33,6 @@ import AddBranchAdmin from "./Pages/Admin/ManageBranch/AddBranchAdmin";
 import ManageCategory from "./Pages/Admin/ManageCategory";
 import CustomizeCategory from "./Pages/Admin/ManageCategory/CustomizeCategory";
 import OrderReport from "./Pages/Admin/OrderReport";
-import OrderReportDetail from "./Pages/Admin/OrderReport/OrderReportDetail";
 import ManageOrder from "./Pages/Admin/ManageOrder";
 import ManageOrderDetail from "./Pages/Admin/ManageOrder/ManageOrderDetail";
 import ManageProduct from "./Pages/Admin/ManageProduct";
@@ -107,13 +106,13 @@ function App() {
               <Route path="/product-list" element={<ProductList />} />
               <Route path="/verify-email" element={<Verify />} />
               <Route path="/change-password" element={<ChangePassword />} />
+              <Route path="/personal-data" element={<PersonalData />} />
+              <Route path="/my-cart" element={<MyCart />} />
+              <Route path="/profile-setting" element={<ProfileSetting />} />
+              <Route path="/my-address" element={<MyAddress />} />
+              <Route path="/add-address" element={<AddAddress />} />
+              <Route path="/edit-address/:id" element={<EditAddress />} />
               <Route element={<RestrictedRoutes />}>
-                <Route path="/personal-data" element={<PersonalData />} />
-                <Route path="/my-cart" element={<MyCart />} />
-                <Route path="/profile-setting" element={<ProfileSetting />} />
-                <Route path="/my-address" element={<MyAddress />} />
-                <Route path="/add-address" element={<AddAddress />} />
-                <Route path="/edit-address/:id" element={<EditAddress />} />
                 <Route path="/payment/:id" element={<Payment />} />
                 <Route path="/order-list" element={<OrderList />} />
                 <Route path="/order-detail/:id" element={<OrderDetail />} />
@@ -160,10 +159,6 @@ function App() {
                 element={<AddBranchAdmin />}
               />
               <Route path="/admin/order-report" element={<OrderReport />} />
-              <Route
-                path="/admin/order-report/:id"
-                element={<OrderReportDetail />}
-              />
               <Route path="*" element={<NotFound />} />
             </>
           ) : null}

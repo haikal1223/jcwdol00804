@@ -74,8 +74,8 @@ const PersonalData = () => {
         .test("fileType", "Unsupported file type", (value) =>
           value
             ? ["image/png", "image/jpeg", "image/jpg", "image/gif"].includes(
-                value.type
-              )
+              value.type
+            )
             : true
         )
         .nullable(),
@@ -121,6 +121,7 @@ const PersonalData = () => {
             birthdate: values.birthdate,
             gender: values.gender,
             profile_img: resultImg.data.profile_img,
+            is_verfied: values.is_verfied,
           })
         );
       } catch (error) {
@@ -162,8 +163,8 @@ const PersonalData = () => {
                   ? URL.createObjectURL(formik.values.images)
                   : `http://localhost:8000/${profile_img}`
                 : !formik.errors.images && formik.values.images
-                ? URL.createObjectURL(formik.values.images)
-                : ""
+                  ? URL.createObjectURL(formik.values.images)
+                  : ""
             }
             borderRadius="50%"
             w="100px"
