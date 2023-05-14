@@ -6,6 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../../helper";
 import { format } from "date-fns";
+import toast, { Toaster } from "react-hot-toast";
 
 const OrderDetail = () => {
   const [orderDetail, setOrderDetail] = useState({});
@@ -20,15 +21,23 @@ const OrderDetail = () => {
   };
 
   const handleCancel = async () => {
-    axios.patch(`${API_URL}/order/cancel-order/${id}`);
-    alert("Order Canceled")
-    getOrderDetail();
+    try {
+      const result = await axios.patch(`${API_URL}/order/cancel-order/${id}`);
+      toast.success(result.data.message);
+      getOrderDetail();
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
   }
 
   const handleComplete = async () => {
-    axios.patch(`${API_URL}/transaction/complete-order/${id}`)
-    alert("Order Completed")
-    getOrderDetail();
+    try {
+      const result = await axios.patch(`${API_URL}/transaction/complete-order/${id}`)
+      toast.success(result.data.message);
+      getOrderDetail();
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
   }
 
   const getOrderDetail = async () => {
@@ -60,6 +69,7 @@ const OrderDetail = () => {
     <Page isFooter={false} isNavbar={false}>
       <div className="relative">
         <BackButton />
+        <Toaster />
         <div className="text-center text-xl py-5 font-bold z-10 relative">
           Order Detail
         </div>

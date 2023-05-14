@@ -33,7 +33,7 @@ module.exports = {
             const checkName = await dbQuery(
                 `Select name from category 
                 WHERE name=${db.escape(name)}
-                AND branch_id=${branch_id};`
+                AND branch_id=${db.escape(branch_id)};`
             );
             if (checkName.length) {
                 return res.status(409).send({
@@ -48,13 +48,13 @@ module.exports = {
                             return res.status(500).send({
                                 success: false,
                                 message:
-                                    "Add Category Failed, Please fill the empty fields"
+                                    "Failed add category"
                             });
                         };
                         return res.status(200).send({
                             success: true,
                             message:
-                                "Add Category Success"
+                                `${name} has been added`
                         });
                     }
                 );
@@ -177,7 +177,7 @@ module.exports = {
                     }
                     return res.status(200).send({
                         success: true,
-                        message: "Category image uploaded",
+                        message: "Success updated image",
                     });
                 }
             );

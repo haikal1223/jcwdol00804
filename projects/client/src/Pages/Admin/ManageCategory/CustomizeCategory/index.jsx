@@ -6,6 +6,7 @@ import { API_URL } from "../../../../helper";
 import { useSelector } from "react-redux";
 import { FcShop } from "react-icons/fc";
 import BackButtonAdmin from "../../../../Components/BackButtonAdmin";
+import toast, { Toaster } from "react-hot-toast";
 
 const CustomizeCategory = () => {
     const { branch_name } = useSelector((state) => {
@@ -40,10 +41,11 @@ const CustomizeCategory = () => {
                 `${API_URL}/category/upload-category/${id}`,
                 formData
             )
-            alert(result.data.message)
+            toast.success(result.data.message);
             getDetail();
+            formData.reset();
         } catch (error) {
-            alert(error.response.data.message);
+            toast.error(error.response.data.message);
         }
     }
 
@@ -55,16 +57,18 @@ const CustomizeCategory = () => {
                 { name },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-            alert(result.data.message)
+            toast.success(result.data.message)
             getDetail();
+            setName("");
         } catch (error) {
-            alert(error.response.data.message);
+            toast.error(error.response.data.message);
         }
     }
 
     return (
         <PageAdmin>
             <div className="items-start justify-between flex">
+                <Toaster />
                 <h3 className="text-gray-800 text-xl font-bold">
                     <FcShop className="inline mb-1" size={25} /> {branch_name} Category List
                 </h3>
@@ -122,6 +126,7 @@ const CustomizeCategory = () => {
                                     id="name"
                                     name="name"
                                     type="text"
+                                    value={name}
                                     placeholder={detail.name}
                                     onChange={(e) => {
                                         setName(e.target.value);

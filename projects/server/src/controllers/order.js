@@ -194,7 +194,7 @@ module.exports = {
         }
         return res.status(200).send({
           success: true,
-          message: "Profile image uploaded",
+          message: "Successfully upload payment receipt",
         });
       }
     );

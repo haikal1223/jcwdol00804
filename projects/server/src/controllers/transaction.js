@@ -309,7 +309,8 @@ module.exports = {
                     }
                     return res.status(200).send({
                         success: true,
-                        message: `Change order status to "Dikirim"`,
+                        message: `Order status has changed
+                        into "Dikirim"`,
                     });
                 }
             );
@@ -334,7 +335,7 @@ module.exports = {
                     }
                     return res.status(200).send({
                         success: true,
-                        message: `Change order status to "Dibatalkan"`,
+                        message: `Order has been canceled`,
                     });
                 }
             );
@@ -359,7 +360,7 @@ module.exports = {
                     }
                     return res.status(200).send({
                         success: true,
-                        message: `Pesanan Selesai`,
+                        message: `Order completed`,
                     });
                 }
             );

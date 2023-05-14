@@ -10,6 +10,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { API_URL } from "../../helper";
 import { Toaster, toast } from "react-hot-toast";
+import { loginAction } from "../../Actions/user";
+import { getCartList } from "../../Actions/cart";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -22,6 +24,35 @@ const Home = () => {
     };
   });
 
+  const keepLogin = () => {
+    let getLocalStorage = localStorage.getItem("xmart_login");
+    if (getLocalStorage) {
+      axios.get(`${API_URL}/user/keep-login`, {
+        headers: {
+          Authorization: `Bearer ${getLocalStorage}`,
+        },
+      })
+        .then((res) => {
+          localStorage.setItem("xmart_login", res.data.token);
+          dispatch(loginAction(res.data));
+          dispatch(getCartList());
+
+        })
+        .catch((err) => {
+          if (err.response.status === 401) {
+            localStorage.removeItem("xmart_login");
+          }
+          console.log(err);
+        });
+    } else {
+    }
+  };
+
+  useEffect(() => {
+    keepLogin();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     if (!userLocation) {
       dispatch(setDefaultStore());
@@ -29,8 +60,20 @@ const Home = () => {
     axios.get(`${API_URL}/product/get-branch-list`).then((res) => {
       setBranchList(res.data);
     });
+    if (!branchName) {
+      const selectedBranch = sessionStorage.getItem("branchName");
+      if (selectedBranch) {
+        dispatch(changeStoreAction({ defaultStore: selectedBranch }));
+      } else {
+        // If no branchName is selected, set the default store
+        dispatch(setDefaultStore());
+      }
+    } else {
+      // If branchName is set in the state, store it in session storage
+      sessionStorage.setItem("branchName", branchName);
+    }
     // eslint-disable-next-line
-  }, []);
+  }, [branchName, dispatch]);
 
   const closestStore = () => {
     const options = {
