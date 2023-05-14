@@ -39,7 +39,7 @@ import ManageOrderDetail from "./Pages/Admin/ManageOrder/ManageOrderDetail";
 import ManageProduct from "./Pages/Admin/ManageProduct";
 import AddProduct from "./Pages/Admin/AddProduct";
 import EditProduct from "./Pages/Admin/EditProduct";
-// import StockMovementReport from "./Pages/Admin/StockMovementReport";
+import StockMovementReport from "./Pages/Admin/StockMovementReport";
 
 function App() {
   const dispatch = useDispatch();
@@ -155,7 +155,10 @@ function App() {
             <>
               <Route path="/admin" element={<AdminHome />} />
               <Route path="/admin/manage-branch" element={<ManageBranch />} />
-              <Route path="/admin/add-branch-admin" element={<AddBranchAdmin />} />
+              <Route
+                path="/admin/add-branch-admin"
+                element={<AddBranchAdmin />}
+              />
               <Route path="/admin/order-report" element={<OrderReport />} />
               <Route
                 path="/admin/order-report/:id"

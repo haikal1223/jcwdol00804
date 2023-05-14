@@ -101,7 +101,7 @@ module.exports = {
       });
     };
     Promise.all([result(), allResult()]).then((res) => {
-      if (!res[0].length) {
+      if (!res.length) {
         return response.status(404).send({
           success: false,
           message: "Order list not found",

@@ -1,5 +1,6 @@
 const INITIAL_STATE = {
   defaultStore: "",
+  userLocation: "",
 };
 
 export const storeReducer = (state = INITIAL_STATE, action) => {
