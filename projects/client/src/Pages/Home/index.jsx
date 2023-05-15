@@ -10,13 +10,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { API_URL } from "../../helper";
 import { Toaster, toast } from "react-hot-toast";
-import { loginAction } from "../../Actions/user";
-import { getCartList } from "../../Actions/cart";
 
 const Home = () => {
   const dispatch = useDispatch();
   const [branchList, setBranchList] = useState([]);
-
   const { userLocation, branchName } = useSelector((state) => {
     return {
       userLocation: state.storeReducer.userLocation,
@@ -24,46 +21,19 @@ const Home = () => {
     };
   });
 
-  const keepLogin = () => {
-    let getLocalStorage = localStorage.getItem("xmart_login");
-    if (getLocalStorage) {
-      axios.get(`${API_URL}/user/keep-login`, {
-        headers: {
-          Authorization: `Bearer ${getLocalStorage}`,
-        },
-      })
-        .then((res) => {
-          localStorage.setItem("xmart_login", res.data.token);
-          dispatch(loginAction(res.data));
-          dispatch(getCartList());
-
-        })
-        .catch((err) => {
-          if (err.response.status === 401) {
-            localStorage.removeItem("xmart_login");
-          }
-          console.log(err);
-        });
-    } else {
-    }
-  };
-
   useEffect(() => {
-    keepLogin();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (!userLocation) {
-      dispatch(setDefaultStore());
-    }
     axios.get(`${API_URL}/product/get-branch-list`).then((res) => {
       setBranchList(res.data);
     });
     if (!branchName) {
       const selectedBranch = sessionStorage.getItem("branchName");
+      const savedUserLoc = sessionStorage.getItem("userLocation");
       if (selectedBranch) {
         dispatch(changeStoreAction({ defaultStore: selectedBranch }));
+        if (!userLocation) {
+          // if userLocation is accepted
+          dispatch(changeStoreAction({ userLocation: savedUserLoc }))
+        }
       } else {
         // If no branchName is selected, set the default store
         dispatch(setDefaultStore());
@@ -73,7 +43,7 @@ const Home = () => {
       sessionStorage.setItem("branchName", branchName);
     }
     // eslint-disable-next-line
-  }, [branchName, dispatch]);
+  }, [branchName, dispatch, userLocation]);
 
   const closestStore = () => {
     const options = {
@@ -88,7 +58,7 @@ const Home = () => {
           `${API_URL}/product/get-closest-store?lat=${crd.latitude}&lng=${crd.longitude}`
         )
         .then((res) => {
-          console.log(res.data);
+          sessionStorage.setItem("userLocation", res.data.userLocation)
           dispatch(
             changeStoreAction({
               defaultStore: res.data.closestStore,
@@ -131,7 +101,7 @@ const Home = () => {
           <div className="flex flex-row items-center">
             <FcShop size={20} className="inline" />
             <select
-              className="bg-[#6CC51D] font-semibold text-white rounded-full px-3 ml-1"
+              className="bg-[#6CC51D] font-semibold text-white rounded-full px-3 ml-1 cursor-pointer"
               value={branchName}
               onChange={(e) =>
                 dispatch(changeStoreAction({ defaultStore: e.target.value }))
@@ -162,8 +132,8 @@ const Home = () => {
           )}
         </div>
         {/* Greeting */}
-        <div className="flex flex-col text-normal text-center font-normal px-5 py-3">
-          <div>Welcome to our page !</div>
+        <div className="flex flex-col text-normal text-center text-xl font-bold px-5 pt-3 pb-2">
+          Welcome to our page
         </div>
         {/* Banner */}
         <BannerSection />

@@ -3,7 +3,7 @@ import Page from "../../Components/Page";
 import AvatarSection from "./Sections/AvatarSection";
 import SettingSection from "./Sections/SettingSection";
 
-const ChangePassword = () => {
+const ProfileSetting = () => {
     return (
         <Page isNavbar={true} isFooter={false} navTitle={"Profile Settings"}>
             <AvatarSection />
@@ -12,4 +12,4 @@ const ChangePassword = () => {
     )
 }
 
-export default ChangePassword;
+export default ProfileSetting;

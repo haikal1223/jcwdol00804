@@ -277,7 +277,7 @@ module.exports = {
           }
           db.query(
             'UPDATE user SET name=?, email=?, birthdate=?, gender=?, is_verified=? WHERE id=?',
-            [name, email, birthdate, gender, is_verified = 0, req.decript.id],
+            [name, email, birthdate, gender, 0, req.decript.id],
             (error, results) => {
               db.query(
                 `SELECT * from user WHERE email=${db.escape(email)}`,
