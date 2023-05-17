@@ -41,7 +41,7 @@ module.exports = {
             FROM product p
             JOIN branch b ON p.branch_id = b.id
             JOIN category c ON p.category_id = c.id
-            WHERE p.is_delete=0 
+            WHERE p.is_delete=0 AND p.stock > 0
             AND b.name LIKE '${branch_name}'
             AND c.name LIKE '%${category}%'
             AND p.name LIKE '%${name}%'

@@ -18,7 +18,7 @@ module.exports = {
       return new Promise(async (resolve, reject) => {
         try {
           const res = await dbQuery(
-            `SELECT b.id, e.name AS user_name, c.product_img, d.name AS branch_name, a.quantity, b.status, b.invoice_no, b.created_at, c.name, SUM(a.quantity * c. price) AS total_purchased, COUNT(a.id) AS total_items FROM order_item a JOIN xmart.order b ON a.order_id = b.id JOIN product c ON c.id = a.product_id JOIN branch d ON c.branch_id = d.id JOIN user e ON b.user_id = e.id WHERE d.id = ${
+            `SELECT b.id, e.name AS user_name, c.product_img, d.name AS branch_name, a.quantity, b.status, b.invoice_no, b.created_at, c.name, SUM(a.quantity * c. price) AS total_purchased, COUNT(a.id) AS total_items FROM order_item a JOIN JCWDOL00804.order b ON a.order_id = b.id JOIN product c ON c.id = a.product_id JOIN branch d ON c.branch_id = d.id JOIN user e ON b.user_id = e.id WHERE d.id = ${
               req.decript.branch_id
             } AND b.invoice_no LIKE '%${inv}%' AND b.status LIKE '%${status}%' AND e.name LIKE '%${user_name}%' AND b.created_at >= '${start_date} 00:00:00' AND b.created_at <= '${end_date} 23:59:59' GROUP BY b.id HAVING total_items <> 0 ORDER BY b.${sort_by} ${
               order === "true"
@@ -42,7 +42,7 @@ module.exports = {
           const res = await dbQuery(
             `SELECT b.id, e.name AS user_name, c.product_img, d.name AS branch_name, a.quantity, b.status, b.invoice_no, b.created_at, c.name, SUM(a.quantity * c. price) AS total_purchased, COUNT(a.id) AS total_items
                         FROM order_item a
-                        JOIN xmart.order b ON a.order_id = b.id
+                        JOIN JCWDOL00804.order b ON a.order_id = b.id
                         JOIN product c ON c.id = a.product_id
                         JOIN branch d ON c.branch_id = d.id
                         JOIN user e ON b.user_id = e.id
@@ -86,7 +86,7 @@ module.exports = {
   orderDetailBranchAdmin: (req, res) => {
     db.query(
       `SELECT a.id, c.name AS user_name, a.payment_img, a.status, a.courier, a.shipping_cost, a.invoice_no, a.created_at, b.address, b.city, b.province, b.zipcode 
-            FROM xmart.order a 
+            FROM JCWDOL00804.order a 
             JOIN address b ON a.address_id = b.id 
             JOIN user c ON a.user_id = c.id
             WHERE a.id = ${db.escape(req.params.id)};`,
@@ -134,7 +134,7 @@ module.exports = {
   acceptPayment: (req, res) => {
     try {
       db.query(
-        `UPDATE xmart.order SET ?
+        `UPDATE JCWDOL00804.order SET ?
                 WHERE id=${req.params.id}`,
         { status: "Diproses" },
         (error, results) => {
@@ -157,7 +157,7 @@ module.exports = {
   refusePayment: (req, res) => {
     try {
       db.query(
-        `UPDATE xmart.order SET ?
+        `UPDATE JCWDOL00804.order SET ?
                 WHERE id=${req.params.id}`,
         {
           status: "Menunggu Pembayaran",
@@ -183,7 +183,7 @@ module.exports = {
   sendOrder: (req, res) => {
     try {
       db.query(
-        `UPDATE xmart.order SET ?
+        `UPDATE JCWDOL00804.order SET ?
                 WHERE id=${req.params.id}`,
         {
           status: "Dikirim",
@@ -209,7 +209,7 @@ module.exports = {
   cancelOrder: (req, res) => {
     try {
       db.query(
-        `UPDATE xmart.order SET ?
+        `UPDATE JCWDOL00804.order SET ?
                 WHERE id=${req.params.id}`,
         {
           status: "Dibatalkan",
@@ -234,7 +234,7 @@ module.exports = {
   completeOrder: (req, res) => {
     try {
       db.query(
-        `UPDATE xmart.order SET ?
+        `UPDATE JCWDOL00804.order SET ?
                 WHERE id=${req.params.id}`,
         {
           status: "Selesai",
