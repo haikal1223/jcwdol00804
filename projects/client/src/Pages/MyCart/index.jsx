@@ -183,7 +183,11 @@ const MyCart = () => {
                     onChange={() => handleChecked(idx2)}
                   />
                   <img
-                    src="https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-6.png"
+                    src={
+                      val2.product_img
+                        ? `http://localhost:8000/${val2.product_img}`
+                        : `https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-6.png`
+                    }
                     alt={val2.name}
                     className=" w-24 h-24 ml-2 my-2 border text-xs"
                   />

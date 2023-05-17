@@ -42,7 +42,7 @@ const ManageOrderDetail = () => {
 
   const getDetail = async () => {
     let promise1 = axios.get(
-      `${API_URL}/transaction/order-list-super-admin/${id}`
+      `${API_URL}/transaction/order-list-branch-admin/${id}`
     );
     let promise2 = axios.get(`${API_URL}/transaction/get-product-info/${id}`);
 
@@ -256,7 +256,11 @@ const ManageOrderDetail = () => {
               >
                 <div className="flex flex-row items-center mt-1 ">
                   <img
-                    src={`https://jcwdol00804.purwadhikabootcamp.com/${value.product_img}`}
+                    src={
+                      value.product_img
+                        ? `http://localhost:8000/${value.product_img}`
+                        : `https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-6.png`
+                    }
                     alt={value.name}
                     className=" w-12 h-12 mt-2 border text-xs"
                   />

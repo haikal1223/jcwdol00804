@@ -7,7 +7,7 @@ module.exports = {
     try {
       const { id } = req.params;
       db.query(
-        `SELECT p.id, p.name, p.description, p.price, p.stock, p.weight, b.name AS branch_id, c.name AS category_id
+        `SELECT p.id, p.name, p.description, p.price, p.stock, p.weight,p.product_img, b.name AS branch_id, c.name AS category_id
                 FROM product p
                 JOIN branch b ON p.branch_id = b.id
                 JOIN category c ON p.category_id = c.id
@@ -36,12 +36,12 @@ module.exports = {
       const { category, name, by, order, page, branch_name } = req.query;
       const limit = 10;
       const offset = (page - 1) * limit;
-      const query = `SELECT p.id, p.name, p.description, p.price, p.stock, p.weight, p.is_delete,
+      const query = `SELECT p.id, p.name, p.description, p.price, p.stock, p.weight, p.is_delete, p.product_img,
             b.name AS branch_id, c.name AS category_id
             FROM product p
             JOIN branch b ON p.branch_id = b.id
             JOIN category c ON p.category_id = c.id
-            WHERE p.is_delete=0 
+            WHERE p.is_delete=0 AND p.stock > 0
             AND b.name LIKE '${branch_name}'
             AND c.name LIKE '%${category}%'
             AND p.name LIKE '%${name}%'
@@ -87,7 +87,7 @@ module.exports = {
     try {
       const { branch_name } = req.query;
       db.query(
-        `SELECT p.id, p.name, p.price, p.weight, b.name AS branch_id from product p 
+        `SELECT p.id, p.name, p.price, p.weight, p.product_img, b.name AS branch_id from product p 
         JOIN branch b ON p.branch_id = b.id
         WHERE is_delete=0 AND is_featured=1 AND b.name='${branch_name}'
         LIMIT 6`,

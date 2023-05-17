@@ -29,14 +29,15 @@ const Home = () => {
       const selectedBranch = sessionStorage.getItem("branchName");
       const savedUserLoc = sessionStorage.getItem("userLocation");
       if (selectedBranch) {
-        dispatch(changeStoreAction({ defaultStore: selectedBranch }));
-        if (!userLocation) {
+        dispatch(setDefaultStore());
+        if (userLocation) {
           // if userLocation is accepted
-          dispatch(changeStoreAction({ userLocation: savedUserLoc }))
+          dispatch(changeStoreAction({ userLocation: savedUserLoc }));
         }
       } else {
         // If no branchName is selected, set the default store
         dispatch(setDefaultStore());
+        sessionStorage.removeItem("userLocation");
       }
     } else {
       // If branchName is set in the state, store it in session storage
@@ -58,7 +59,7 @@ const Home = () => {
           `${API_URL}/product/get-closest-store?lat=${crd.latitude}&lng=${crd.longitude}`
         )
         .then((res) => {
-          sessionStorage.setItem("userLocation", res.data.userLocation)
+          sessionStorage.setItem("userLocation", res.data.userLocation);
           dispatch(
             changeStoreAction({
               defaultStore: res.data.closestStore,
@@ -88,6 +89,7 @@ const Home = () => {
             "You have blocked your current location. Please activate it from the browser permission setting"
           );
           dispatch(setDefaultStore());
+          sessionStorage.removeItem("userLocation");
         }
       });
     }

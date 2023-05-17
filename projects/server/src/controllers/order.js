@@ -1,37 +1,66 @@
+const { format } = require("date-fns");
 const { db, dbQuery } = require("../config/db");
 
 module.exports = {
-  createNewOrder: (req, res) => {
-    const { items, address_id, courier, shipping_cost } = req.body;
-    db.query(
-      `INSERT INTO xmart.order SET ?`,
-      { user_id: req.decript.id, address_id, courier, shipping_cost },
-      (err, result) => {
-        if (err) {
-          return res.status(500).send({
-            success: false,
-            message: "Failed inserting order",
-          });
-        }
-        db.query(
-          `INSERT INTO order_item (product_id, order_id, quantity) VALUES ?`,
-          [items.map((val) => [val.product_id, result.insertId, val.quantity])],
-          (err, result2) => {
-            if (err) {
-              return res.status(500).send({
-                success: false,
-                message: "Failed inserting order item",
-              });
-            }
-            return res.status(200).send({
-              success: true,
-              message: "Add order item success",
-              data: result.insertId,
+  createNewOrder: async (req, res) => {
+    try {
+      const { items, address_id, courier, shipping_cost } = req.body;
+      let invoice = "";
+      const lastId = await dbQuery(
+        `SELECT max(id) as last_id from xmart.order`
+      );
+      if (!lastId.length) {
+        invoice = `INV/${format(new Date(), "yyyyMMdd")}/XM/000000001`;
+      } else {
+        invoice = `INV/${format(new Date(), "yyyyMMdd")}/XM/${String(
+          lastId[0].last_id + 1
+        ).padStart(9, "0")}`;
+      }
+      db.query(
+        `INSERT INTO xmart.order SET ?`,
+        {
+          user_id: req.decript.id,
+          address_id,
+          courier,
+          shipping_cost,
+          invoice_no: invoice,
+        },
+        (err, result) => {
+          if (err) {
+            return res.status(500).send({
+              success: false,
+              message: "Failed inserting order",
             });
           }
-        );
-      }
-    );
+          db.query(
+            `INSERT INTO order_item (product_id, order_id, quantity) VALUES ?`,
+            [
+              items.map((val) => [
+                val.product_id,
+                result.insertId,
+                val.quantity,
+              ]),
+            ],
+            (err, result2) => {
+              if (err) {
+                return res.status(500).send({
+                  success: false,
+                  message: "Failed inserting order item",
+                });
+              }
+              return res.status(200).send({
+                success: true,
+                message: "Add order item success",
+                data: result.insertId,
+              });
+            }
+          );
+        }
+      );
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send(error);
+    }
   },
   getOrderList: (req, response) => {
     const { inv, status, start_date, end_date, order, sort_by, page } =

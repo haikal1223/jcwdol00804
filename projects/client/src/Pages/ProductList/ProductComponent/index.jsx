@@ -325,7 +325,15 @@ const ProductComponent = () => {
                             hover:border border-[#86C649]"
               >
                 <Link to={`/product-detail/${product.id}`}>
-                  <img className="h-20 w-20 mx-auto mt-1" src={img} alt="img" />
+                  <img
+                    className="h-20 w-20 mx-auto mt-1"
+                    src={
+                      product.product_img
+                        ? `http://localhost:8000/${product.product_img}`
+                        : img
+                    }
+                    alt="img"
+                  />
                   <div className="text-center text-sm font-medium product-name h-10">
                     {product.name}
                   </div>

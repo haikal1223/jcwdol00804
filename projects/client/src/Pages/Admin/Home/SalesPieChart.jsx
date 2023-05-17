@@ -14,7 +14,9 @@ const SalesPieChart = ({ salesData, salesDataType, setSalesDataType }) => {
       return (
         <div className="bg-gray-50 rounded-lg px-2 py-1 shadow-md border">
           <p className="font-bold text-gray-800">{`${label}`}</p>
-          <p>{`Total sales : Rp ${payload[0].value.toLocaleString("id")}`}</p>
+          <p>{`Total sales : Rp ${Number(payload[0].value).toLocaleString(
+            "id"
+          )}`}</p>
         </div>
       );
     }

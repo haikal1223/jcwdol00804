@@ -354,7 +354,11 @@ const ManageOrder = () => {
                       <div className="flex justify-right">
                         <div className="flex flex-row px-3 items-center">
                           <img
-                            src={`https://jcwdol00804.purwadhikabootcamp.com/${val.product_img}`}
+                            src={
+                              val.product_img
+                                ? `http://localhost:8000/${val.product_img}`
+                                : `https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-6.png`
+                            }
                             alt=""
                             className=" w-12 h-12 mt-2 border text-xs"
                           />

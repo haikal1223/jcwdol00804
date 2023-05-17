@@ -62,7 +62,7 @@ module.exports = {
   },
   getCategoryDataBranch: (req, res) => {
     db.query(
-      `SELECT c.name, COUNT(p.name) as total_product FROM category c JOIN product p ON c.id = p.category_id WHERE p.branch_id=${req.query.branch_id} AND p.is_delete = 0 AND c.is_delete = 0 GROUP BY c.name LIMIT 4`,
+      `SELECT c.name, COUNT(p.name) as total_product FROM category c JOIN product p ON c.id = p.category_id WHERE p.branch_id=${req.query.branch_id} AND p.is_delete = 0 AND c.is_delete = 0 GROUP BY c.name ORDER BY total_product DESC LIMIT 4`,
       (err, results) => {
         if (err) {
           return res.status(500).send({
@@ -71,7 +71,7 @@ module.exports = {
           });
         }
         db.query(
-          `SELECT ((SELECT COUNT(stock) as total_product) - (SELECT SUM(total_product) FROM (SELECT c.name, COUNT(p.name) as total_product FROM category c JOIN product p ON c.id = p.category_id WHERE p.branch_id=${req.query.branch_id} AND p.is_delete = 0 AND c.is_delete = 0 GROUP BY c.name LIMIT 4) as most_product)) 
+          `SELECT ((SELECT COUNT(stock) as total_product) - (SELECT SUM(total_product) FROM (SELECT c.name, COUNT(p.name) as total_product FROM category c JOIN product p ON c.id = p.category_id WHERE p.branch_id=${req.query.branch_id} AND p.is_delete = 0 AND c.is_delete = 0 GROUP BY c.name ORDER BY total_product DESC LIMIT 4) as most_product)) 
           as other_product from product WHERE branch_id=${req.query.branch_id} AND is_delete = 0`,
           (err2, results2) => {
             if (err2) {
@@ -86,7 +86,7 @@ module.exports = {
                     ...results,
                     {
                       name: "Other",
-                      total_product: results2[0].other_product,
+                      total_product: Number(results2[0].other_product),
                     },
                   ]
                 : [...results]
@@ -113,7 +113,7 @@ module.exports = {
         return result;
       };
       db.query(
-        `SELECT DATE_FORMAT(b.updated_at, '%b %Y') AS date, SUM((c.price*a.quantity)) as total_sales FROM order_item a JOIN xmart.order b ON a.order_id = b.id JOIN product c ON a.product_id = c.id WHERE c.branch_id = ${branch_id} AND b.status IN ('Menunggu Pembayaran', 'Menunggu Konfirmasi', 'Dibatalkan') AND b.updated_at > DATE_SUB(now(),INTERVAL ${manyMonth} MONTH) GROUP by date`,
+        `SELECT DATE_FORMAT(b.updated_at, '%b %Y') AS date, SUM((c.price*a.quantity)) as total_sales FROM order_item a JOIN xmart.order b ON a.order_id = b.id JOIN product c ON a.product_id = c.id WHERE c.branch_id = ${branch_id} AND b.status IN ('Dikirim', 'Selesai') AND b.updated_at > DATE_SUB(now(),INTERVAL ${manyMonth} MONTH) GROUP by date`,
         (err, results) => {
           if (err) {
             return res.status(500).send({
@@ -139,7 +139,7 @@ module.exports = {
         return result;
       };
       db.query(
-        `SELECT DATE_FORMAT(b.updated_at, '%Y') AS date, SUM((c.price*a.quantity)) as total_sales FROM order_item a JOIN xmart.order b ON a.order_id = b.id JOIN product c ON a.product_id = c.id WHERE c.branch_id = ${branch_id} AND b.status IN ('Menunggu Pembayaran', 'Menunggu Konfirmasi', 'Dibatalkan') AND b.updated_at > DATE_SUB(now(),INTERVAL ${manyYear} YEAR) GROUP by date`,
+        `SELECT DATE_FORMAT(b.updated_at, '%Y') AS date, SUM((c.price*a.quantity)) as total_sales FROM order_item a JOIN xmart.order b ON a.order_id = b.id JOIN product c ON a.product_id = c.id WHERE c.branch_id = ${branch_id} AND b.status IN ('Dikirim', 'Selesai') AND b.updated_at > DATE_SUB(now(),INTERVAL ${manyYear} YEAR) GROUP by date`,
         (err, results) => {
           if (err) {
             return res.status(500).send({

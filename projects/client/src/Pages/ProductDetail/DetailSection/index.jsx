@@ -157,7 +157,15 @@ const DetailSection = () => {
       )}
       {/* Image */}
       <div>
-        <img className="" src={img} alt="img" />
+        <img
+          className=""
+          src={
+            detail.product_img
+              ? `http://localhost:8000/${detail.product_img}`
+              : img
+          }
+          alt="img"
+        />
       </div>
       {/* Name & Add Items */}
       <div className="flex justify-between">

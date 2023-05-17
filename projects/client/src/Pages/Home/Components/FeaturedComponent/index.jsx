@@ -35,7 +35,15 @@ const FeaturedComponent = ({ branchName }) => {
                         h-44 w-32 bg-white text-xs m-2
                         hover:border border-[#86C649]"
             >
-              <img className="h-20 w-20 mx-auto my-2" src={img} alt="img" />
+              <img
+                className="h-20 w-20 mx-auto my-2"
+                src={
+                  product.product_img
+                    ? `http://localhost:8000/${product.product_img}`
+                    : img
+                }
+                alt="img"
+              />
               <div className="text-center text-xs text-[#86C649]">
                 Rp. {product.price.toLocaleString()},-
               </div>
